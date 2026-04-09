@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\bin\Release\net6.0\publish\</_PublishTargetUrl>
+    <History>True|2026-01-08T05:21:07.2496336Z||;True|2026-01-08T09:27:45.0199350+08:00||;True|2026-01-07T09:49:36.7961655+08:00||;True|2025-12-30T09:27:29.3933416+08:00||;True|2025-12-30T09:27:18.4819489+08:00||;True|2025-12-19T10:18:36.2574800+08:00||;True|2025-12-19T10:16:18.1624814+08:00||;True|2025-12-19T09:18:45.5914506+08:00||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+</Project>

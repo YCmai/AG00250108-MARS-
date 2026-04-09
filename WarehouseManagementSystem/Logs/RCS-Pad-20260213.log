@@ -1,0 +1,14 @@
+2026-02-13 11:15:54.747 +08:00 [INF] IO处理服务已启动
+2026-02-13 11:15:54.807 +08:00 [INF] 网络连接监控任务已启动
+2026-02-13 11:15:54.810 +08:00 [INF] 开始清理过期IO任务数据...
+2026-02-13 11:15:56.516 +08:00 [DBG] IO任务清理完成，没有需要清理的记录
+2026-02-13 11:15:56.605 +08:00 [INF] 发现新的IO设备: 192.168.200.121
+2026-02-13 11:15:57.568 +08:00 [INF] 设备 192.168.200.121 的网络连接状态: 离线
+2026-02-13 11:15:57.570 +08:00 [INF] 当前活跃IO设备: 1个
+2026-02-13 11:16:00.376 +08:00 [WRN] Failed to determine the https port for redirect.
+2026-02-13 11:17:03.011 +08:00 [WRN] Source location CACHE_1A is already locked
+2026-02-13 11:17:03.013 +08:00 [WRN] Source location CACHE_1B is already locked
+2026-02-13 11:17:03.059 +08:00 [WRN] Target location FG_1A is already in an active task
+2026-02-13 11:17:03.062 +08:00 [WRN] Target location FG_1A is already in an active task
+2026-02-13 11:17:35.258 +08:00 [WRN] Target location FG_1A is already in an active task
+2026-02-13 11:17:35.264 +08:00 [WRN] Target location FG_1A is already in an active task

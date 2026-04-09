@@ -1,0 +1,1821 @@
+﻿@model PagedResult<RCS_Locations>
+@{
+    Layout = "_Layout";
+}
+
+<div class="warehouse-dashboard">
+    <div class="action-bar">
+        <button type="button" class="btn btn-success" onclick="createNewLocation()">
+            <i class="fas fa-plus"></i> Add Location
+        </button>
+        <button type="button" class="btn btn-primary" onclick="openBatchImportModal()">
+            <i class="fas fa-file-import"></i> Batch Import
+        </button>
+        
+        <!-- Batch Operations Dropdown Menu -->
+        <div class="dropdown d-inline-block ml-2">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fas fa-cogs"></i> Batch Operations
+            </button>
+            <div class="dropdown-menu">
+                <div class="group-batch-actions p-2">
+                    <h6>Operations by Area</h6>
+                    <select id="batchOperationGroup" class="form-select mb-2">
+                        <option value="">-- Select Area --</option>
+                        @foreach (var group in Model.Items.Select(l => l.Group).Distinct().OrderBy(g => g))
+                        {
+                            <option value="@group">@group </option>
+                        }
+                    </select>
+                    <button class="dropdown-item" onclick="batchClearMaterialsByGroup()">
+                        <i class="fas fa-eraser"></i> Clear Materials in Selected Area
+                    </button>
+                    <button class="dropdown-item" onclick="batchLockLocationsByGroup(true)">
+                        <i class="fas fa-lock"></i> Lock Selected Area
+                    </button>
+                    <button class="dropdown-item" onclick="batchLockLocationsByGroup(false)">
+                        <i class="fas fa-unlock"></i> Unlock Selected Area
+                    </button>
+                    <button class="dropdown-item" onclick="batchEnableLocationsByGroup(true)">
+                        <i class="fas fa-check-circle"></i> Enable Selected Area
+                    </button>
+                    <button class="dropdown-item" onclick="batchEnableLocationsByGroup(false)">
+                        <i class="fas fa-times-circle"></i> Disable Selected Area
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <h6>Custom Selection</h6>
+                    <button class="dropdown-item" onclick="openLocationSelectorModal()">
+                        <i class="fas fa-list-check"></i> Select Specific Locations for Operations
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Task List Button -->
+        <button type="button" class="btn btn-info ms-2" id="toggleTasksBtn">
+            <i class="fas fa-tasks"></i> Show Task List
+        </button>
+        
+        <!-- Status Legend and Statistics -->
+        <div class="status-legend">
+            <div class="legend-items">
+                <div class="legend-item">
+                    <span class="color-box empty"></span>
+                    <span class="legend-text">Available Locations</span>
+                    <span class="count">@Model.Items.Count(x => string.IsNullOrEmpty(x.MaterialCode) && !x.Lock)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="color-box occupied"></span>
+                    <span class="legend-text">Occupied</span>
+                    <span class="count">@Model.Items.Count(x => !string.IsNullOrEmpty(x.MaterialCode))</span>
+                </div>
+            @*     <div class="legend-item">
+                    <span class="color-box error"></span>
+                    <span class="legend-text">Error Material</span>
+                    <span class="count">@Model.Items.Count(x => x.MaterialCode != null && x.MaterialCode.StartsWith("Err_"))</span>
+                </div> *@
+                <div class="legend-item">
+                    <span class="color-box locked"></span>
+                    <span class="legend-text">Locked</span>
+                    <span class="count">@Model.Items.Count(x => x.Lock)</span>
+                </div>
+                @{
+                    int totalLocations = (int)ViewData["StorageCapacityAvailable"];
+                    int usedLocations = (int)ViewData["StorageCapacityUse"];
+                    double usageRate = totalLocations > 0 ? (double)usedLocations / totalLocations * 100 : 0;
+                }
+                <div class="legend-item total">
+                    <span class="legend-text">Total Locations</span>
+                    <span class="count">@totalLocations</span>
+                </div>
+             @*    <div class="legend-item total">
+                    <span class="legend-text">Usage Rate</span>
+                    <span class="count">@usageRate.ToString("F1")%</span>
+                </div> *@
+            </div>
+            <div class="search-box">
+                <div class="d-flex gap-2">
+                    <input type="text" id="searchInput" placeholder="Search locations..." 
+                           oninput="filterLocations(this.value)">
+                    <select id="statusFilter" class="form-select form-select-sm" onchange="filterByStatus(this.value)">
+                        <option value="all">All Status</option>
+                        <option value="empty">Available</option>
+                        <option value="occupied">Occupied</option>
+                        <option value="locked">Locked</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Multi-column Group Display -->
+    <div class="groups-wrapper">
+        @{
+            var groupedLocations = Model.Items.GroupBy(l => l.Group).OrderBy(g => g.Key);
+        }
+        
+     @foreach (var group in groupedLocations)
+{
+    <div class="location-group" data-group="@group.Key">
+        <div class="group-header">Area @group.Key</div>
+        <div class="locations-container">
+            @foreach (var location in group)
+            {
+                var statusClasses = new List<string>();
+                bool isErrorLocation = location.MaterialCode != null && location.MaterialCode.StartsWith("Err_");
+                
+                // Enable/disable status check (highest priority)
+                if (!location.Enabled)
+                {
+                    statusClasses.Add("disabled");
+                }
+                else
+                {
+                    // Basic status check
+                    if (!string.IsNullOrEmpty(location.MaterialCode))
+                    {
+                        statusClasses.Add(isErrorLocation ? "error" : "occupied");
+                    }
+                    else
+                    {
+                        statusClasses.Add("empty");
+                    }
+                    
+                    // Lock status check
+                    if (location.Lock)
+                    {
+                        statusClasses.Add("locked");
+                    }
+                }
+                
+                string locationStatus = string.Join(" ", statusClasses);
+                
+                <div class="location-box"
+                     data-location="@location.NodeRemark.ToLower()"
+                     onclick="showLocationDetails('@location.Id', '@location.NodeRemark', '@(location.MaterialCode ?? "")', '@location.PalletID', '@(location.EntryDate ?? "")',  '@location.Quanitity', '@location.Group', '@location.Lock', '@location.Enabled')">
+                    <div class="location-inner @locationStatus">
+                        <div class="location-content">
+                            <div class="location-name">@location.NodeRemark</div>
+                            <div class="location-status-text">
+                                @if (!location.Enabled)
+                                {
+                                    <span class="status-text disabled">Disabled</span>
+                                }
+                                else if (location.Lock && !string.IsNullOrEmpty(location.MaterialCode))
+                                {
+                                    <span class="status-text locked">Occupied & Locked</span>
+                                }
+                                else if (location.Lock)
+                                {
+                                    <span class="status-text locked">Locked</span>
+                                }
+                                else if (!string.IsNullOrEmpty(location.MaterialCode))
+                                {
+                                    <span class="status-text occupied">Occupied</span>
+                                }
+                                else
+                                {
+                                    <span class="status-text empty">Available</span>
+                                }
+                            </div>
+                        </div>
+                        @if (location.Lock)
+                        {
+                            <i class="fas fa-lock lock-icon"></i>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+    </div>
+</div>
+
+<!-- Floating Task List Panel -->
+<div class="floating-tasks-panel" id="tasksPanel">
+    <div class="tasks-header">
+        <h5><i class="fas fa-tasks"></i> Recent Tasks</h5>
+        <div>
+            <button class="btn btn-sm btn-outline-secondary refresh-btn" onclick="refreshTasks()">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-secondary close-btn" id="closeTasksBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+    <div class="tasks-body">
+        <div class="tasks-filter mb-2">
+            <div class="d-flex gap-2">
+                <select id="taskStatusFilter" class="form-select form-select-sm" onchange="refreshTasks()">
+                    <option value="all">All Status</option>
+                    <option value="running">Running</option>
+                    <option value="finished">Completed</option>
+                    <option value="canceled">Canceled</option>
+                </select>
+                <select id="taskCountFilter" class="form-select form-select-sm" onchange="refreshTasks()">
+                    <option value="5">Show 5 items</option>
+                    <option value="10" selected>Show 10 items</option>
+                    <option value="20">Show 20 items</option>
+                </select>
+            </div>
+        </div>
+        <div id="tasksContainer" class="tasks-container">
+            <div class="text-center py-3">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Loading task data...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="locationDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Location Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="location-details">
+                    <div class="detail-row">
+                        <div class="detail-label">Location ID:</div>
+                        <div class="detail-value" id="nodeRemark"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Status:</div>
+                        <div class="detail-value" id="locationStatus"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Material Code:</div>
+                        <div class="detail-value" id="materialCode"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Pallet ID:</div>
+                        <div class="detail-value" id="palletID"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Entry Time:</div>
+                        <div class="detail-value" id="entryDate"></div>
+                    </div>
+                 @*    <div class="detail-row">
+                        <div class="detail-label">Weight:</div>
+                        <div class="detail-value" id="weight"></div>
+                    </div> *@
+                  @*   <div class="detail-row">
+                        <div class="detail-label">Quantity:</div>
+                        <div class="detail-value" id="quantity"></div>
+                    </div> *@
+                 @*    <div class="detail-row">
+                        <div class="detail-label">Lifting Height:</div>
+                        <div class="detail-value" id="liftingHeight"></div>
+                    </div> *@
+                    <div class="detail-row">
+                        <div class="detail-label">Lock Status:</div>
+                        <div class="detail-value" id="lockStatus"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Enabled Status:</div>
+                        <div class="detail-value" id="enabledStatus"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="editLocation()">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button type="button" class="btn btn-danger" onclick="deleteLocation()">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+                <button type="button" class="btn btn-warning" id="lockButton" onclick="toggleLock()">
+                    <i class="fas fa-lock"></i> <span id="lockButtonText">Lock/Unlock</span>
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="clearLocation()">
+                    <i class="fas fa-eraser"></i> Clear
+                </button>
+                <button type="button" class="btn btn-info" onclick="resetLocation()">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Location Selection Modal -->
+<div class="modal fade" id="locationSelectorModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Select Locations</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text">Filter Area</span>
+                            <select id="filterGroup" class="form-select" onchange="filterLocationsByGroup()">
+                                <option value="">All Areas</option>
+                                @foreach (var group in Model.Items.Select(l => l.Group).Distinct().OrderBy(g => g))
+                                {
+                                    <option value="@group">Area @group</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text">Search</span>
+                            <input type="text" id="locationSearch" class="form-control" 
+                                   placeholder="Enter location ID to search" onkeyup="filterLocationsBySearch()">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="selectAllLocations" onchange="toggleSelectAll()">
+                            <label class="form-check-label" for="selectAllLocations">
+                                Select All/Deselect All
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="location-selector-container" style="max-height: 500px; overflow-y: auto;">
+                    <div class="row" id="locationCheckboxes">
+                        @foreach (var location in Model.Items)
+                        {
+                            <div class="col-md-3 mb-2 location-item" data-group="@location.Group" data-node="@location.NodeRemark">
+                                <div class="form-check">
+                                    <input class="form-check-input location-checkbox" type="checkbox" 
+                                           value="@location.Id" id="loc-@location.Id">
+                                    <label class="form-check-label" for="loc-@location.Id">
+                                        @location.NodeRemark 
+                                        @if (!string.IsNullOrEmpty(location.MaterialCode))
+                                        {
+                                            <span class="badge bg-info">Has Material</span>
+                                        }
+                                        @if (location.Lock == true)
+                                        {
+                                            <span class="badge bg-warning">Locked</span>
+                                        }
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger me-2" onclick="batchClearMaterialsSelected()">
+                    <i class="fas fa-eraser"></i> Clear Selected Materials
+                </button>
+                <button type="button" class="btn btn-warning me-2" onclick="batchLockLocationsSelected(true)">
+                    <i class="fas fa-lock"></i> Lock Selected Locations
+                </button>
+                <button type="button" class="btn btn-success me-2" onclick="batchLockLocationsSelected(false)">
+                    <i class="fas fa-unlock"></i> Unlock Selected Locations
+                </button>
+                <button type="button" class="btn btn-primary me-2" onclick="batchEnableLocationsSelected(true)">
+                    <i class="fas fa-check-circle"></i> Enable Selected Locations
+                </button>
+                <button type="button" class="btn btn-warning me-2" onclick="batchEnableLocationsSelected(false)">
+                    <i class="fas fa-times-circle"></i> Disable Selected Locations
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Batch Import Modal -->
+<div class="modal fade" id="batchImportModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Batch Import Locations</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> Please download the template file, fill in location information according to the template format, and then upload.
+                        <a href="/DisplayLocation/DownloadTemplate" class="btn btn-sm btn-outline-primary ms-2">
+                            <i class="fas fa-download"></i> Download Template
+                        </a>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Select Excel File</label>
+                    <input type="file" class="form-control" id="excelFile" accept=".xlsx,.xls">
+                </div>
+                <div class="mb-3">
+                    <div class="progress d-none" id="uploadProgress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="preview-container d-none" id="previewContainer">
+                    <h6>Data Preview</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead id="previewHeader"></thead>
+                            <tbody id="previewBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="uploadExcel()" id="uploadButton">
+                    <i class="fas fa-upload"></i> Start Import
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Basic Styles */
+.warehouse-dashboard {
+    padding: 10px;
+    background: #f8f9fa;
+}
+
+/* Status Bar Styles */
+.stats-bar {
+    background: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.stat-info {
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+}
+
+.stat-info span {
+    white-space: nowrap;
+}
+
+.search-box input {
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 200px;
+}
+
+/* Group Container Styles */
+.groups-wrapper {
+    /* Single column display, each group takes full row, maximize locations per row */
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.location-group {
+    background: white;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    width: 100%;
+}
+
+.group-header {
+    font-size: 14px;
+    font-weight: bold;
+    color: #2c3e50;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+        background-color: #f8f9fa;
+}
+
+.locations-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); /* Further reduce cell size for more columns */
+    gap: 4px;
+}
+
+/* Location Styles */
+.location-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    width: 100%;               /* Fill grid cell, responsive to column width */
+}
+
+.location-inner {
+    width: 100%;
+    aspect-ratio: 1;
+    padding: 6px;              /* Further tighten for higher density */
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+    min-height: 60px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+}
+
+.location-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+.location-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 2px;
+    line-height: 1.2;
+    letter-spacing: .5px;
+}
+
+.location-status-text {
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.status-text {
+    color: #ffffff;
+    text-align: center;
+    white-space: nowrap;
+}
+
+
+.status-text.empty { color: #ffffff; }
+
+.status-text.occupied { color: #ffffff; }
+
+.status-text.locked { color: #ffffff; }
+
+.status-text.disabled { color: #ffffff; }
+
+/* Basic Status Styles - Softer background colors */
+.location-inner.empty {
+    /* Green solid block */
+    background: #348938;
+    border: none;
+}
+
+.location-inner.occupied {
+    /* Red solid block */
+    background: #D4322E;
+    border: none;
+}
+
+.location-inner.error {
+    background: rgba(168, 85, 247, 0.08);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.location-inner.locked {
+    /* Orange solid block */
+    background: #F68702;
+    border: none;
+    position: relative;
+}
+
+.location-inner.disabled {
+    /* Gray solid block - disabled state */
+    background: #6c757d;
+    border: none;
+    opacity: 0.6;
+    position: relative;
+}
+
+/* Combined state styles - priority: locked > occupied > available */
+.location-inner.occupied.locked {
+    background: #F68702;
+    border: none;
+    position: relative;
+}
+
+.location-inner.occupied.locked .status-text {
+    background: rgba(246, 135, 2, 0.32);
+   
+    border: 1px solid rgba(246, 135, 2, 0.45);
+}
+
+/* Heartbeat animation: occupied and locked. Priority: locked > occupied */
+@@keyframes pulseOccupied {
+    /* Red pulse - more visible */
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 50, 46, 0.35); }
+    60% { transform: scale(1.06); box-shadow: 0 0 0 16px rgba(212, 50, 46, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 50, 46, 0); }
+}
+
+@@keyframes pulseLockedRing {
+    /* Orange pulse - more visible */
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(246, 135, 2, 0.35); }
+    60% { transform: scale(1.06); box-shadow: 0 0 0 16px rgba(246, 135, 2, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(246, 135, 2, 0); }
+}
+
+.location-inner.occupied:not(.locked) {
+    animation: pulseOccupied 1.4s ease-in-out infinite;
+    filter: drop-shadow(0 6px 10px rgba(212,50,46,0.25));
+}
+
+.location-inner.locked {
+    animation: pulseLockedRing 1.6s ease-in-out infinite;
+    filter: drop-shadow(0 6px 10px rgba(246,135,2,0.25));
+}
+
+/* Reduced motion preference support */
+@@media (prefers-reduced-motion: reduce) {
+    .location-inner.occupied:not(.locked),
+    .location-inner.locked {
+        animation: none;
+    }
+}
+
+/* Lock icon styles */
+.lock-icon {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: rgba(251, 146, 60, 0.8);
+    font-size: 8px;
+    z-index: 3;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.location-inner.occupied.error {
+    background: rgba(168, 85, 247, 0.08);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.location-inner.locked.error {
+    background: rgba(168, 85, 247, 0.08);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+/* Status legend styles - consistent with location styles */
+.color-box.empty {
+    background: #348938;
+    border: none;
+}
+
+.color-box.occupied {
+    background: #D4322E;
+    border: none;
+}
+
+.color-box.error {
+    background: rgba(168, 85, 247, 0.08);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.color-box.locked {
+    background: #F68702;
+    border: none;
+}
+
+/* Hover effects */
+.location-inner:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Details styles */
+.location-details {
+    padding: 10px;
+}
+
+.detail-row {
+    display: flex;
+    margin-bottom: 10px;
+    padding: 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.detail-label {
+    width: 100px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.detail-value {
+    flex: 1;
+}
+
+.text-danger {
+    color: #e74c3c !important;
+}
+
+.text-success {
+    color: #2ecc71 !important;
+}
+
+.text-purple {
+    color: #9b59b6 !important;
+}
+
+/* Responsive adjustments */
+@@media (max-width: 768px) {
+    .stats-bar {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .stat-info {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .search-box {
+        width: 100%;
+    }
+    
+    .search-box input {
+        width: 100%;
+    }
+    
+    .groups-wrapper {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-row {
+        flex-direction: column;
+    }
+    
+    .detail-label {
+        width: 100%;
+        margin-bottom: 4px;
+    }
+}
+
+/* Status legend styles */
+.status-legend {
+    background: white;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+}
+
+.legend-items {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 10px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    min-width: 150px;
+}
+
+.legend-item.total {
+    background: #e8f0fe;
+}
+
+.color-box {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 2px solid;
+}
+
+.legend-text {
+    font-size: 14px;
+    color: #2c3e50;
+    flex: 1;
+}
+
+.count {
+    font-weight: bold;
+    color: #2c3e50;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 13px;
+    min-width: 40px;
+    text-align: right;
+}
+
+.search-box input {
+    width: 200px;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Responsive adjustments */
+@@media (max-width: 768px) {
+    .legend-items {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .legend-item {
+        width: 100%;
+    }
+
+    .search-box input {
+        width: 100%;
+    }
+}
+
+/* Batch import styles */
+.preview-container {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.preview-container table {
+    margin-bottom: 0;
+}
+
+.preview-container th {
+    background-color: #f8f9fa;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.progress {
+    height: 25px;
+}
+
+.progress-bar {
+    font-size: 14px;
+    line-height: 25px;
+}
+
+/* Floating task list styles */
+.floating-tasks-panel {
+    position: fixed;
+    top: 70px;
+    right: -350px;
+    width: 350px;
+    height: calc(100vh - 100px);
+    background: white;
+    box-shadow: -3px 0 10px rgba(0,0,0,0.1);
+    border-radius: 8px 0 0 8px;
+    z-index: 1000;
+    transition: right 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.floating-tasks-panel.active {
+    right: 0;
+}
+
+.tasks-header {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tasks-header h5 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.tasks-body {
+    padding: 15px;
+    overflow-y: auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.tasks-container {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.task-item {
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+    border-left: 4px solid #6c757d;
+    transition: all 0.2s;
+}
+
+.task-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.task-item.running {
+    border-left-color: #0dcaf0;
+}
+
+.task-item.finished {
+    border-left-color: #198754;
+}
+
+.task-item.canceled {
+    border-left-color: #dc3545;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.task-title {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.task-status {
+    font-size: 12px;
+}
+
+.task-details {
+    font-size: 13px;
+    color: #6c757d;
+}
+
+.task-action {
+    margin-top: 8px;
+    text-align: right;
+}
+
+/* Responsive adjustments */
+@@media (max-width: 768px) {
+    .floating-tasks-panel {
+        width: 100%;
+        right: -100%;
+    }
+}
+</style>
+
+<script>
+let currentLocationId = null;
+let locationModal = null;
+let locationSelectorModal;
+let batchImportModal;
+let taskRefreshInterval;
+let isTaskPanelActive = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+    locationModal = new bootstrap.Modal(document.getElementById('locationDetailsModal'));
+    locationSelectorModal = new bootstrap.Modal(document.getElementById('locationSelectorModal'));
+    batchImportModal = new bootstrap.Modal(document.getElementById('batchImportModal'));
+    
+    // Add file selection listener
+    document.getElementById('excelFile').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            previewExcel(file);
+        }
+    });
+    
+    // Task panel control
+    document.getElementById('toggleTasksBtn').addEventListener('click', toggleTasksPanel);
+    document.getElementById('closeTasksBtn').addEventListener('click', toggleTasksPanel);
+    
+    // Restore task panel state from localStorage
+    if (localStorage.getItem('tasksPanelActive') === 'true') {
+        toggleTasksPanel();
+    }
+});
+
+function toggleTasksPanel() {
+    const tasksPanel = document.getElementById('tasksPanel');
+    const toggleBtn = document.getElementById('toggleTasksBtn');
+    
+    isTaskPanelActive = !isTaskPanelActive;
+    
+    if (isTaskPanelActive) {
+        tasksPanel.classList.add('active');
+        toggleBtn.innerHTML = '<i class="fas fa-tasks"></i> Hide Task List';
+        refreshTasks();
+        // Set auto refresh
+        taskRefreshInterval = setInterval(refreshTasks, 30000); // Refresh every 30 seconds
+    } else {
+        tasksPanel.classList.remove('active');
+        toggleBtn.innerHTML = '<i class="fas fa-tasks"></i> Show Task List';
+        // Clear auto refresh
+        clearInterval(taskRefreshInterval);
+    }
+    
+    // Save state to localStorage
+    localStorage.setItem('tasksPanelActive', isTaskPanelActive);
+}
+
+async function refreshTasks() {
+    if (!isTaskPanelActive) return;
+    
+    const tasksContainer = document.getElementById('tasksContainer');
+    const statusFilter = document.getElementById('taskStatusFilter').value;
+    const countFilter = document.getElementById('taskCountFilter').value;
+    
+    try {
+        // Show loading state
+        tasksContainer.innerHTML = `
+            <div class="text-center py-3">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Loading task data...</p>
+            </div>
+        `;
+        
+        // Get task data
+        const response = await fetch(`/Tasks/GetRecentTasks?status=${statusFilter}&count=${countFilter}`);
+        if (!response.ok) {
+            throw new Error('Failed to get task data');
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            renderTasks(data.tasks);
+        } else {
+            tasksContainer.innerHTML = `
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i> ${data.message || 'Failed to get task data'}
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Failed to refresh tasks:', error);
+        tasksContainer.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i> Failed to get task data, please try again later
+            </div>
+            <button class="btn btn-sm btn-outline-primary w-100" onclick="refreshTasks()">
+                <i class="fas fa-sync-alt"></i> Retry
+            </button>
+        `;
+    }
+}
+
+function renderTasks(tasks) {
+    const tasksContainer = document.getElementById('tasksContainer');
+    
+    if (!tasks || tasks.length === 0) {
+        tasksContainer.innerHTML = `
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> No task data available
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    
+    tasks.forEach(task => {
+        // Determine task status category
+        let statusClass = 'running';
+        if (task.taskStatus >= 30) { // Assume 30 is completed status
+            statusClass = 'finished';
+        } else if (task.taskStatus === 20) { // Assume 20 is cancelled status
+            statusClass = 'canceled';
+        }
+        
+        // Format date
+        const createTime = task.creatTime ? new Date(task.creatTime).toLocaleString() : 'Unknown';
+        
+        // Build task item HTML
+        html += `
+            <div class="task-item ${statusClass}">
+                <div class="task-header">
+                    <div class="task-title">${task.taskType || 'Unknown Type'}</div>
+                    <div class="task-status">
+                        <span class="badge ${getStatusBadgeClass(task.taskStatus)}">
+                            ${getStatusText(task.taskStatus)}
+                        </span>
+                    </div>
+                </div>
+                <div class="task-details">
+                    <div><strong>Source:</strong> ${task.sourcePosition || 'Unknown'}</div>
+                    <div><strong>Target:</strong> ${task.targetPosition || 'Unknown'}</div>
+                    <div><strong>AGV:</strong> ${task.robotCode || 'Unassigned'}</div>
+                    <div><strong>Created:</strong> ${createTime}</div>
+                </div>
+                ${task.taskStatus < 30 && !task.isCancelled ? `
+                    <div class="task-action">
+                        <button class="btn btn-sm btn-danger" onclick="cancelTaskFromPanel(${task.id})">
+                            Cancel Task
+                        </button>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    });
+    
+    tasksContainer.innerHTML = html;
+}
+
+function getStatusBadgeClass(status) {
+    // Return corresponding Badge class based on task status
+    switch (status) {
+        case 0: return 'bg-secondary'; // Not executed
+        case 10: // Task started
+        case 11: // Parameter confirmation
+        case 12: // Confirm executing AGV
+            return 'bg-primary';
+        case 13: // Picking up
+        case 15: // Unloading
+            return 'bg-warning';
+        case 14: // Pickup completed
+        case 16: // Unload completed
+            return 'bg-info';
+        case 30: return 'bg-success'; // Task completed
+        case 20: return 'bg-danger';  // Cancelled
+        default: return 'bg-light text-dark';
+    }
+}
+
+function getStatusText(status) {
+    // Return corresponding text based on task status
+    switch (status) {
+        case 0: return 'Not Executed';
+        case 1: return 'Executing';
+        case 4: return 'Task Completed';
+        case 8: return 'Task Cancelled';
+        case 10: return 'Task Started';
+        case 11: return 'Task Completed';
+        case 12: return 'Confirm Executing AGV';
+        case 13: return 'Picking Up';
+        case 14: return 'Pickup Completed';
+        case 15: return 'Unloading';
+        case 16: return 'Unload Completed';
+        case 30: return 'Task Cancelled';
+        case 20: return 'Cancelled';
+        default: return `Status ${status}`;
+    }
+}
+
+async function cancelTaskFromPanel(taskId) {
+    if (confirm('Are you sure you want to cancel this task?')) {
+        try {
+            const response = await fetch('/Tasks/CancelTask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: `id=${taskId}`
+            });
+            
+            if (!response.ok) {
+                throw new Error('Request failed');
+            }
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showToast('success', result.message);
+                setTimeout(() => refreshTasks(), 1000);
+            } else {
+                showToast('error', result.message || 'Failed to cancel task');
+            }
+        } catch (error) {
+            console.error('Failed to cancel task:', error);
+            showToast('error', 'Failed to cancel task, please try again');
+        }
+    }
+}
+
+function showLocationDetails(id, nodeRemark, materialCode, palletID, entryDate, quantity, group, lock, enabled) {
+    currentLocationId = id;
+
+    // Update modal content
+    document.getElementById('nodeRemark').textContent = nodeRemark;
+    document.getElementById('locationStatus').textContent = materialCode ? 'Occupied' : 'Available';
+    document.getElementById('materialCode').textContent = materialCode || 'None';
+    document.getElementById('palletID').textContent = palletID || 'None';
+    document.getElementById('entryDate').textContent = entryDate || 'None';
+    //document.getElementById('weight').textContent = weight || '0';
+    // document.getElementById('quantity').textContent = quantity || '0';
+    //document.getElementById('liftingHeight').textContent = liftingHeight || '0';
+    
+    // Update lock status and button text
+    const isLocked = lock === 'True';
+    document.getElementById('lockStatus').textContent = isLocked ? 'Locked' : 'Unlocked';
+    
+    // Update enabled status
+    const isEnabled = enabled === 'True';
+    const enabledStatusElement = document.getElementById('enabledStatus');
+    if (enabledStatusElement) {
+        enabledStatusElement.innerHTML = isEnabled 
+            ? '<span class="badge bg-success">Enabled</span>' 
+            : '<span class="badge bg-secondary">Disabled</span>';
+    }
+    
+    // Update lock button status and text
+    const lockButton = document.getElementById('lockButton');
+    const lockButtonText = document.getElementById('lockButtonText');
+    if (isLocked) {
+        lockButton.classList.remove('btn-warning');
+        lockButton.classList.add('btn-success');
+        lockButtonText.textContent = 'Unlock';
+        lockButton.querySelector('i').classList.remove('fa-lock');
+        lockButton.querySelector('i').classList.add('fa-unlock');
+    } else {
+        lockButton.classList.remove('btn-success');
+        lockButton.classList.add('btn-warning');
+        lockButtonText.textContent = 'Lock';
+        lockButton.querySelector('i').classList.remove('fa-unlock');
+        lockButton.querySelector('i').classList.add('fa-lock');
+    }
+    
+    // Show modal
+    locationModal.show();
+}
+
+function createNewLocation() {
+    window.location.href = '/DisplayLocation/CreateEdit';
+}
+
+function editLocation() {
+    if (!currentLocationId) return;
+    window.location.href = `/DisplayLocation/CreateEdit/${currentLocationId}`;
+}
+
+async function handleLocationAction(actionType) {
+    if (!currentLocationId) return;
+    
+    let confirmMessage = '';
+    switch (actionType) {
+        case 1:
+            confirmMessage = 'Are you sure you want to delete this location?';
+            break;
+        case 3:
+            confirmMessage = 'Are you sure you want to clear this location?';
+            break;
+        case 4:
+            confirmMessage = 'Are you sure you want to reset this location?';
+            break;
+        case 2:
+            const isLocked = document.getElementById('lockStatus').textContent === 'Locked';
+            confirmMessage = isLocked ? 'Are you sure you want to unlock this location?' : 'Are you sure you want to lock this location?';
+            break;
+    }
+    
+    if (confirmMessage && !confirm(confirmMessage + ' This operation cannot be undone!')) {
+        return;
+    }
+    
+    try {
+        const params = new URLSearchParams({
+            type: actionType.toString()
+        });
+        
+        const response = await fetch(`/DisplayLocation/DeleteConfirmed/${currentLocationId}?${params}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            if (actionType === 1) {
+                locationModal.hide();
+            }
+            // Create a Promise to wait for toast display completion
+            await new Promise(resolve => {
+                const toast = showToast('success', result.message);
+                toast.addEventListener('shown.bs.toast', () => {
+                    setTimeout(resolve, 800); // Wait for toast display 800ms
+                });
+            });
+            window.location.reload();
+        } else {
+            showToast('error', result.message || 'Operation failed');
+        }
+    } catch (error) {
+        console.error('Operation failed:', error);
+        showToast('error', 'Operation failed, please try again');
+    }
+}
+
+function filterLocations(searchText) {
+    try {
+        // Convert to lowercase for case-insensitive search
+        searchText = searchText.toLowerCase();
+        
+        // Get current status filter value
+        const statusFilter = document.getElementById('statusFilter').value;
+
+        // Get all location elements
+        const locationBoxes = document.querySelectorAll('.location-box');
+
+        locationBoxes.forEach(box => {
+            // Get location number
+            const locationNumber = box.getAttribute('data-location');
+            
+            // Check status match
+            let statusMatch = true;
+            if (statusFilter !== 'all') {
+                const locationInner = box.querySelector('.location-inner');
+                if (statusFilter === 'occupied') {
+                    // For occupied status, include purely occupied and occupied+locked locations
+                    statusMatch = locationInner.classList.contains('occupied');
+                } else if (statusFilter === 'locked') {
+                    // For locked status, include purely locked and occupied+locked locations
+                    statusMatch = locationInner.classList.contains('locked');
+                } else if (statusFilter === 'empty') {
+                    // For available status, must be neither occupied nor locked
+                    statusMatch = locationInner.classList.contains('empty') && 
+                                 !locationInner.classList.contains('occupied') && 
+                                 !locationInner.classList.contains('locked');
+                } else {
+                    // Other statuses maintain original logic
+                    statusMatch = locationInner.classList.contains(statusFilter);
+                }
+            }
+
+            // If search text is empty and status matches, show location
+            if (!searchText && statusMatch) {
+                box.style.display = '';
+                return;
+            }
+
+            // Check if location number contains search text and status matches
+            if (locationNumber && locationNumber.toLowerCase().includes(searchText) && statusMatch) {
+                box.style.display = '';
+            } else {
+                box.style.display = 'none';
+            }
+        });
+
+        // Handle group show/hide
+        const groups = document.querySelectorAll('.location-group');
+        groups.forEach(group => {
+            // Check if this group has any visible locations
+            const hasVisibleLocations = Array.from(group.querySelectorAll('.location-box'))
+                .some(box => box.style.display !== 'none');
+
+            // Show/hide entire group based on whether there are visible locations
+            group.style.display = hasVisibleLocations ? '' : 'none';
+        });
+
+    } catch (error) {
+        console.error('Error occurred while searching locations:', error);
+    }
+}
+
+function filterByStatus(status) {
+    // Reapply search, which will consider status filtering simultaneously
+    const searchText = document.getElementById('searchInput').value;
+    filterLocations(searchText);
+}
+
+function showToast(type, message) {
+    let toastContainer = document.getElementById('toastContainer');
+    
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toastContainer';
+        toastContainer.style.position = 'fixed';
+        toastContainer.style.top = '20px';
+        toastContainer.style.right = '20px';
+        toastContainer.style.zIndex = '9999';
+        document.body.appendChild(toastContainer);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : 'danger'} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.setAttribute('aria-live', 'assertive');
+    toast.setAttribute('aria-atomic', 'true');
+    
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+    
+    toast.addEventListener('hidden.bs.toast', () => {
+        toast.remove();
+    });
+
+    return toast;
+}
+
+function deleteLocation() {
+    handleLocationAction(1);
+}
+
+function clearLocation() {
+    handleLocationAction(3);
+}
+
+function resetLocation() {
+    handleLocationAction(4);
+}
+
+function toggleLock() {
+    handleLocationAction(2);
+}
+
+function openLocationSelectorModal() {
+    locationSelectorModal.show();
+}
+
+function filterLocationsByGroup() {
+    // When switching area filter, apply search conditions simultaneously
+    filterLocationsBySearch();
+}
+
+function filterLocationsBySearch() {
+    const searchText = document.getElementById('locationSearch').value.toLowerCase();
+    const selectedGroup = document.getElementById('filterGroup').value;
+    const items = document.querySelectorAll('.location-item');
+    
+    items.forEach(item => {
+        const nodeText = item.dataset.node.toLowerCase();
+        const groupMatch = !selectedGroup || item.dataset.group === selectedGroup;
+        
+        if (groupMatch && (!searchText || nodeText.includes(searchText))) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none';
+        }
+    });
+}
+
+function toggleSelectAll() {
+    const selectAll = document.getElementById('selectAllLocations').checked;
+    const checkboxes = document.querySelectorAll('.location-checkbox');
+    const visibleCheckboxes = Array.from(checkboxes).filter(box => 
+        box.closest('.location-item').style.display !== 'none'
+    );
+    
+    visibleCheckboxes.forEach(checkbox => {
+        checkbox.checked = selectAll;
+    });
+}
+
+function getSelectedLocationIds() {
+    const checkboxes = document.querySelectorAll('.location-checkbox:checked');
+    return Array.from(checkboxes).map(checkbox => parseInt(checkbox.value));
+}
+
+function batchClearMaterialsSelected() {
+    const locationIds = getSelectedLocationIds();
+    
+    if (locationIds.length === 0) {
+        alert('Please select at least one location');
+        return;
+    }
+    
+    if (!confirm(`Are you sure you want to clear materials from ${locationIds.length} selected locations? This operation cannot be undone!`)) {
+        return;
+    }
+    
+    $.ajax({
+        url: '/DisplayLocation/BatchClearMaterials',
+        type: 'POST',
+        traditional: true,
+        data: {
+            locationIds: locationIds
+        },
+        success: function(result) {
+            if (result.success) {
+                alert(`${result.message}`);
+                location.reload();
+            } else {
+                alert(`Operation failed: ${result.message}`);
+            }
+        },
+        error: function() {
+            alert('Operation request failed, please check network connection');
+        }
+    });
+}
+
+function batchLockLocationsSelected(lockState) {
+    const locationIds = getSelectedLocationIds();
+    
+    if (locationIds.length === 0) {
+        alert('Please select at least one location');
+        return;
+    }
+    
+    const operation = lockState ? 'lock' : 'unlock';
+    
+    if (!confirm(`Are you sure you want to ${operation} ${locationIds.length} selected locations?`)) {
+        return;
+    }
+    
+    $.ajax({
+        url: '/DisplayLocation/BatchToggleLock',
+        type: 'POST',
+        traditional: true,
+        data: {
+            locationIds: locationIds,
+            lockState: lockState
+        },
+        success: function(result) {
+            if (result.success) {
+                alert(`${result.message}`);
+                location.reload();
+            } else {
+                alert(`Operation failed: ${result.message}`);
+            }
+        },
+        error: function() {
+            alert('Operation request failed, please check network connection');
+        }
+    });
+}
+
+function batchEnableLocationsSelected(enabledState) {
+    const locationIds = getSelectedLocationIds();
+    
+    if (locationIds.length === 0) {
+        alert('Please select at least one location');
+        return;
+    }
+    
+    const operation = enabledState ? 'enable' : 'disable';
+    
+    if (!confirm(`Are you sure you want to ${operation} ${locationIds.length} selected locations?`)) {
+        return;
+    }
+    
+    $.ajax({
+        url: '/DisplayLocation/BatchToggleEnabled',
+        type: 'POST',
+        traditional: true,
+        data: {
+            locationIds: locationIds,
+            enabledState: enabledState
+        },
+        success: function(result) {
+            if (result.success) {
+                alert(`${result.message}`);
+                location.reload();
+            } else {
+                alert(`Operation failed: ${result.message}`);
+            }
+        },
+        error: function() {
+            alert('Operation request failed, please check network connection');
+        }
+    });
+}
+
+function batchClearMaterialsByGroup() {
+    var group = $('#batchOperationGroup').val();
+    if (!group) {
+        alert('Please select an area to operate on');
+        return;
+    }
+    
+    if (!confirm(`Are you sure you want to clear all materials in ${group} area? This operation cannot be undone!`)) {
+        return;
+    }
+    
+    $.ajax({
+        url: '/DisplayLocation/BatchClearMaterialsByGroup',
+        type: 'POST',
+        data: { group: group },
+        success: function(result) {
+            if (result.success) {
+                alert(`${result.message}`);
+                location.reload();
+            } else {
+                alert(`Operation failed: ${result.message}`);
+            }
+        },
+        error: function() {
+            alert('Operation request failed, please check network connection');
+        }
+    });
+}
+
+function batchLockLocationsByGroup(lockState) {
+    var group = $('#batchOperationGroup').val();
+    if (!group) {
+        alert('Please select an area to operate on');
+        return;
+    }
+    
+    var operation = lockState ? 'lock' : 'unlock';
+    
+    if (!confirm(`Are you sure you want to ${operation} all locations in ${group} area?`)) {
+        return;
+    }
+    
+    $.ajax({
+        url: '/DisplayLocation/BatchToggleLockByGroup',
+        type: 'POST',
+        data: { 
+            group: group,
+            lockState: lockState
+        },
+        success: function(result) {
+            if (result.success) {
+                alert(`${result.message}`);
+                location.reload();
+            } else {
+                alert(`Operation failed: ${result.message}`);
+            }
+        },
+        error: function() {
+            alert('Operation request failed, please check network connection');
+        }
+    });
+}
+
+function batchEnableLocationsByGroup(enabledState) {
+    var group = $('#batchOperationGroup').val();
+    if (!group) {
+        alert('Please select an area to operate on');
+        return;
+    }
+    
+    var operation = enabledState ? 'enable' : 'disable';
+    
+    if (!confirm(`Are you sure you want to ${operation} all locations in ${group} area?`)) {
+        return;
+    }
+    
+    $.ajax({
+        url: '/DisplayLocation/BatchToggleEnabledByGroup',
+        type: 'POST',
+        data: { 
+            group: group,
+            enabledState: enabledState
+        },
+        success: function(result) {
+            if (result.success) {
+                alert(`${result.message}`);
+                location.reload();
+            } else {
+                alert(`Operation failed: ${result.message}`);
+            }
+        },
+        error: function() {
+            alert('Operation request failed, please check network connection');
+        }
+    });
+}
+
+function openBatchImportModal() {
+    document.getElementById('excelFile').value = '';
+    document.getElementById('previewContainer').classList.add('d-none');
+    document.getElementById('uploadProgress').classList.add('d-none');
+    document.getElementById('uploadButton').disabled = false;
+    batchImportModal.show();
+}
+
+async function previewExcel(file) {
+    try {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const response = await fetch('/DisplayLocation/PreviewExcel', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error('Preview failed');
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displayPreview(data.preview);
+            document.getElementById('previewContainer').classList.remove('d-none');
+        } else {
+            showToast('error', data.message || 'Preview failed');
+        }
+    } catch (error) {
+        console.error('Failed to preview Excel:', error);
+        showToast('error', 'Preview failed, please check if file format is correct');
+    }
+}
+
+function displayPreview(previewData) {
+    const header = document.getElementById('previewHeader');
+    const body = document.getElementById('previewBody');
+    
+    // Clear existing content
+    header.innerHTML = '';
+    body.innerHTML = '';
+    
+    // Add table header
+    const headerRow = document.createElement('tr');
+    previewData.headers.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        headerRow.appendChild(th);
+    });
+    header.appendChild(headerRow);
+    
+    // Add data rows
+    previewData.rows.forEach(row => {
+        const tr = document.createElement('tr');
+        row.forEach(cell => {
+            const td = document.createElement('td');
+            td.textContent = cell;
+            tr.appendChild(td);
+        });
+        body.appendChild(tr);
+    });
+}
+
+async function uploadExcel() {
+    const fileInput = document.getElementById('excelFile');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        showToast('error', 'Please select an Excel file to import');
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    try {
+        const uploadButton = document.getElementById('uploadButton');
+        const progressBar = document.getElementById('uploadProgress');
+        const progressBarInner = progressBar.querySelector('.progress-bar');
+        
+        uploadButton.disabled = true;
+        progressBar.classList.remove('d-none');
+        
+        const response = await fetch('/DisplayLocation/ImportExcel', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error('Import failed');
+        }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showToast('success', `Successfully imported ${result.count} locations`);
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            showToast('error', result.message || 'Import failed');
+            uploadButton.disabled = false;
+        }
+    } catch (error) {
+        console.error('Failed to import Excel:', error);
+        showToast('error', 'Import failed, please check if file format is correct');
+        document.getElementById('uploadButton').disabled = false;
+    } finally {
+        document.getElementById('uploadProgress').classList.add('d-none');
+    }
+}
+</script>
+
+<!-- 添加 CSRF Token -->
+@Html.AntiForgeryToken()

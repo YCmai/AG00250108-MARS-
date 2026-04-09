@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="Home" xml:space="preserve">
+    <value>首页</value>
+  </data>
+  <data name="LocationManage" xml:space="preserve">
+    <value>储位管理</value>
+  </data>
+  <data name="LocationSetting" xml:space="preserve">
+    <value>储位设置</value>
+  </data>
+  <data name="MaterialManage" xml:space="preserve">
+    <value>物料管理</value>
+  </data>
+  <data name="MaterialInStock" xml:space="preserve">
+    <value>物料入库</value>
+  </data>
+  <data name="MaterialOutStock" xml:space="preserve">
+    <value>物料出库</value>
+  </data>
+  <data name="InventoryManage" xml:space="preserve">
+    <value>库存管理</value>
+  </data>
+  <data name="LocationStatistics" xml:space="preserve">
+    <value>储位统计</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>历史记录</value>
+  </data>
+  <data name="TaskManage" xml:space="preserve">
+    <value>任务管理</value>
+  </data>
+  <data name="SystemLog" xml:space="preserve">
+    <value>系统日志</value>
+  </data>
+  <data name="WarehouseManagement" xml:space="preserve">
+    <value>仓库管理系统</value>
+  </data>
+  <data name="SystemRunning" xml:space="preserve">
+    <value>系统运行中</value>
+  </data>
+</root> 

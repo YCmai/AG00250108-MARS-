@@ -1,0 +1,60 @@
+@{
+    ViewData["Title"] = "数据库连接测试";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-database me-2"></i>数据库连接测试</h4>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(ViewBag.Message))
+                    {
+                        <div class="alert @(ViewBag.Message.Contains("成功") ? "alert-success" : "alert-danger")">
+                            <h5>@ViewBag.Message</h5>
+                        </div>
+                    }
+                    
+                    @if (!string.IsNullOrEmpty(ViewBag.ConnectionString))
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">连接字符串：</label>
+                            <textarea class="form-control" rows="3" readonly>@ViewBag.ConnectionString</textarea>
+                        </div>
+                    }
+                    
+                    @if (ViewBag.TestResult != null)
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">测试结果：</label>
+                            <input type="text" class="form-control" value="@ViewBag.TestResult" readonly />
+                        </div>
+                    }
+                    
+                    @if (!string.IsNullOrEmpty(ViewBag.Error))
+                    {
+                        <div class="mb-3">
+                            <label class="form-label">错误详情：</label>
+                            <textarea class="form-control" rows="10" readonly>@ViewBag.Error</textarea>
+                        </div>
+                    }
+                    
+                    <div class="d-flex gap-2">
+                        <a href="@Url.Action("Index", "Test")" class="btn btn-primary">
+                            <i class="fas fa-sync me-1"></i>重新测试连接
+                        </a>
+                        <a href="@Url.Action("CreateTables", "Test")" class="btn btn-success">
+                            <i class="fas fa-table me-1"></i>创建数据库表
+                        </a>
+                        <a href="@Url.Action("Login", "Auth")" class="btn btn-info">
+                            <i class="fas fa-sign-in-alt me-1"></i>返回登录页面
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

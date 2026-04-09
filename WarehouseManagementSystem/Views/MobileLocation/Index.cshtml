@@ -1,0 +1,1771 @@
+@{
+    ViewData["Title"] = "Location Status Management - Mobile";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>@ViewData["Title"]</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin: 0 -20px 20px -20px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .batch-actions {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .batch-actions.show {
+            display: block;
+        }
+
+        .batch-btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .batch-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .batch-btn:active {
+            transform: scale(0.98);
+        }
+
+        .batch-btn-clear {
+            background: #3498db;
+            color: white;
+        }
+
+        .batch-btn-clear:hover {
+            background: #2980b9;
+        }
+
+        .batch-btn-lock {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .batch-btn-lock:hover {
+            background: #c0392b;
+        }
+
+        .batch-btn-unlock {
+            background: #27ae60;
+            color: white;
+        }
+
+        .batch-btn-unlock:hover {
+            background: #229954;
+        }
+
+        .batch-btn-task {
+            background: #f39c12;
+            color: white;
+        }
+
+        .batch-btn-task:hover {
+            background: #e67e22;
+        }
+
+        .batch-btn-cancel {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .batch-btn-cancel:hover {
+            background: #7f8c8d;
+        }
+
+        .batch-info {
+            text-align: center;
+            font-size: 14px;
+            color: #7f8c8d;
+            font-weight: 500;
+        }
+
+        .search-section {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .legend-section {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-color.empty {
+            background: #348938;
+        }
+
+        .legend-color.has-material {
+            background: #D4322E;
+        }
+
+        .legend-color.locked {
+            background: #F68702;
+        }
+
+        .location-list {
+            flex: 1;
+            padding-bottom: 100px;
+        }
+
+        .location-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 12px;
+            padding: 0;
+            grid-auto-flow: dense;
+        }
+
+        /* Group layout: 2x2 cells per group with spacing */
+        .location-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 0;
+        }
+        
+        /* Special grid for FG/PM with no gap */
+        .location-grid.fg-pm-grid {
+            gap: 0;
+        }
+
+        .location-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0;
+            flex: 0 0 auto;
+        }
+
+        .location-group .location-cell {
+            width: 40px;
+            height: 40px;
+        }
+
+        .location-cell {
+            aspect-ratio: 1;
+            background: white;
+            border-radius: 0;
+            box-shadow: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .location-cell.selected {
+            border-color: #3498db;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+        }
+
+        .location-checkbox {
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            width: 10px;
+            height: 10px;
+            cursor: pointer;
+            z-index: 10;
+            display: none;
+            accent-color: #3498db;
+        }
+
+        .batch-mode .location-checkbox {
+            display: block;
+        }
+
+        .location-cell:active {
+            transform: scale(0.95);
+        }
+
+        /* 空闲储位 - 绿色背景 */
+        .location-cell.empty {
+            background: #348938;
+            color: white;
+            border-color: #000;
+        }
+
+        /* 已占用 - 红色背景 */
+        .location-cell.has-material {
+            background: #D4322E;
+            color: white;
+            border-color: #000;
+        }
+
+        /* 已锁定 - 橙色背景 */
+        .location-cell.locked {
+            background: #F68702;
+            color: white;
+            border-color: #000;
+        }
+
+        .location-cell:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Zone background colors for FG/PM group */
+        .location-cell.zone-fg {
+            border: 1px solid #9b59b6 !important;
+        }
+
+        .location-cell.zone-pm {
+            border: 1px solid #3498db !important;
+        }
+
+        .location-code {
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            padding: 8px;
+            word-break: break-all;
+            line-height: 1.2;
+        }
+
+        .location-status-icon {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* 操作弹框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @@keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .modal-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .modal-btn:active {
+            transform: scale(0.98);
+        }
+
+        .modal-btn-clear {
+            background: #3498db;
+            color: white;
+        }
+
+        .modal-btn-clear:hover {
+            background: #2980b9;
+        }
+
+        .modal-btn-clear:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .modal-btn-lock {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .modal-btn-lock:hover {
+            background: #c0392b;
+        }
+
+        .modal-btn-unlock {
+            background: #27ae60;
+            color: white;
+        }
+
+        .modal-btn-unlock:hover {
+            background: #229954;
+        }
+
+        .modal-btn-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: #f8f9fa;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            color: #7f8c8d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-close:hover {
+            background: #e9ecef;
+            color: #2c3e50;
+        }
+
+        /* Task Assignment Modal Styles */
+        .task-modal {
+            max-width: 400px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .group-select-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .group-option-btn {
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            background: white;
+            color: #666;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            text-align: left;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .group-option-btn:hover {
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .group-option-btn.selected {
+            background: #27ae60;
+            border-color: #27ae60;
+            color: white;
+        }
+
+        .priority-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .priority-option-btn {
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            background: white;
+            color: #666;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .priority-option-btn.high {
+            border-color: #e74c3c;
+        }
+
+        .priority-option-btn.high:hover,
+        .priority-option-btn.high.selected {
+            background: #e74c3c;
+            border-color: #e74c3c;
+            color: white;
+        }
+
+        .priority-option-btn.medium {
+            border-color: #f39c12;
+        }
+
+        .priority-option-btn.medium:hover,
+        .priority-option-btn.medium.selected {
+            background: #f39c12;
+            border-color: #f39c12;
+            color: white;
+        }
+
+        .priority-option-btn.low {
+            border-color: #27ae60;
+        }
+
+        .priority-option-btn.low:hover,
+        .priority-option-btn.low.selected {
+            background: #27ae60;
+            border-color: #27ae60;
+            color: white;
+        }
+
+        .priority-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .priority-indicator.high {
+            background: #e74c3c;
+        }
+
+        .priority-indicator.medium {
+            background: #f39c12;
+        }
+
+        .priority-indicator.low {
+            background: #27ae60;
+        }
+
+        .modal-btn-submit {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #3498db;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .modal-btn-submit:hover {
+            background: #2980b9;
+        }
+
+        .modal-btn-submit:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .modal-btn-cancel-only {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #95a5a6;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .modal-btn-cancel-only:hover {
+            background: #7f8c8d;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #34495e;
+            padding: 15px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: #bdc3c7;
+            text-align: center;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            flex: 1;
+            margin: 0 5px;
+            font-size: 14px;
+        }
+
+        .nav-item.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .nav-item:hover {
+            color: white;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+
+        .no-data-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-btn {
+            padding: 8px 16px;
+            border: 2px solid #e1e5e9;
+            background: white;
+            color: #333;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover {
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        @@media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .header {
+                margin: 0 -15px 20px -15px;
+            }
+            
+            .location-grid {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+                gap: 10px;
+            }
+
+            .location-code {
+                font-size: 12px;
+            }
+        }
+
+        @@media (min-width: 769px) {
+            .location-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 id="pageTitle">Location Status Management - FG</h1>
+        </div>
+
+        <div class="alert alert-success" id="successAlert"></div>
+        <div class="alert alert-danger" id="errorAlert"></div>
+
+        <div class="search-section">
+            <input type="text" class="search-box" id="searchInput" placeholder="Search location name or code..." oninput="filterLocations()">
+        </div>
+
+        <!-- Legend/Status explanation -->
+        <div class="legend-section">
+            <div class="legend-title">Status Legend:</div>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color empty"></div>
+                    <span>Empty - Available location with no material</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color has-material"></div>
+                    <span>Has Material - Location contains material</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color locked"></div>
+                    <span>Locked - Location is locked and unavailable</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="batch-actions" id="batchActions">
+            <div class="batch-info" id="batchInfo">0 locations selected</div>
+            <div class="batch-btn-group">
+                <button class="batch-btn batch-btn-clear" onclick="batchClearMaterial()">
+                    <span>🗑️</span>
+                    <span>Clear</span>
+                </button>
+                <button class="batch-btn batch-btn-lock" onclick="batchToggleLock(true)">
+                    <span>🔒</span>
+                    <span>Lock</span>
+                </button>
+                <button class="batch-btn batch-btn-unlock" onclick="batchToggleLock(false)">
+                    <span>🔓</span>
+                    <span>Unlock</span>
+                </button>
+            </div>
+            <div class="batch-btn-group" id="taskAssignmentGroup">
+                <button class="batch-btn batch-btn-task" onclick="showTaskAssignmentModal()">
+                    <span>📋</span>
+                    <span>Task Assignment</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="loading" id="loadingDiv">
+            <div class="spinner"></div>
+            <div>Loading...</div>
+        </div>
+
+        <div class="location-list" id="locationList">
+            <!-- Location list will be dynamically generated here -->
+        </div>
+
+        <div class="pagination" id="pagination" style="display: none;">
+            <button class="page-btn" id="prevPage" onclick="changePage(-1)">Previous</button>
+            <span class="page-info" id="pageInfo">Page 1 / 1</span>
+            <button class="page-btn" id="nextPage" onclick="changePage(1)">Next</button>
+        </div>
+
+        <!-- Location operation modal -->
+        <div class="modal-overlay" id="locationModalOverlay" onclick="if(event.target === this) hideLocationModal()">
+            <div class="modal" id="locationModal" onclick="event.stopPropagation()">
+                <!-- Modal content will be dynamically generated via JavaScript -->
+            </div>
+        </div>
+
+        <!-- Task Assignment modal -->
+        <div class="modal-overlay" id="taskModalOverlay" onclick="if(event.target === this) hideTaskAssignmentModal()">
+            <div class="modal task-modal" id="taskModal" onclick="event.stopPropagation()">
+                <button class="modal-btn-close" onclick="hideTaskAssignmentModal()">×</button>
+                <div class="modal-header">
+                    <div class="modal-title">Task Assignment</div>
+                    <div class="modal-subtitle" id="taskModalSubtitle">Select target group and priority</div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Target Group</label>
+                    <div class="group-select-grid" id="groupSelectGrid">
+                        <!-- Group options will be dynamically generated here -->
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Priority</label>
+                    <div class="priority-grid">
+                        <button type="button" class="priority-option-btn high" onclick="selectTaskPriority(3)">
+                            <span class="priority-indicator high"></span>High
+                        </button>
+                        <button type="button" class="priority-option-btn medium" onclick="selectTaskPriority(2)">
+                            <span class="priority-indicator medium"></span>Medium
+                        </button>
+                        <button type="button" class="priority-option-btn low selected" onclick="selectTaskPriority(1)">
+                            <span class="priority-indicator low"></span>Low
+                        </button>
+                    </div>
+                </div>
+                
+                <button class="modal-btn-submit" id="taskSubmitBtn" onclick="confirmTaskAssignment()">
+                    Create Tasks
+                </button>
+                <button class="modal-btn-cancel-only" onclick="hideTaskAssignmentModal()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-container">
+                <a href="javascript:void(0)" class="nav-item active" onclick="switchGroup('FG')">FG</a>
+                <a href="javascript:void(0)" class="nav-item" onclick="switchGroup('RPM')">RPM</a>
+                <a href="javascript:void(0)" class="nav-item" onclick="switchGroup('FG/PM')">FG/PM</a>
+                <a href="/MobileTask/TaskList" class="nav-item">Task List</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let locations = [];
+        let filteredLocations = [];
+        let currentPage = 1;
+        let pageSize = 50;
+        let totalPages = 1;
+        let searchKeyword = '';
+        let batchMode = true; // Always in batch mode
+        let selectedLocationIds = new Set();
+        let currentGroup = 'FG'; // Current selected group
+        
+        // Task assignment variables
+        let locationGroups = [];
+        let selectedTargetGroup = '';
+        let selectedTaskPriority = 1; // Default to low priority (1=Low, 2=Medium, 3=High)
+
+        // Initialize after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLocations();
+            loadLocationGroups();
+            enableBatchModeByDefault();
+            
+            // Hide task assignment button for FG group (default)
+            const taskAssignmentGroup = document.getElementById('taskAssignmentGroup');
+            if (currentGroup !== 'FG/PM') {
+                taskAssignmentGroup.style.display = 'none';
+            }
+        });
+
+        // Switch to different group
+        function switchGroup(groupName) {
+            currentGroup = groupName;
+            currentPage = 1;
+            searchKeyword = '';
+            selectedLocationIds.clear();
+            document.getElementById('searchInput').value = '';
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update page title
+            document.getElementById('pageTitle').textContent = `Location Status Management - ${groupName}`;
+            
+            // Show/hide task assignment button based on group
+            const taskAssignmentGroup = document.getElementById('taskAssignmentGroup');
+            if (groupName === 'FG/PM') {
+                taskAssignmentGroup.style.display = 'flex';
+            } else {
+                taskAssignmentGroup.style.display = 'none';
+            }
+            
+            updateBatchInfo();
+            loadLocations();
+        }
+
+        // Load location data
+        async function loadLocations(page = 1) {
+            try {
+                showLoading(true);
+                // Request all locations (use large pageSize to get all data)
+                const url = `/MobileLocation/GetLocations?searchString=${encodeURIComponent(searchKeyword)}&page=1&pageSize=1000`;
+                const response = await fetch(url);
+                const result = await response.json();
+                
+                if (result.success) {
+                    console.log('All locations:', result.data);
+                    console.log('Current group:', currentGroup);
+                    
+                    // Filter locations by current group (case-insensitive)
+                    locations = result.data.filter(loc => {
+                        const locGroup = loc.group ? loc.group.trim() : '';
+                        return locGroup === currentGroup;
+                    });
+                    
+                    // Sort locations by name (natural sort: 1A, 1B, 2A, 2B, 3A, 3B...)
+                    locations.sort((a, b) => {
+                        const nameA = a.name || a.nodeRemark || '';
+                        const nameB = b.name || b.nodeRemark || '';
+                        return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+                    });
+                    
+                    console.log('Filtered and sorted locations:', locations);
+                    
+                    filteredLocations = locations;
+                    currentPage = page;
+                    totalPages = Math.ceil(locations.length / pageSize);
+                    
+                    // Apply pagination
+                    const startIdx = (page - 1) * pageSize;
+                    const endIdx = startIdx + pageSize;
+                    filteredLocations = locations.slice(startIdx, endIdx);
+                    
+                    renderLocations();
+                    updatePagination();
+                } else {
+                    showError('Failed to get location list: ' + result.message);
+                    document.getElementById('locationList').innerHTML = '<div class="no-data"><div class="no-data-icon">📦</div><div>Loading failed, please retry</div></div>';
+                }
+            } catch (error) {
+                showError('Failed to get location list: ' + error.message);
+                document.getElementById('locationList').innerHTML = '<div class="no-data"><div class="no-data-icon">📦</div><div>Loading failed, please retry</div></div>';
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Currently selected location
+        let selectedLocation = null;
+
+        // Render location list
+        function renderLocations() {
+            const container = document.getElementById('locationList');
+            
+            if (filteredLocations.length === 0) {
+                container.innerHTML = '<div class="no-data"><div class="no-data-icon">📦</div><div>No matching locations found</div></div>';
+                return;
+            }
+            
+            // Special handling for FG/PM group: FG zone and PM zone based on location name
+            if (currentGroup === 'FG/PM') {
+                console.log('FG/PM group - Total locations:', filteredLocations.length);
+                console.log('Locations:', filteredLocations);
+                
+                let html = '<div class="location-grid fg-pm-grid">';
+                
+                // Group all locations into 2x2 groups, but apply different zone classes based on name
+                for (let i = 0; i < filteredLocations.length; i += 4) {
+                    const group = filteredLocations.slice(i, i + 4);
+                    html += '<div class="location-group">';
+                    group.forEach((location, indexInGroup) => {
+                        const locationName = location.name || location.nodeRemark || '';
+                        // 3B and 4B are PM zone (blue border), others are FG zone (purple border)
+                        const zoneClass = (locationName.includes('3B') || locationName.includes('4B')) ? 'zone-pm' : 'zone-fg';
+                        html += renderLocationCell(location, zoneClass);
+                    });
+                    html += '</div>';
+                }
+                
+                html += '</div>';
+                container.innerHTML = html;
+            } else {
+                // Normal grouping: 2x2 groups with gaps
+                const groups = [];
+                for (let i = 0; i < filteredLocations.length; i += 4) {
+                    groups.push(filteredLocations.slice(i, i + 4));
+                }
+                
+                const gridClass = 'location-grid';
+                container.innerHTML = `<div class="${gridClass}">${groups.map((group, groupIndex) => {
+                    return `<div class="location-group">${group.map((location, indexInGroup) => {
+                        return renderLocationCell(location, '');
+                    }).join('')}</div>`;
+                }).join('')}</div>`;
+            }
+        }
+        
+        // Helper function to render a single location cell
+        function renderLocationCell(location, zoneClass) {
+            const isEmpty = location.isEmpty;
+            const isLocked = location.lock;
+            const statusClass = isLocked ? 'locked' : (isEmpty ? 'empty' : 'has-material');
+            const statusIcon = isLocked ? '🔒' : (isEmpty ? '📦' : '📋');
+            
+            // Use compatible ID field name
+            const locationId = location.id || location.Id;
+            const isSelected = selectedLocationIds.has(locationId);
+            const selectedClass = isSelected ? 'selected' : '';
+            
+            const checkboxHtml = `<input type="checkbox" class="location-checkbox" ${isSelected ? 'checked' : ''} onchange="toggleLocationSelection(${locationId}, this.checked)" onclick="event.stopPropagation()">`;
+            const clickHandler = `toggleLocationSelection(${locationId})`;
+            
+            return `
+                <div class="location-cell batch-mode ${statusClass} ${selectedClass} ${zoneClass}" onclick="${clickHandler}">
+                    ${checkboxHtml}
+                    <div class="location-status-icon">${statusIcon}</div>
+                    <div class="location-code">${location.nodeRemark || location.name}</div>
+                </div>
+            `;
+        }
+
+        // Show location operation modal
+        function showLocationModal(locationId) {
+            console.log('showLocationModal called, locationId:', locationId);
+            console.log('Current location list:', filteredLocations);
+            
+            // Try multiple field names (compatible with different JSON serialization methods)
+            const location = filteredLocations.find(loc => 
+                (loc.id === locationId) || (loc.Id === locationId)
+            );
+            
+            if (!location) {
+                console.error('Location not found, locationId:', locationId);
+                showError('Location not found');
+                return;
+            }
+            
+            console.log('Found location:', location);
+            selectedLocation = location;
+            
+            const isEmpty = location.isEmpty;
+            const isLocked = location.lock;
+            
+            // Build modal content
+            const modalContent = `
+                <button class="modal-btn-close" onclick="hideLocationModal()">×</button>
+                <div class="modal-header">
+                    <div class="modal-title">${location.nodeRemark || location.name}</div>
+                    <div class="modal-subtitle">Location Details</div>
+                </div>
+                <div class="modal-info">
+                    <div class="info-row">
+                        <span class="info-label">Location Code</span>
+                        <span class="info-value">${location.name}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Group</span>
+                        <span class="info-value">${location.group || '-'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Material Code</span>
+                        <span class="info-value">${location.materialCode || 'None'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Pallet ID</span>
+                        <span class="info-value">${location.palletID || '0'}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Status</span>
+                        <span class="info-value">${isLocked ? 'Locked' : (isEmpty ? 'Empty' : 'Has Material')}</span>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-btn modal-btn-clear" 
+                            onclick="clearMaterial(${location.id || location.Id})"
+                            ${isEmpty ? 'disabled' : ''}>
+                        <span>🗑️</span>
+                        <span>Clear</span>
+                    </button>
+                    <button class="modal-btn ${isLocked ? 'modal-btn-unlock' : 'modal-btn-lock'}" 
+                            onclick="toggleLock(${location.id || location.Id}, ${isLocked})">
+                        <span>${isLocked ? '🔓' : '🔒'}</span>
+                        <span>${isLocked ? 'Unlock' : 'Lock'}</span>
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('locationModal').innerHTML = modalContent;
+            document.getElementById('locationModalOverlay').classList.add('show');
+        }
+
+        // Hide location operation modal
+        function hideLocationModal() {
+            document.getElementById('locationModalOverlay').classList.remove('show');
+            selectedLocation = null;
+        }
+
+        // Clear material
+        async function clearMaterial(id) {
+            if (!confirm('Are you sure you want to clear the material from this location?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/MobileLocation/ClearMaterial', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: id })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(result.message || 'Cleared successfully');
+                    hideLocationModal();
+                    await loadLocations(currentPage);
+                } else {
+                    showError(result.message || 'Clear failed');
+                }
+            } catch (error) {
+                showError('Failed to clear material: ' + error.message);
+            }
+        }
+
+        // Lock/Unlock location
+        async function toggleLock(id, isLocked) {
+            const action = isLocked ? 'unlock' : 'lock';
+            // lockState: true=lock, false=unlock
+            // If currently locked, then unlock (lockState=false)
+            // If currently unlocked, then lock (lockState=true)
+            const lockState = !isLocked;
+            
+            if (!confirm(`Are you sure you want to ${action} this location?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/MobileLocation/ToggleLock', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        id: id, 
+                        lockState: lockState 
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(result.message || `${action.charAt(0).toUpperCase() + action.slice(1)} successful`);
+                    hideLocationModal();
+                    await loadLocations(currentPage);
+                } else {
+                    showError(result.message || `${action.charAt(0).toUpperCase() + action.slice(1)} failed`);
+                }
+            } catch (error) {
+                showError(`Failed to ${action} location: ` + error.message);
+            }
+        }
+
+        // Toggle batch mode (not used anymore, always in batch mode)
+        function toggleBatchMode() {
+            // Batch mode is always enabled
+            return;
+        }
+
+        // Enable batch mode by default (always enabled)
+        function enableBatchModeByDefault() {
+            batchMode = true;
+            document.getElementById('batchActions').classList.add('show');
+            selectedLocationIds.clear();
+            updateBatchInfo();
+            renderLocations();
+        }
+
+        // Exit batch mode
+        function exitBatchMode() {
+            batchMode = false;
+            selectedLocationIds.clear();
+            document.getElementById('batchActions').classList.remove('show');
+            renderLocations();
+        }
+
+        // Exit batch mode but keep batch mode enabled (for after operations)
+        function exitBatchModeKeepEnabled() {
+            selectedLocationIds.clear();
+            document.getElementById('batchActions').classList.add('show');
+            updateBatchInfo();
+            renderLocations();
+        }
+
+        // Toggle location selection
+        function toggleLocationSelection(locationId, checked) {
+            if (checked === undefined) {
+                // Called from cell click
+                if (selectedLocationIds.has(locationId)) {
+                    selectedLocationIds.delete(locationId);
+                } else {
+                    selectedLocationIds.add(locationId);
+                }
+            } else {
+                // Called from checkbox change
+                if (checked) {
+                    selectedLocationIds.add(locationId);
+                } else {
+                    selectedLocationIds.delete(locationId);
+                }
+            }
+            updateBatchInfo();
+            renderLocations();
+        }
+
+        // Update batch info
+        function updateBatchInfo() {
+            const count = selectedLocationIds.size;
+            document.getElementById('batchInfo').textContent = `${count} location${count !== 1 ? 's' : ''} selected`;
+        }
+
+        // Batch clear material
+        async function batchClearMaterial() {
+            if (selectedLocationIds.size === 0) {
+                showError('Please select at least one location');
+                return;
+            }
+            
+            if (!confirm(`Are you sure you want to clear materials from ${selectedLocationIds.size} location(s)?`)) {
+                return;
+            }
+            
+            try {
+                showLoading(true);
+                const response = await fetch('/MobileLocation/BatchClearMaterial', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ids: Array.from(selectedLocationIds) })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(result.message);
+                    exitBatchModeKeepEnabled();
+                    await loadLocations(currentPage);
+                } else {
+                    showError(result.message);
+                }
+            } catch (error) {
+                showError('Batch clear failed: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Batch lock/unlock
+        async function batchToggleLock(lockState) {
+            if (selectedLocationIds.size === 0) {
+                showError('Please select at least one location');
+                return;
+            }
+            
+            const action = lockState ? 'lock' : 'unlock';
+            if (!confirm(`Are you sure you want to ${action} ${selectedLocationIds.size} location(s)?`)) {
+                return;
+            }
+            
+            try {
+                showLoading(true);
+                const response = await fetch('/MobileLocation/BatchToggleLock', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        ids: Array.from(selectedLocationIds),
+                        lockState: lockState
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(result.message);
+                    exitBatchModeKeepEnabled();
+                    await loadLocations(currentPage);
+                } else {
+                    showError(result.message);
+                }
+            } catch (error) {
+                showError(`Batch ${action} failed: ` + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Search filter
+        function filterLocations() {
+            searchKeyword = document.getElementById('searchInput').value;
+            currentPage = 1;
+            loadLocations(1);
+        }
+
+        // Change page
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage >= 1 && newPage <= totalPages) {
+                loadLocations(newPage);
+            }
+        }
+
+        // Update pagination info
+        function updatePagination() {
+            const pagination = document.getElementById('pagination');
+            const pageInfo = document.getElementById('pageInfo');
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+            
+            if (totalPages > 1) {
+                pagination.style.display = 'flex';
+                pageInfo.textContent = `Page ${currentPage} / ${totalPages}`;
+                prevBtn.disabled = currentPage === 1;
+                nextBtn.disabled = currentPage === totalPages;
+            } else {
+                pagination.style.display = 'none';
+            }
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            hideAlerts();
+            const alert = document.getElementById('successAlert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+
+        // Show error message
+        function showError(message) {
+            hideAlerts();
+            const alert = document.getElementById('errorAlert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Hide all alert messages
+        function hideAlerts() {
+            document.getElementById('successAlert').style.display = 'none';
+            document.getElementById('errorAlert').style.display = 'none';
+        }
+
+        // Show/hide loading state
+        function showLoading(show) {
+            document.getElementById('loadingDiv').style.display = show ? 'block' : 'none';
+        }
+
+        // ==================== Task Assignment Functions ====================
+        
+        // Load location groups
+        async function loadLocationGroups() {
+            try {
+                const response = await fetch('/MobileTask/GetLocationGroups');
+                const result = await response.json();
+                
+                if (result.success) {
+                    locationGroups = result.data;
+                    console.log('Loaded location groups:', locationGroups);
+                }
+            } catch (error) {
+                console.error('Failed to load location groups:', error);
+            }
+        }
+
+        // Show task assignment modal
+        function showTaskAssignmentModal() {
+            if (selectedLocationIds.size === 0) {
+                showError('Please select at least one location');
+                return;
+            }
+            
+            // Auto-select target group based on current group
+            // You can configure this mapping later
+            const groupMapping = {
+                'FG': 'RPM',      // FG -> RPM
+                'RPM': 'FG',      // RPM -> FG
+                'FG/PM': 'FG'     // FG/PM -> FG (configurable)
+            };
+            
+            selectedTargetGroup = groupMapping[currentGroup] || 'RPM';
+            selectedTaskPriority = 1; // Default to low priority
+            
+            // Directly confirm task assignment without showing modal
+            confirmTaskAssignmentDirect();
+        }
+
+        // Hide task assignment modal
+        function hideTaskAssignmentModal() {
+            document.getElementById('taskModalOverlay').classList.remove('show');
+        }
+
+        // Populate group options in modal
+        function populateGroupOptions() {
+            const groupGrid = document.getElementById('groupSelectGrid');
+            groupGrid.innerHTML = '';
+            
+            if (locationGroups.length === 0) {
+                groupGrid.innerHTML = '<div style="text-align: center; color: #7f8c8d; padding: 20px;">No groups available</div>';
+                return;
+            }
+            
+            locationGroups.forEach(group => {
+                const groupBtn = document.createElement('button');
+                groupBtn.type = 'button';
+                groupBtn.className = 'group-option-btn';
+                groupBtn.textContent = group;
+                groupBtn.onclick = () => selectTargetGroup(group);
+                
+                if (selectedTargetGroup === group) {
+                    groupBtn.classList.add('selected');
+                }
+                
+                groupGrid.appendChild(groupBtn);
+            });
+        }
+
+        // Select target group
+        function selectTargetGroup(groupName) {
+            selectedTargetGroup = groupName;
+            
+            // Update UI
+            document.querySelectorAll('.group-option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                if (btn.textContent === groupName) {
+                    btn.classList.add('selected');
+                }
+            });
+        }
+
+        // Select task priority
+        function selectTaskPriority(priority) {
+            selectedTaskPriority = priority;
+            
+            // Update UI
+            document.querySelectorAll('.priority-option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Find and select the clicked button
+            const priorityClasses = { 1: 'low', 2: 'medium', 3: 'high' };
+            const className = priorityClasses[priority];
+            document.querySelector(`.priority-option-btn.${className}`).classList.add('selected');
+        }
+
+        // Confirm task assignment (direct, without user confirmation dialog)
+        async function confirmTaskAssignmentDirect() {
+            // Validate selections
+            if (selectedLocationIds.size === 0) {
+                showError('Please select at least one location');
+                return;
+            }
+            
+            if (!selectedTargetGroup) {
+                showError('Please select a target group');
+                return;
+            }
+            
+            // Get selected location names
+            const selectedLocationNames = Array.from(selectedLocationIds).map(id => {
+                const location = filteredLocations.find(loc => 
+                    (loc.id === id) || (loc.Id === id)
+                );
+                return location ? location.name : null;
+            }).filter(name => name !== null);
+            
+            if (selectedLocationNames.length === 0) {
+                showError('Invalid location selection');
+                return;
+            }
+            
+            // No confirmation dialog - directly send request
+            try {
+                showLoading(true);
+                hideTaskAssignmentModal();
+                
+                const response = await fetch('/MobileTask/CreateBatchTasksWithPriority', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        sourcePositions: selectedLocationNames,
+                        targetGroup: selectedTargetGroup,
+                        priority: selectedTaskPriority
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Show result modal for batch operations
+                    showTaskResultModal(result.createdCount, result.requestedCount, result.failedCount, result.message);
+                    exitBatchModeKeepEnabled();
+                    await loadLocations(currentPage);
+                } else {
+                    showError(result.message || 'Failed to create tasks');
+                }
+            } catch (error) {
+                showError('Failed to create tasks: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Confirm task assignment (old function - kept for compatibility)
+        async function confirmTaskAssignment() {
+            // Validate selections
+            if (selectedLocationIds.size === 0) {
+                showError('Please select at least one location');
+                return;
+            }
+            
+            if (!selectedTargetGroup) {
+                showError('Please select a target group');
+                return;
+            }
+            
+            // Get selected location names
+            const selectedLocationNames = Array.from(selectedLocationIds).map(id => {
+                const location = filteredLocations.find(loc => 
+                    (loc.id === id) || (loc.Id === id)
+                );
+                return location ? location.name : null;
+            }).filter(name => name !== null);
+            
+            if (selectedLocationNames.length === 0) {
+                showError('Invalid location selection');
+                return;
+            }
+            
+            // No confirmation dialog - directly send request
+            try {
+                showLoading(true);
+                hideTaskAssignmentModal();
+                
+                const response = await fetch('/MobileTask/CreateBatchTasksWithPriority', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        sourcePositions: selectedLocationNames,
+                        targetGroup: selectedTargetGroup,
+                        priority: selectedTaskPriority
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Always show result modal for batch operations
+                    showTaskResultModal(result.createdCount, result.requestedCount, result.failedCount, result.message);
+                    exitBatchModeKeepEnabled();
+                    await loadLocations(currentPage);
+                } else {
+                    showError(result.message || 'Failed to create tasks');
+                }
+            } catch (error) {
+                showError('Failed to create tasks: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Show task result modal for batch operations
+        function showTaskResultModal(createdCount, requestedCount, failedCount, message) {
+            const resultOverlay = document.createElement('div');
+            resultOverlay.className = 'modal-overlay show';
+            resultOverlay.id = 'resultModalOverlay';
+            resultOverlay.onclick = function(e) {
+                if (e.target === this) {
+                    this.remove();
+                }
+            };
+            
+            const resultModal = document.createElement('div');
+            resultModal.className = 'modal';
+            resultModal.onclick = function(e) {
+                e.stopPropagation();
+            };
+            
+            // Determine if it's full success or partial success
+            const isFullSuccess = failedCount === 0;
+            const titleText = isFullSuccess ? 'Task Creation Successful' : 'Task Creation - Partial Success';
+            const subtitleText = isFullSuccess ? 'All tasks created successfully' : `${createdCount} of ${requestedCount} tasks created`;
+            
+            resultModal.innerHTML = `
+                <button class="modal-btn-close" onclick="document.getElementById('resultModalOverlay').remove()">×</button>
+                <div class="modal-header">
+                    <div class="modal-title">${titleText}</div>
+                    <div class="modal-subtitle">${subtitleText}</div>
+                </div>
+                <div class="modal-info">
+                    <div class="info-row">
+                        <span class="info-label">Requested Tasks</span>
+                        <span class="info-value">${requestedCount}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Successfully Created</span>
+                        <span class="info-value" style="color: #27ae60; font-weight: 600;">${createdCount}</span>
+                    </div>
+                    ${failedCount > 0 ? `
+                    <div class="info-row">
+                        <span class="info-label">Failed</span>
+                        <span class="info-value" style="color: #e74c3c; font-weight: 600;">${failedCount}</span>
+                    </div>
+                    ` : ''}
+                    ${failedCount > 0 ? `
+                    <div class="info-row" style="background: #fff3cd; padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #ffc107;">
+                        <span class="info-label" style="color: #856404; font-weight: 600;">⚠ Reason for Failure</span>
+                        <span class="info-value" style="color: #856404;">Insufficient available locations in target group or source location is in the same group as target</span>
+                    </div>
+                    ` : ''}
+                    ${message ? `
+                    <div class="info-row" style="background: #e7f3ff; padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #17a2b8;">
+                        <span class="info-label" style="color: #004085; font-weight: 600;">ℹ Details</span>
+                        <span class="info-value" style="color: #004085;">${message}</span>
+                    </div>
+                    ` : ''}
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px;">
+                    <button class="modal-btn-submit" onclick="document.getElementById('resultModalOverlay').remove()">
+                        Confirm
+                    </button>
+                </div>
+            `;
+            
+            resultOverlay.appendChild(resultModal);
+            document.body.appendChild(resultOverlay);
+        }
+    </script>
+</body>
+</html>
+

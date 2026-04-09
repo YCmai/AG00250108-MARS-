@@ -1,0 +1,1175 @@
+@{
+    ViewData["Title"] = "Task Assignment - Mobile";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>@ViewData["Title"]</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin: 0;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .main-content {
+            flex: 1;
+            padding-bottom: 100px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 16px;
+            color: white;
+        }
+
+        .section-header.source {
+            background: #3498db;
+        }
+
+        .section-header.target {
+            background: #27ae60;
+        }
+
+        .section-header.priority {
+            background: #e74c3c;
+        }
+
+        .section-header.material {
+            background: #9b59b6;
+        }
+
+        .section-content {
+            padding: 20px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .location-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .location-btn {
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            background: white;
+            color: #666;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .location-btn:hover {
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        .location-btn.selected {
+            background: #3498db;
+            border-color: #3498db;
+            color: white;
+        }
+
+        .selection-counter {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            border: 1px solid #e1e5e9;
+        }
+
+        .selection-counter.has-selection {
+            background: #e3f2fd;
+            border-color: #3498db;
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        .group-btn {
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            background: white;
+            color: #666;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .group-btn:hover {
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .group-btn.selected {
+            background: #27ae60;
+            border-color: #27ae60;
+            color: white;
+        }
+
+        .available-count {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .no-locations {
+            text-align: center;
+            color: #7f8c8d;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #5dade2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            background: #3498db;
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #bdc3c7;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #34495e;
+            padding: 15px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: #bdc3c7;
+            text-align: center;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            flex: 1;
+            margin: 0 5px;
+            font-size: 14px;
+        }
+
+        .nav-item.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .nav-item:hover {
+            color: white;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2196f3;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 350px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .modal-content {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .modal-route {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-weight: 500;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .task-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .task-summary:last-child {
+            border-bottom: none;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-btn-cancel {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .modal-btn-cancel:hover {
+            background: #e9e9e9;
+        }
+
+        .modal-btn-confirm {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .modal-btn-confirm:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .priority-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .priority-btn {
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            background: white;
+            color: #666;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .priority-btn:hover {
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+
+        .priority-btn.selected {
+            background: #e74c3c;
+            border-color: #e74c3c;
+            color: white;
+        }
+
+        .priority-btn.high {
+            border-color: #e74c3c;
+        }
+
+        .priority-btn.high:hover,
+        .priority-btn.high.selected {
+            background: #e74c3c;
+            border-color: #e74c3c;
+            color: white;
+        }
+
+        .priority-btn.medium {
+            border-color: #f39c12;
+        }
+
+        .priority-btn.medium:hover,
+        .priority-btn.medium.selected {
+            background: #f39c12;
+            border-color: #f39c12;
+            color: white;
+        }
+
+        .priority-btn.low {
+            border-color: #27ae60;
+        }
+
+        .priority-btn.low:hover,
+        .priority-btn.low.selected {
+            background: #27ae60;
+            border-color: #27ae60;
+            color: white;
+        }
+
+        .priority-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .priority-indicator.high {
+            background: #e74c3c;
+        }
+
+        .priority-indicator.medium {
+            background: #f39c12;
+        }
+
+        .priority-indicator.low {
+            background: #27ae60;
+        }
+
+        .material-dropdown {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px;
+        }
+
+        .material-dropdown:focus {
+            outline: none;
+            border-color: #9b59b6;
+            box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.1);
+        }
+
+        .material-info {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #e1e5e9;
+            display: none;
+        }
+
+        .material-info.show {
+            display: block;
+        }
+
+        .material-detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        .material-detail:last-child {
+            margin-bottom: 0;
+        }
+
+        .material-detail .label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .material-detail .value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        @@media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .header {
+                margin: 0 -15px 20px -15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Task Assignment</h1>
+        </div>
+
+        <div class="main-content">
+            <div class="alert alert-success" id="successAlert"></div>
+            <div class="alert alert-danger" id="errorAlert"></div>
+
+            <div class="loading" id="loadingDiv">
+                <div class="spinner"></div>
+                <div>Loading...</div>
+            </div>
+
+            <!-- Source Selection (Multi-select) -->
+            <div class="section-card">
+                <div class="section-header source">Select Source Locations (Multi-select)</div>
+                <div class="section-content">
+                    <div class="selection-counter" id="sourceCounter">0 locations selected</div>
+                    <input type="text" class="search-box" id="sourceSearch" placeholder="Search source locations..." oninput="filterLocations('source')">
+                    <div class="location-grid" id="sourceLocationGrid">
+                        <!-- Source location buttons will be dynamically generated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Target Group Selection -->
+            <div class="section-card">
+                <div class="section-header target">Select Target Group</div>
+                <div class="section-content">
+                    <div id="targetGroupGrid">
+                        <!-- Target group buttons will be dynamically generated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Priority Selection -->
+            <div class="section-card">
+                <div class="section-header priority">Select Priority</div>
+                <div class="section-content">
+                    <div class="priority-grid">
+                        <button type="button" class="priority-btn high" onclick="selectPriority(3)">
+                            <span class="priority-indicator high"></span>3 (Highest)
+                        </button>
+                        <button type="button" class="priority-btn medium selected" onclick="selectPriority(2)">
+                            <span class="priority-indicator medium"></span>2 (Medium)
+                        </button>
+                        <button type="button" class="priority-btn low" onclick="selectPriority(1)">
+                            <span class="priority-indicator low"></span>1 (Low)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Material Selection -->
+            <div class="section-card">
+                <div class="section-header material">Select Material</div>
+                <div class="section-content">
+                    <select class="material-dropdown" id="materialSelect" onchange="selectMaterial()">
+                        <option value="">-- Select Material --</option>
+                        <!-- Material options will be dynamically generated here -->
+                    </select>
+                    <div class="material-info" id="materialInfo">
+                        <!-- Material details will be shown here -->
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="submit-btn" id="submitBtn" onclick="console.log('Button clicked'); showConfirmModal();">
+                Create Tasks
+            </button>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-container">
+                <a href="/MobileLocation/Index" class="nav-item">Location</a>
+                <a href="/MobileTask/Index" class="nav-item active">Task Assignment</a>
+                <a href="/MobileTask/TaskList" class="nav-item">Task List</a>
+            </div>
+        </div>
+
+        <!-- Confirmation Modal -->
+        <div class="modal-overlay" id="confirmModal">
+            <div class="modal">
+                <div class="modal-title">Confirm Task Creation</div>
+                <div class="modal-content">
+                    <div id="taskSummary"></div>
+                    <div class="modal-route" id="modalRoute"></div>
+                </div>
+                <div class="modal-buttons">
+                    <button class="modal-btn modal-btn-cancel" onclick="hideConfirmModal()">Cancel</button>
+                    <button class="modal-btn modal-btn-confirm" onclick="confirmCreateTask()">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let locations = [];
+        let locationGroups = [];
+        let filteredSourceLocations = [];
+        let selectedSources = new Set();
+        let selectedTargetGroup = '';
+        let selectedPriority = 2; // Default priority (1=Low, 2=Medium, 3=High)
+        let selectedMaterial = null; // Selected material object
+        let materials = []; // Material list
+        let availableTargetLocations = [];
+
+        // Initialize after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadInitialData();
+            loadMaterialData();
+        });
+
+        // Load initial data (locations and groups)
+        async function loadInitialData() {
+            try {
+                showLoading(true);
+                
+                // Load locations and groups in parallel
+                const [locationsResponse, groupsResponse] = await Promise.all([
+                    fetch('/MobileTask/GetLocations'),
+                    fetch('/MobileTask/GetLocationGroups')
+                ]);
+                
+                const locationsResult = await locationsResponse.json();
+                const groupsResult = await groupsResponse.json();
+                
+                if (locationsResult.success && groupsResult.success) {
+                    locations = locationsResult.data;
+                    locationGroups = groupsResult.data;
+                    filteredSourceLocations = [...locations];
+                    
+                    populateSourceButtons();
+                    populateGroupButtons();
+                } else {
+                    showError('Failed to load data: ' + (locationsResult.message || groupsResult.message));
+                }
+            } catch (error) {
+                showError('Failed to load data: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Populate source location buttons (multi-select)
+        function populateSourceButtons() {
+            const sourceGrid = document.getElementById('sourceLocationGrid');
+            sourceGrid.innerHTML = '';
+            
+            if (filteredSourceLocations.length === 0) {
+                sourceGrid.innerHTML = '<div class="no-locations">No matching locations found</div>';
+                return;
+            }
+            
+            filteredSourceLocations.forEach(location => {
+                const sourceBtn = document.createElement('button');
+                sourceBtn.className = 'location-btn';
+                sourceBtn.textContent = location.nodeRemark;
+                sourceBtn.onclick = () => toggleSourceSelection(location.name);
+                
+                if (selectedSources.has(location.name)) {
+                    sourceBtn.classList.add('selected');
+                }
+                
+                sourceGrid.appendChild(sourceBtn);
+            });
+            
+            updateSourceCounter();
+        }
+
+        // Populate target group buttons
+        function populateGroupButtons() {
+            const groupGrid = document.getElementById('targetGroupGrid');
+            groupGrid.innerHTML = '';
+            
+            if (locationGroups.length === 0) {
+                groupGrid.innerHTML = '<div class="no-locations">No groups found</div>';
+                return;
+            }
+            
+            locationGroups.forEach(group => {
+                const groupBtn = document.createElement('button');
+                groupBtn.className = 'group-btn';
+                groupBtn.onclick = () => selectTargetGroup(group);
+                
+                if (selectedTargetGroup === group) {
+                    groupBtn.classList.add('selected');
+                }
+                
+                // Create group button content
+                const groupContent = document.createElement('div');
+                groupContent.innerHTML = `
+                    <div>${group}</div>
+                    <div class="available-count" id="count-${group}">Loading...</div>
+                `;
+                groupBtn.appendChild(groupContent);
+                groupGrid.appendChild(groupBtn);
+                
+                // Load available count for this group
+                loadGroupAvailableCount(group);
+            });
+        }
+
+        // Toggle source location selection
+        function toggleSourceSelection(locationName) {
+            if (selectedSources.has(locationName)) {
+                selectedSources.delete(locationName);
+            } else {
+                selectedSources.add(locationName);
+            }
+            
+            populateSourceButtons();
+        }
+
+        // Update source counter display
+        function updateSourceCounter() {
+            const counter = document.getElementById('sourceCounter');
+            const count = selectedSources.size;
+            counter.textContent = `${count} location${count !== 1 ? 's' : ''} selected`;
+            
+            if (count > 0) {
+                counter.classList.add('has-selection');
+            } else {
+                counter.classList.remove('has-selection');
+            }
+        }
+
+        // Select target group
+        function selectTargetGroup(groupName) {
+            selectedTargetGroup = groupName;
+            populateGroupButtons();
+            loadAvailableTargetLocations(groupName);
+        }
+
+        // Select priority
+        function selectPriority(priority) {
+            selectedPriority = priority;
+            
+            // Update UI to show selected priority
+            document.querySelectorAll('.priority-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Find button by priority value
+            const buttons = document.querySelectorAll('.priority-btn');
+            buttons.forEach(btn => {
+                if (btn.onclick.toString().includes(`selectPriority(${priority})`)) {
+                    btn.classList.add('selected');
+                }
+            });
+        }
+
+        // Load material test data
+        function loadMaterialData() {
+            // Test material data
+            materials = [
+                {
+                    id: 'MAT001',
+                    name: 'Steel Pipe 20mm',
+                    code: 'SP-20-001',
+                    category: 'Pipes',
+                    unit: 'PCS',
+                    weight: '2.5 kg',
+                    description: 'Galvanized steel pipe 20mm diameter'
+                },
+                {
+                    id: 'MAT002',
+                    name: 'Copper Wire 2.5mm²',
+                    code: 'CW-25-002',
+                    category: 'Electrical',
+                    unit: 'M',
+                    weight: '0.1 kg/m',
+                    description: 'Copper electrical wire 2.5mm² cross-section'
+                },
+                {
+                    id: 'MAT003',
+                    name: 'PVC Fitting 90° Elbow',
+                    code: 'PVC-90-003',
+                    category: 'Fittings',
+                    unit: 'PCS',
+                    weight: '0.3 kg',
+                    description: 'PVC 90 degree elbow fitting 25mm'
+                },
+                {
+                    id: 'MAT004',
+                    name: 'Stainless Steel Bolt M8x50',
+                    code: 'SSB-M8-004',
+                    category: 'Fasteners',
+                    unit: 'PCS',
+                    weight: '0.05 kg',
+                    description: 'Stainless steel hex bolt M8x50mm'
+                },
+                {
+                    id: 'MAT005',
+                    name: 'Aluminum Sheet 3mm',
+                    code: 'AS-3-005',
+                    category: 'Sheets',
+                    unit: 'SQM',
+                    weight: '8.1 kg/m²',
+                    description: 'Aluminum sheet 3mm thickness'
+                },
+                {
+                    id: 'MAT006',
+                    name: 'Rubber Gasket 50mm',
+                    code: 'RG-50-006',
+                    category: 'Sealing',
+                    unit: 'PCS',
+                    weight: '0.02 kg',
+                    description: 'EPDM rubber gasket 50mm diameter'
+                }
+            ];
+            
+            populateMaterialDropdown();
+        }
+
+        // Populate material dropdown
+        function populateMaterialDropdown() {
+            const materialSelect = document.getElementById('materialSelect');
+            materialSelect.innerHTML = '<option value="">-- Select Material --</option>';
+            
+            materials.forEach(material => {
+                const option = document.createElement('option');
+                option.value = material.id;
+                option.textContent = `${material.code} - ${material.name}`;
+                materialSelect.appendChild(option);
+            });
+        }
+
+        // Select material
+        function selectMaterial() {
+            const materialSelect = document.getElementById('materialSelect');
+            const materialInfo = document.getElementById('materialInfo');
+            const selectedId = materialSelect.value;
+            
+            if (selectedId) {
+                selectedMaterial = materials.find(m => m.id === selectedId);
+                if (selectedMaterial) {
+                    // Show material details
+                    materialInfo.innerHTML = `
+                        <div class="material-detail">
+                            <span class="label">Code:</span>
+                            <span class="value">${selectedMaterial.code}</span>
+                        </div>
+                        <div class="material-detail">
+                            <span class="label">Category:</span>
+                            <span class="value">${selectedMaterial.category}</span>
+                        </div>
+                        <div class="material-detail">
+                            <span class="label">Unit:</span>
+                            <span class="value">${selectedMaterial.unit}</span>
+                        </div>
+                        <div class="material-detail">
+                            <span class="label">Weight:</span>
+                            <span class="value">${selectedMaterial.weight}</span>
+                        </div>
+                        <div class="material-detail">
+                            <span class="label">Description:</span>
+                            <span class="value">${selectedMaterial.description}</span>
+                        </div>
+                    `;
+                    materialInfo.classList.add('show');
+                }
+            } else {
+                selectedMaterial = null;
+                materialInfo.classList.remove('show');
+            }
+        }
+
+        // Load available count for a group
+        async function loadGroupAvailableCount(groupName) {
+            try {
+                const response = await fetch(`/MobileTask/GetAvailableLocationsByGroup?groupName=${encodeURIComponent(groupName)}`);
+                const result = await response.json();
+                
+                const countElement = document.getElementById(`count-${groupName}`);
+                if (countElement) {
+                    if (result.success) {
+                        const count = result.data.length;
+                        countElement.textContent = `${count} available location${count !== 1 ? 's' : ''}`;
+                    } else {
+                        countElement.textContent = 'Error loading count';
+                    }
+                }
+            } catch (error) {
+                const countElement = document.getElementById(`count-${groupName}`);
+                if (countElement) {
+                    countElement.textContent = 'Error loading count';
+                }
+            }
+        }
+
+        // Load available target locations for selected group
+        async function loadAvailableTargetLocations(groupName) {
+            try {
+                console.log('Loading available locations for group:', groupName);
+                const url = `/MobileTask/GetAvailableLocationsByGroup?groupName=${encodeURIComponent(groupName)}`;
+                console.log('API URL:', url);
+                
+                const response = await fetch(url);
+                console.log('Response status:', response.status);
+                
+                const result = await response.json();
+                console.log('API result:', result);
+                
+                if (result.success) {
+                    availableTargetLocations = result.data;
+                    console.log('Available target locations loaded:', availableTargetLocations);
+                } else {
+                    console.error('API returned error:', result.message);
+                    showError('Failed to load available locations: ' + result.message);
+                    availableTargetLocations = [];
+                }
+            } catch (error) {
+                console.error('Exception in loadAvailableTargetLocations:', error);
+                showError('Failed to load available locations: ' + error.message);
+                availableTargetLocations = [];
+            }
+        }
+
+        // Search filter for source locations
+        function filterLocations(type) {
+            if (type === 'source') {
+                const searchValue = document.getElementById('sourceSearch').value.toLowerCase();
+                filteredSourceLocations = locations.filter(location => 
+                    location.nodeRemark.toLowerCase().includes(searchValue) ||
+                    location.name.toLowerCase().includes(searchValue)
+                );
+                populateSourceButtons();
+            }
+        }
+
+        // Show confirmation modal
+        function showConfirmModal() {
+            console.log('showConfirmModal called');
+            console.log('selectedSources:', selectedSources);
+            console.log('selectedTargetGroup:', selectedTargetGroup);
+            console.log('selectedMaterial:', selectedMaterial);
+            console.log('availableTargetLocations:', availableTargetLocations);
+            
+            if (selectedSources.size === 0) {
+                showError('Please select at least one source location');
+                return;
+            }
+            
+            if (!selectedTargetGroup) {
+                showError('Please select a target group');
+                return;
+            }
+
+            if (!selectedMaterial) {
+                showError('Please select a material');
+                return;
+            }
+
+            // 暂时注释掉这个检查用于测试
+            // if (availableTargetLocations.length < selectedSources.size) {
+            //     showError(`Insufficient available locations in group '${selectedTargetGroup}'. Available: ${availableTargetLocations.length}, Required: ${selectedSources.size}`);
+            //     return;
+            // }
+            
+            // 临时警告
+            if (availableTargetLocations.length < selectedSources.size) {
+                console.warn(`Warning: Insufficient available locations. Available: ${availableTargetLocations.length}, Required: ${selectedSources.size}`);
+            }
+            
+            // Build task summary
+            const taskSummary = document.getElementById('taskSummary');
+            const priorityColor = selectedPriority === 3 ? '#e74c3c' : selectedPriority === 2 ? '#f39c12' : '#27ae60';
+            taskSummary.innerHTML = `
+                <div style="margin-bottom: 15px;">
+                    <strong>Creating ${selectedSources.size} task${selectedSources.size !== 1 ? 's' : ''}:</strong>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <strong>Sources:</strong> ${selectedSources.size} location${selectedSources.size !== 1 ? 's' : ''}
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <strong>Target Group:</strong> ${selectedTargetGroup}
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <strong>Priority:</strong> <span style="color: ${priorityColor}; font-weight: 600;">${selectedPriority}</span>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <strong>Material:</strong> ${selectedMaterial.code} - ${selectedMaterial.name}
+                </div>
+            `;
+
+            // Build detailed route information
+            const modalRoute = document.getElementById('modalRoute');
+            const sourceArray = Array.from(selectedSources);
+            let routeHtml = '';
+            
+            for (let i = 0; i < sourceArray.length; i++) {
+                const sourceName = sourceArray[i];
+                const sourceLocation = locations.find(loc => loc.name === sourceName);
+                const targetLocation = availableTargetLocations[i];
+                
+                if (sourceLocation && targetLocation) {
+                    routeHtml += `
+                        <div class="task-summary">
+                            <span>${sourceLocation.nodeRemark}</span>
+                            <span style="color: #2196f3; margin: 0 10px;">→</span>
+                            <span>${targetLocation.nodeRemark}</span>
+                        </div>
+                    `;
+                }
+            }
+            
+            modalRoute.innerHTML = routeHtml;
+            
+            // Show modal
+            document.getElementById('confirmModal').classList.add('show');
+        }
+
+        // Hide confirmation modal
+        function hideConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('show');
+        }
+
+        // Confirm and create tasks
+        async function confirmCreateTask() {
+            hideConfirmModal();
+            
+            try {
+                setSubmitButtonState(true);
+                
+                const response = await fetch('/MobileTask/CreateBatchTasks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        sourcePositions: Array.from(selectedSources),
+                        targetGroup: selectedTargetGroup,
+                        priority: selectedPriority,
+                        materialCode: selectedMaterial.code
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(result.message);
+                    resetSelections();
+                } else {
+                    showError(result.message);
+                }
+            } catch (error) {
+                showError('Failed to create tasks: ' + error.message);
+            } finally {
+                setSubmitButtonState(false);
+            }
+        }
+
+        // Reset all selections
+        function resetSelections() {
+            selectedSources.clear();
+            selectedTargetGroup = '';
+            selectedPriority = 2;
+            selectedMaterial = null;
+            availableTargetLocations = [];
+            document.getElementById('sourceSearch').value = '';
+            document.getElementById('materialSelect').value = '';
+            document.getElementById('materialInfo').classList.remove('show');
+            
+            // Reload initial data to refresh locked locations
+            loadInitialData();
+            selectPriority(2); // Reset to default priority
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            hideAlerts();
+            const alert = document.getElementById('successAlert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+
+        // Show error message
+        function showError(message) {
+            hideAlerts();
+            const alert = document.getElementById('errorAlert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        // Hide all alert messages
+        function hideAlerts() {
+            document.getElementById('successAlert').style.display = 'none';
+            document.getElementById('errorAlert').style.display = 'none';
+        }
+
+        // Show/hide loading state
+        function showLoading(show) {
+            document.getElementById('loadingDiv').style.display = show ? 'block' : 'none';
+        }
+
+        // Set submit button state
+        function setSubmitButtonState(loading) {
+            const btn = document.getElementById('submitBtn');
+            if (loading) {
+                btn.disabled = true;
+                btn.textContent = 'Creating...';
+            } else {
+                btn.disabled = false;
+                btn.textContent = 'Create Tasks';
+            }
+        }
+    </script>
+</body>
+</html>

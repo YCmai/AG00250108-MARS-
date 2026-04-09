@@ -1,0 +1,36 @@
+2025-12-30 09:37:41.598 +08:00 [INF] IO处理服务已启动
+2025-12-30 09:37:41.637 +08:00 [INF] 网络连接监控任务已启动
+2025-12-30 09:37:41.639 +08:00 [INF] 开始清理过期IO任务数据...
+2025-12-30 09:37:42.423 +08:00 [WRN] Failed to determine the https port for redirect.
+2025-12-30 09:37:42.779 +08:00 [DBG] IO任务清理完成，没有需要清理的记录
+2025-12-30 09:37:42.824 +08:00 [INF] 发现新的IO设备: 192.168.200.121
+2025-12-30 09:37:43.670 +08:00 [INF] 设备 192.168.200.121 的网络连接状态: 离线
+2025-12-30 09:37:43.670 +08:00 [INF] 当前活跃IO设备: 1个
+2025-12-30 09:39:12.267 +08:00 [INF] 任务 147993 已成功取消
+2025-12-30 09:40:22.471 +08:00 [INF] IO处理服务已停止
+2025-12-30 09:40:22.471 +08:00 [INF] 网络连接监控任务已停止
+2025-12-30 09:40:41.290 +08:00 [INF] IO处理服务已启动
+2025-12-30 09:40:41.325 +08:00 [INF] 网络连接监控任务已启动
+2025-12-30 09:40:41.327 +08:00 [INF] 开始清理过期IO任务数据...
+2025-12-30 09:40:41.599 +08:00 [WRN] Failed to determine the https port for redirect.
+2025-12-30 09:40:41.732 +08:00 [DBG] IO任务清理完成，没有需要清理的记录
+2025-12-30 09:40:41.775 +08:00 [INF] 发现新的IO设备: 192.168.200.121
+2025-12-30 09:40:42.670 +08:00 [INF] 设备 192.168.200.121 的网络连接状态: 离线
+2025-12-30 09:40:42.670 +08:00 [INF] 当前活跃IO设备: 1个
+2025-12-30 09:45:00.585 +08:00 [WRN] Source location FG_1A is already in an active task
+2025-12-30 09:45:00.587 +08:00 [WRN] Source location FG_1B is already in an active task
+2025-12-30 09:45:00.588 +08:00 [WRN] Target location RPM_10A is already in an active task
+2025-12-30 09:45:00.588 +08:00 [WRN] Target location RPM_10A is already in an active task
+2025-12-30 09:45:57.964 +08:00 [WRN] Source location FG_1A is already in an active task
+2025-12-30 09:45:57.965 +08:00 [WRN] Source location FG_1B is already in an active task
+2025-12-30 09:45:57.966 +08:00 [WRN] Target location RPM_10A is already in an active task
+2025-12-30 09:45:57.966 +08:00 [WRN] Target location RPM_10A is already in an active task
+2025-12-30 09:45:57.967 +08:00 [WRN] Target location RPM_10A is already in an active task
+2025-12-30 09:45:57.968 +08:00 [WRN] Target location RPM_10A is already in an active task
+2025-12-30 09:46:02.752 +08:00 [WRN] Source location FG_1A is already in an active task
+2025-12-30 09:46:02.752 +08:00 [WRN] Source location FG_1B is already in an active task
+2025-12-30 09:46:02.753 +08:00 [WRN] Target location RPM_10A is already in an active task
+2025-12-30 09:46:02.754 +08:00 [WRN] Target location RPM_10A is already in an active task
+2025-12-30 09:46:26.284 +08:00 [INF] 任务 148006 已成功取消
+2025-12-30 09:47:49.255 +08:00 [INF] 网络连接监控任务已停止
+2025-12-30 09:47:49.255 +08:00 [INF] IO处理服务已停止

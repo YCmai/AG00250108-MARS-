@@ -1,0 +1,389 @@
+@model List<WarehouseManagementSystem.Models.RCS_Materials>
+@{
+    ViewData["Title"] = "物料入库";
+}
+
+<div class="container-fluid px-4">
+    <h2 class="mt-4 mb-4">物料入库</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-download me-1"></i>
+            物料入库
+        </div>
+        <div class="card-body">
+            <form id="inStockForm">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="materialCode" class="form-label">物料编码 <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="materialCode" name="materialCode" required>
+                            <button class="btn btn-outline-secondary" type="button" id="searchMaterialBtn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="materialName" class="form-label">物料名称</label>
+                        <input type="text" class="form-control" id="materialName" name="materialName" readonly>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="specification" class="form-label">规格型号</label>
+                        <input type="text" class="form-control" id="specification" readonly>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="unit" class="form-label">单位</label>
+                        <input type="text" class="form-control" id="unit" readonly>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="currentStock" class="form-label">当前库存</label>
+                        <input type="text" class="form-control" id="currentStock" readonly>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="quantity" class="form-label">入库数量 <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" min="0.01" step="0.01" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="locationCode" class="form-label">储位编码 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="locationCode" name="locationCode" required>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="batchNumber" class="form-label">批次号</label>
+                        <input type="text" class="form-control" id="batchNumber" name="batchNumber">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="operatorName" class="form-label">操作人</label>
+                        <input type="text" class="form-control" id="operatorName" name="operatorName" value="@User.Identity?.Name">
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="remark" class="form-label">备注</label>
+                    <textarea class="form-control" id="remark" name="remark" rows="3"></textarea>
+                </div>
+                
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary" id="submitInStockBtn">
+                        <i class="fas fa-save me-1"></i> 提交入库
+                    </button>
+                    <button type="reset" class="btn btn-secondary ms-2">
+                        <i class="fas fa-redo me-1"></i> 重置
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-history me-1"></i>
+            最近入库记录
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="inStockRecordsTable">
+                    <thead>
+                        <tr>
+                            <th>交易单号</th>
+                            <th>物料编码</th>
+                            <th>物料名称</th>
+                            <th>入库数量</th>
+                            <th>入库后库存</th>
+                            <th>储位</th>
+                            <th>批次号</th>
+                            <th>操作人</th>
+                            <th>入库时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="9" class="text-center">加载中...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 物料选择模态框 -->
+<div class="modal fade" id="materialSelectModal" tabindex="-1" aria-labelledby="materialSelectModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="materialSelectModalLabel">选择物料</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="materialSearchInput" placeholder="输入物料编码或名称搜索">
+                    <button class="btn btn-outline-secondary" type="button" id="searchMaterialModalBtn">
+                        <i class="fas fa-search"></i> 搜索
+                    </button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="materialSelectTable">
+                        <thead>
+                            <tr>
+                                <th>物料编码</th>
+                                <th>物料名称</th>
+                                <th>规格型号</th>
+                                <th>单位</th>
+                                <th>当前库存</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="materialSelectTableBody">
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@item.Code</td>
+                                        <td>@item.Name</td>
+                                        <td>@item.Specification</td>
+                                        <td>@item.Unit</td>
+                                        <td>@item.Quantity</td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-primary select-material-btn"
+                                                    data-code="@item.Code"
+                                                    data-name="@item.Name"
+                                                    data-spec="@item.Specification"
+                                                    data-unit="@item.Unit"
+                                                    data-quantity="@item.Quantity"
+                                                    data-location="@item.LocationCode">
+                                                选择
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center">暂无物料数据</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // 初始化数据表格
+            const inStockRecordsTable = $('#inStockRecordsTable').DataTable({
+                language: {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Chinese.json"
+                },
+                order: [[8, 'desc']], // 按入库时间降序排序
+                ajax: {
+                    url: '/api/Material/transactions/instock',
+                    dataSrc: function(json) {
+                        return json || [];
+                    }
+                },
+                columns: [
+                    { data: 'transactionCode' },
+                    { data: 'materialCode' },
+                    { data: 'materialName' },
+                    { data: 'quantity' },
+                    { data: 'afterQuantity' },
+                    { data: 'locationCode' },
+                    { data: 'batchNumber' },
+                    { data: 'operatorName' },
+                    { 
+                        data: 'createTime',
+                        render: function(data) {
+                            return new Date(data).toLocaleString();
+                        }
+                    }
+                ]
+            });
+            
+            // 搜索物料按钮点击事件
+            $('#searchMaterialBtn').click(function() {
+                const materialCode = $('#materialCode').val().trim();
+                if (materialCode) {
+                    // 通过API获取物料信息
+                    fetchMaterialInfo(materialCode);
+                } else {
+                    // 打开选择物料模态框
+                    $('#materialSelectModal').modal('show');
+                }
+            });
+            
+            // 在模态框中选择物料
+            $('#materialSelectTable').on('click', '.select-material-btn', function() {
+                const code = $(this).data('code');
+                const name = $(this).data('name');
+                const spec = $(this).data('spec');
+                const unit = $(this).data('unit');
+                const quantity = $(this).data('quantity');
+                const location = $(this).data('location');
+                
+                // 填充物料信息到表单
+                $('#materialCode').val(code);
+                $('#materialName').val(name);
+                $('#specification').val(spec);
+                $('#unit').val(unit);
+                $('#currentStock').val(quantity);
+                $('#locationCode').val(location);
+                
+                // 关闭模态框
+                $('#materialSelectModal').modal('hide');
+            });
+            
+            // 模态框中的搜索功能
+            $('#searchMaterialModalBtn').click(function() {
+                const searchText = $('#materialSearchInput').val().trim().toLowerCase();
+                
+                $('#materialSelectTableBody tr').each(function() {
+                    const code = $(this).find('td:eq(0)').text().toLowerCase();
+                    const name = $(this).find('td:eq(1)').text().toLowerCase();
+                    
+                    if (code.includes(searchText) || name.includes(searchText)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+            
+            // 直接在搜索框中输入时也触发搜索
+            $('#materialSearchInput').on('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    $('#searchMaterialModalBtn').click();
+                }
+            });
+            
+            // 物料编码输入框回车事件
+            $('#materialCode').on('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    $('#searchMaterialBtn').click();
+                }
+            });
+            
+            // 入库提交
+            $('#submitInStockBtn').click(function() {
+                // 表单验证
+                if (!validateForm()) {
+                    return;
+                }
+                
+                // 构建请求数据
+                const data = {
+                    materialCode: $('#materialCode').val(),
+                    quantity: parseFloat($('#quantity').val()),
+                    locationCode: $('#locationCode').val(),
+                    batchNumber: $('#batchNumber').val(),
+                    operatorName: $('#operatorName').val(),
+                    remark: $('#remark').val()
+                };
+                
+                // 发送请求
+                $.ajax({
+                    url: '/api/Material/instock',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data),
+                    success: function(result) {
+                        if (result && result.success) {
+                            alert('物料入库成功');
+                            // 刷新物料信息
+                            fetchMaterialInfo($('#materialCode').val());
+                            // 刷新入库记录表格
+                            inStockRecordsTable.ajax.reload();
+                            // 重置数量和批次号
+                            $('#quantity').val('');
+                            $('#batchNumber').val('');
+                        } else {
+                            alert('物料入库失败: ' + (result?.message || '未知错误'));
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('物料入库失败: ' + xhr.responseText);
+                    }
+                });
+            });
+            
+            // 表单验证函数
+            function validateForm() {
+                // 验证物料编码
+                if (!$('#materialCode').val().trim()) {
+                    alert('请选择或输入物料编码');
+                    $('#materialCode').focus();
+                    return false;
+                }
+                
+                // 验证入库数量
+                const quantity = parseFloat($('#quantity').val());
+                if (isNaN(quantity) || quantity <= 0) {
+                    alert('请输入有效的入库数量');
+                    $('#quantity').focus();
+                    return false;
+                }
+                
+                // 验证储位编码
+                if (!$('#locationCode').val().trim()) {
+                    alert('请输入储位编码');
+                    $('#locationCode').focus();
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            // 获取物料信息函数
+            function fetchMaterialInfo(materialCode) {
+                $.ajax({
+                    url: '/api/Material/' + materialCode,
+                    type: 'GET',
+                    success: function(material) {
+                        if (material) {
+                            $('#materialName').val(material.name);
+                            $('#specification').val(material.specification);
+                            $('#unit').val(material.unit);
+                            $('#currentStock').val(material.quantity);
+                            
+                            // 如果没有填写储位，则使用物料默认储位
+                            if (!$('#locationCode').val() && material.locationCode) {
+                                $('#locationCode').val(material.locationCode);
+                            }
+                        } else {
+                            alert('未找到物料信息');
+                            $('#materialName').val('');
+                            $('#specification').val('');
+                            $('#unit').val('');
+                            $('#currentStock').val('');
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('获取物料信息失败: ' + xhr.responseText);
+                        $('#materialName').val('');
+                        $('#specification').val('');
+                        $('#unit').val('');
+                        $('#currentStock').val('');
+                    }
+                });
+            }
+        });
+    </script>
+} 

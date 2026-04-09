@@ -1,0 +1,489 @@
+2025-08-14 08:16:39.191 +08:00 [INF] API任务处理服务已初始化，轮询间隔: 5秒
+2025-08-14 08:16:39.258 +08:00 [INF] IO处理服务已启动
+2025-08-14 08:16:39.263 +08:00 [INF] 网络连接监控任务已启动
+2025-08-14 08:16:39.878 +08:00 [INF] 正在启动PLC通信托管服务...
+2025-08-14 08:16:39.880 +08:00 [INF] 尝试重置PLC通信服务锁状态...
+2025-08-14 08:16:39.883 +08:00 [INF] 正在重置PLC通信服务锁状态...
+2025-08-14 08:16:39.884 +08:00 [INF] 成功获取服务锁，立即释放
+2025-08-14 08:16:39.887 +08:00 [INF] 正在启动PLC通信服务...
+2025-08-14 08:16:39.889 +08:00 [INF] 开始重置所有设备锁...
+2025-08-14 08:16:39.891 +08:00 [INF] 所有设备锁已重置
+2025-08-14 08:16:40.640 +08:00 [INF] 发现新的IO设备: 192.168.200.121
+2025-08-14 08:16:40.705 +08:00 [WRN] 没有启用的PLC设备，通信服务未启动
+2025-08-14 08:16:40.708 +08:00 [INF] PLC配置刷新任务已启动
+2025-08-14 08:16:40.708 +08:00 [INF] PLC连接状态监控任务已启动
+2025-08-14 08:16:40.712 +08:00 [INF] PLC通信托管服务已启动
+2025-08-14 08:16:40.714 +08:00 [INF] PLC任务处理器正在启动...
+2025-08-14 08:16:40.716 +08:00 [INF] PLC任务处理循环已启动
+2025-08-14 08:16:40.735 +08:00 [INF] PLC任务处理器已启动
+2025-08-14 08:16:40.736 +08:00 [INF] 心跳服务正在启动...
+2025-08-14 08:16:40.739 +08:00 [INF] 心跳处理循环已启动
+2025-08-14 08:16:40.749 +08:00 [INF] 心跳服务已启动
+2025-08-14 08:16:40.751 +08:00 [INF] API任务处理服务已启动
+2025-08-14 08:16:40.754 +08:00 [INF] API服务网络连接监控任务已启动
+2025-08-14 08:16:40.898 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 08:16:40.928 +08:00 [INF] 默认API端点 api.example.com 的初始网络状态: 离线
+2025-08-14 08:16:40.953 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 08:16:41.413 +08:00 [INF] 设备 192.168.200.121 的网络连接状态: 离线
+2025-08-14 08:16:41.416 +08:00 [INF] 当前活跃IO设备: 1个
+2025-08-14 08:16:43.161 +08:00 [WRN] Failed to determine the https port for redirect.
+2025-08-14 08:16:43.599 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:47.293 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:48.277 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:49.624 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:50.695 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:50.992 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 08:16:51.431 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:52.105 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:52.621 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:53.070 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:54.085 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:54.661 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:55.064 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:55.464 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:55.714 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 08:16:55.892 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:56.391 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:56.802 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:57.159 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:57.553 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:58.056 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:16:59.627 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:00.550 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:00.915 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:01.028 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 08:17:01.274 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:01.659 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:01.986 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:02.299 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:02.984 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:04.140 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:04.623 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:09.556 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:10.048 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:10.727 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 08:17:10.734 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:11.074 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 08:17:21.106 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 08:17:25.742 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 08:17:30.908 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:31.137 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 08:17:31.327 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:31.771 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 08:17:40.754 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 08:17:41.169 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 08:17:51.203 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 08:17:55.769 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 08:18:01.245 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:12:46.432 +08:00 [INF] API任务处理服务已初始化，轮询间隔: 5秒
+2025-08-14 09:12:50.336 +08:00 [INF] IO处理服务已启动
+2025-08-14 09:12:51.613 +08:00 [INF] 网络连接监控任务已启动
+2025-08-14 09:12:55.530 +08:00 [INF] 开始清理过期IO任务数据...
+2025-08-14 09:13:01.747 +08:00 [INF] 正在启动PLC通信托管服务...
+2025-08-14 09:13:01.749 +08:00 [INF] 尝试重置PLC通信服务锁状态...
+2025-08-14 09:13:01.751 +08:00 [INF] 正在重置PLC通信服务锁状态...
+2025-08-14 09:13:01.752 +08:00 [INF] 成功获取服务锁，立即释放
+2025-08-14 09:13:01.755 +08:00 [INF] 正在启动PLC通信服务...
+2025-08-14 09:13:01.756 +08:00 [INF] 开始重置所有设备锁...
+2025-08-14 09:13:01.757 +08:00 [INF] 所有设备锁已重置
+2025-08-14 09:13:17.942 +08:00 [WRN] 没有启用的PLC设备，通信服务未启动
+2025-08-14 09:13:20.019 +08:00 [INF] PLC配置刷新任务已启动
+2025-08-14 09:13:20.594 +08:00 [INF] PLC连接状态监控任务已启动
+2025-08-14 09:13:25.879 +08:00 [INF] PLC通信托管服务已启动
+2025-08-14 09:13:25.880 +08:00 [DBG] IO任务清理完成，没有需要清理的记录
+2025-08-14 09:13:25.883 +08:00 [INF] PLC任务处理器正在启动...
+2025-08-14 09:13:27.398 +08:00 [INF] PLC任务处理循环已启动
+2025-08-14 09:13:27.400 +08:00 [INF] 发现新的IO设备: 192.168.200.121
+2025-08-14 09:13:27.401 +08:00 [INF] PLC任务处理器已启动
+2025-08-14 09:13:27.405 +08:00 [INF] 心跳服务正在启动...
+2025-08-14 09:13:27.408 +08:00 [INF] 心跳处理循环已启动
+2025-08-14 09:13:27.422 +08:00 [INF] 心跳服务已启动
+2025-08-14 09:13:27.424 +08:00 [INF] API任务处理服务已启动
+2025-08-14 09:13:27.428 +08:00 [INF] API服务网络连接监控任务已启动
+2025-08-14 09:13:27.582 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:13:27.612 +08:00 [INF] 默认API端点 api.example.com 的初始网络状态: 离线
+2025-08-14 09:13:27.638 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:13:28.414 +08:00 [INF] 设备 192.168.200.121 的网络连接状态: 离线
+2025-08-14 09:13:28.417 +08:00 [INF] 当前活跃IO设备: 1个
+2025-08-14 09:13:28.862 +08:00 [WRN] Failed to determine the https port for redirect.
+2025-08-14 09:13:29.294 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 09:13:35.054 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:13:37.683 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:13:47.724 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:13:50.072 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:13:57.763 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:14:05.085 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:14:07.792 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:14:17.827 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:14:20.092 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:14:27.865 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:14:35.107 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:14:37.905 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:14:39.829 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 09:14:40.389 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 09:14:41.358 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-08-14 09:14:47.951 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:14:50.117 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:14:58.002 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:15:05.130 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:15:08.042 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:15:18.080 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:15:20.140 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:15:28.124 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:15:35.151 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:15:38.168 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:15:48.200 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:15:50.157 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:15:58.230 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:16:05.162 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:16:08.277 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:16:18.324 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:16:20.178 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:16:28.370 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:16:35.197 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:16:38.402 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:16:48.431 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:16:50.212 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:16:58.477 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-08-14 09:17:06.873 +08:00 [INF] 正在刷新PLC设备配置...
+2025-08-14 09:17:09.450 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156

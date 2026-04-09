@@ -1,0 +1,663 @@
+@{
+    ViewData["Title"] = "PLC任务记录";
+}
+
+<style>
+    .task-container {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,.05);
+    }
+    
+    .status-badge {
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        display: inline-block;
+        min-width: 80px;
+        text-align: center;
+    }
+    
+    .status-0 {
+        background-color: #e3f2fd;
+        color: #0d47a1;
+    }
+    
+    .status-1 {
+        background-color: #e8f5e9;
+        color: #1b5e20;
+    }
+    
+    .status-2 {
+        background-color: #fff3e0;
+        color: #e65100;
+    }
+    
+    .status-3 {
+        background-color: #e8f5e9;
+        color: #1b5e20;
+    }
+    
+    .status-4 {
+        background-color: #f3e5f5;
+        color: #4a148c;
+    }
+    
+    .status-5 {
+        background-color: #ffebee;
+        color: #b71c1c;
+    }
+    
+    .status-10 {
+        background-color: #f9fbe7;
+        color: #827717;
+    }
+    
+    .status-99 {
+        background-color: #ff7043;
+        color: #fff;
+    }
+    
+    .send-status-0 {
+        background-color: #ffebee;
+        color: #b71c1c;
+    }
+    
+    .send-status-1 {
+        background-color: #e8f5e9;
+        color: #1b5e20;
+    }
+    
+    .refresh-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .refresh-status {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #4caf50;
+    }
+    
+    .refresh-status.paused {
+        background-color: #f44336;
+    }
+    
+    .refresh-status.active {
+        animation: pulse 1.5s infinite;
+    }
+    
+    .last-updated {
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+    
+    @@keyframes pulse {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.3;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+    
+    .pagination {
+        justify-content: center;
+        margin-top: 1rem;
+    }
+    
+    .pagination .page-item.active .page-link {
+        background-color: #3d5afe;
+        border-color: #3d5afe;
+    }
+    
+    .pagination .page-link {
+        color: #3d5afe;
+    }
+    
+    .task-table {
+        margin-bottom: 0;
+    }
+</style>
+
+<!-- 页面头部 -->
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+            <div>
+                <h5 class="mb-0">
+                    <i class="fas fa-tasks me-2"></i>PLC任务记录
+                </h5>
+                <p class="text-muted mb-0">
+                    <small>显示所有PLC通信任务记录</small>
+                </p>
+            </div>
+            <div class="ms-3">
+                <select id="plcTypeSelect" class="form-select form-select-sm" style="width: 140px;">
+                    <option value="">全部PLC设备</option>
+                </select>
+            </div>
+        </div>
+        <div class="refresh-controls">
+            <div class="d-flex align-items-center">
+                <span><span id="refreshStatus" class="refresh-status active"></span><span id="autoRefreshText">自动刷新</span></span>
+                <div class="form-check form-switch ms-2">
+                    <input class="form-check-input" type="checkbox" id="autoRefreshSwitch" checked>
+                </div>
+            </div>
+            <select id="refreshInterval" class="form-select form-select-sm" style="width: auto;">
+                <option value="5000" selected>5秒</option>
+                <option value="10000">10秒</option>
+                <option value="30000">30秒</option>
+                <option value="60000">1分钟</option>
+            </select>
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="refreshBtn">
+                <i class="fas fa-sync-alt me-1"></i>立即刷新
+            </button>
+            <span id="lastUpdated" class="last-updated">上次更新: -</span>
+        </div>
+    </div>
+</div>
+
+<!-- 过滤器区域 -->
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-3">
+                <select id="plcRemarkFilter" class="form-select">
+                    <option value="">全部PLC设备</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="plcTypeDbFilter" class="form-select">
+                    <option value="">全部DB块</option>
+                </select>
+            </div>
+            <div class="col-md-auto">
+                <button type="button" id="filterBtn" class="btn btn-primary">
+                    <i class="fas fa-filter me-1"></i>筛选
+                </button>
+                <button type="button" id="resetFilterBtn" class="btn btn-outline-secondary">
+                    <i class="fas fa-times me-1"></i>重置
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 任务列表 -->
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped task-table mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>任务编号</th>
+                        <th>执行的AGV</th>
+                        <th>状态</th>
+                        <th>发送状态</th>
+                        <th>信号信息</th>
+                        <th>PLC类型</th>
+                        <th>备注</th>
+                        <th>创建时间</th>
+                        <th>更新时间</th>
+                    </tr>
+                </thead>
+                <tbody id="taskTableBody">
+                    <tr>
+                        <td colspan="8" class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">加载中...</span>
+                            </div>
+                            <p class="mt-2">加载数据中...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="pagination-info">
+                显示 <span id="currentPageRange">0-0</span> 条，共 <span id="totalRecords">0</span> 条记录
+            </div>
+            <div>
+                <select id="pageSizeSelect" class="form-select form-select-sm" style="width: auto; display: inline-block;">
+                    <option value="10">10条/页</option>
+                    <option value="20" selected>20条/页</option>
+                    <option value="50">50条/页</option>
+                    <option value="100">100条/页</option>
+                </select>
+            </div>
+            <nav aria-label="分页导航">
+                <ul class="pagination pagination-sm mb-0" id="pagination">
+                    <!-- 分页将由JavaScript动态生成 -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // 全局变量
+        let currentPage = 1;
+        let pageSize = 20;
+        let totalPages = 0;
+        let totalRecords = 0;
+        let refreshTimerId = null;
+        let isRefreshing = false;
+        let currentInterval = 5000;
+        let autoRefreshEnabled = true;
+        let selectedPlcType = '';
+        let selectedPlcRemark = '';
+        let selectedPlcTypeDb = '';
+        
+        // 状态文本映射
+        const statusTexts = {
+            0: "读取",
+            1: "写入bool值",
+            2: "重置bool值",
+            3: "写入INT",
+            4: "重置INT值",
+            5: "写入String值",
+            6: "重置String值",
+            99: "连接失败"
+        };
+        
+        // 发送状态文本映射
+        const sendStatusTexts = {
+            0: "未发送",
+            1: "已发送"
+        };
+        
+        $(document).ready(function() {
+            // 初始化数据
+            initUI();
+            loadPlcRemarks();
+            loadPlcTypeDb();
+            loadData(true);
+            
+            // 设置自动刷新
+            startAutoRefresh(currentInterval);
+            
+            // 自动刷新开关
+            $('#autoRefreshSwitch').change(function() {
+                autoRefreshEnabled = $(this).prop('checked');
+                if (autoRefreshEnabled) {
+                    startAutoRefresh();
+                    $('#refreshStatus').removeClass('paused').addClass('active');
+                    $('#autoRefreshText').text('自动刷新');
+                } else {
+                    stopAutoRefresh();
+                    $('#refreshStatus').removeClass('active').addClass('paused');
+                    $('#autoRefreshText').text('已暂停');
+                }
+            });
+            
+            // 刷新间隔变更
+            $('#refreshInterval').change(function() {
+                currentInterval = parseInt($(this).val());
+                if (autoRefreshEnabled) {
+                    stopAutoRefresh();
+                    startAutoRefresh();
+                }
+                showToast('提示', `刷新间隔已设置为${$(this).find('option:selected').text()}`, 'info');
+            });
+            
+            // 页面大小变更
+            $('#pageSizeSelect').change(function() {
+                pageSize = parseInt($(this).val());
+                currentPage = 1; // 重置为第一页
+                loadData();
+            });
+            
+            // 顶部PLC类型选择
+            $('#plcTypeSelect').change(function() {
+                selectedPlcRemark = $(this).val();
+                $('#plcRemarkFilter').val(selectedPlcRemark);
+                currentPage = 1;
+                loadData(true);
+            });
+            
+            // 注册事件处理
+            $('#refreshBtn').click(function() {
+                currentPage = 1;
+                loadData(true);
+            });
+            
+            $('#goToFirstPage').click(function() {
+                if (currentPage > 1) {
+                    currentPage = 1;
+                    loadData(true);
+                }
+            });
+            
+            $('#goToPrevPage').click(function() {
+                if (currentPage > 1) {
+                    currentPage--;
+                    loadData(true);
+                }
+            });
+            
+            $('#goToNextPage').click(function() {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    loadData(true);
+                }
+            });
+            
+            $('#goToLastPage').click(function() {
+                if (currentPage < totalPages) {
+                    currentPage = totalPages;
+                    loadData(true);
+                }
+            });
+            
+            $('#filterBtn').click(function() {
+                selectedPlcRemark = $('#plcRemarkFilter').val();
+                selectedPlcTypeDb = $('#plcTypeDbFilter').val();
+                currentPage = 1;
+                loadData(true);
+            });
+            
+            $('#resetFilterBtn').click(function() {
+                $('#plcRemarkFilter').val('');
+                $('#plcTypeDbFilter').val('');
+                selectedPlcRemark = '';
+                selectedPlcTypeDb = '';
+                currentPage = 1;
+                loadData(true);
+            });
+        });
+        
+        // 加载数据
+        function loadData(showLoading = false) {
+            if (isRefreshing) return;
+            
+            isRefreshing = true;
+            
+            if (showLoading) {
+                $('#refreshBtn').html('<i class="fas fa-spinner fa-spin me-1"></i>刷新中');
+                $('#refreshBtn').prop('disabled', true);
+            }
+            
+            $.ajax({
+                url: '/AutoPlcTask/GetPagedTasks',
+                type: 'GET',
+                data: {
+                    pageIndex: currentPage,
+                    pageSize: pageSize,
+                    plcRemark: selectedPlcRemark,
+                    plcTypeDb: selectedPlcTypeDb
+                },
+                success: function(response) {
+                    if (response.success) {
+                        renderTaskTable(response.data);
+                        totalPages = response.totalPages;
+                        totalRecords = response.total;
+                        renderPagination();
+                        updatePageInfo();
+                        updateLastRefreshTime();
+                    } else {
+                        showToast('错误', response.message, 'error');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    showToast('错误', '加载数据失败: ' + error, 'error');
+                },
+                complete: function() {
+                    isRefreshing = false;
+                    if (showLoading) {
+                        $('#refreshBtn').html('<i class="fas fa-sync-alt me-1"></i>立即刷新');
+                        $('#refreshBtn').prop('disabled', false);
+                    }
+                }
+            });
+        }
+        
+        // 渲染任务表格
+        function renderTaskTable(tasks) {
+            const tbody = $('#taskTableBody');
+            tbody.empty();
+            
+            if (!tasks || tasks.length === 0) {
+                tbody.html(`
+                    <tr>
+                        <td colspan="8" class="text-center py-4">
+                            <i class="fas fa-info-circle me-2"></i>暂无PLC任务记录
+                        </td>
+                    </tr>
+                `);
+                return;
+            }
+            
+            tasks.forEach(function(task) {
+                const statusText = statusTexts[task.Status] || `未知状态(${task.Status})`;
+                const sendStatusText = sendStatusTexts[task.IsSend] || `未知(${task.IsSend})`;
+                
+                // 格式化时间
+                const createdTime = task.CreatingTime ? new Date(task.CreatingTime).toLocaleString() : '-';
+                const updatedTime = task.UpdateTime ? new Date(task.UpdateTime).toLocaleString() : '-';
+                
+                const row = `
+                    <tr>
+                        <td>${task.OrderCode || '-'}</td>
+                                <td>${task.AgvNo || '-'}</td>
+                        <td><span class="status-badge status-${task.Status}">${statusText}</span></td>
+                        <td><span class="status-badge send-status-${task.IsSend}">${sendStatusText}</span></td>
+                        <td>${task.Signal || '-'}</td>
+                        <td>${task.PlcRemark || '-'}</td>
+                        <td>${task.Remark || '-'}</td>
+                                <td>${createdTime}</td>
+                                <td>${updatedTime}</td>
+                    </tr>
+                `;
+                
+                tbody.append(row);
+            });
+        }
+        
+        // 渲染分页
+        function renderPagination() {
+            const pagination = $('#pagination');
+            pagination.empty();
+            
+            // 上一页按钮
+            pagination.append(`
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" data-page="${currentPage - 1}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            `);
+            
+            // 页码按钮
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, startPage + 4);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                pagination.append(`
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="javascript:void(0)" data-page="${i}">${i}</a>
+                    </li>
+                `);
+            }
+            
+            // 下一页按钮
+            pagination.append(`
+                <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="javascript:void(0)" data-page="${currentPage + 1}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            `);
+            
+            // 绑定分页点击事件
+            $('.page-link').click(function() {
+                if ($(this).parent().hasClass('disabled')) return;
+                
+                const page = parseInt($(this).data('page'));
+                if (page !== currentPage) {
+                    currentPage = page;
+                    loadData();
+                }
+            });
+        }
+        
+        // 更新分页信息
+        function updatePageInfo() {
+            const start = (currentPage - 1) * pageSize + 1;
+            const end = Math.min(currentPage * pageSize, totalRecords);
+            
+            $('#currentPageRange').text(`${start}-${end}`);
+            $('#totalRecords').text(totalRecords);
+        }
+        
+        // 更新最后刷新时间
+        function updateLastRefreshTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            $('#lastUpdated').text(`上次更新: ${timeString}`);
+        }
+        
+        // 开始自动刷新
+        function startAutoRefresh() {
+            // 先清除可能存在的定时器
+            if (refreshTimerId) {
+                clearInterval(refreshTimerId);
+            }
+            
+            // 设置新的定时器
+            refreshTimerId = setInterval(function() {
+                loadData(false);
+            }, currentInterval);
+        }
+        
+        // 停止自动刷新
+        function stopAutoRefresh() {
+            if (refreshTimerId) {
+                clearInterval(refreshTimerId);
+                refreshTimerId = null;
+            }
+        }
+        
+        // 显示Toast消息
+        function showToast(title, message, type) {
+            // 检查是否存在toast容器，不存在则创建
+            if ($('#toast-container').length === 0) {
+                $('body').append('<div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>');
+            }
+            
+            // 确定toast类型
+            let bgClass = 'bg-primary';
+            if (type === 'success') bgClass = 'bg-success';
+            if (type === 'error') bgClass = 'bg-danger';
+            if (type === 'warning') bgClass = 'bg-warning';
+            if (type === 'info') bgClass = 'bg-info';
+            
+            // 创建toast元素
+            const toastId = 'toast-' + Date.now();
+            const toastHtml = `
+                <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+                    <div class="toast-header ${bgClass} text-white">
+                        <strong class="me-auto">${title}</strong>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                </div>
+            `;
+            
+            // 添加到容器
+            $('#toast-container').append(toastHtml);
+            
+            // 显示toast
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+            
+            // 自动移除
+            $(toastElement).on('hidden.bs.toast', function() {
+                $(this).remove();
+            });
+        }
+        
+        // 加载PLC备注选项
+        function loadPlcRemarks() {
+            $.ajax({
+                url: '/AutoPlcTask/GetPlcTypes',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        // 更新筛选器下拉框
+                        populateSelect('#plcRemarkFilter', response.data);
+                        
+                        // 同时更新顶部的设备选择下拉框
+                        const select = $('#plcTypeSelect');
+                        select.find('option:not(:first)').remove();
+                        
+                        $.each(response.data, function(i, item) {
+                            select.append($('<option></option>').val(item).text(item));
+                        });
+                    }
+                }
+            });
+        }
+        
+        // 加载PLC DB块选项
+        function loadPlcTypeDb() {
+            $.ajax({
+                url: '/AutoPlcTask/GetPlcTypeDb',
+                type: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        populateSelect('#plcTypeDbFilter', response.data);
+                    }
+                }
+            });
+        }
+        
+        // 填充下拉菜单
+        function populateSelect(selector, data) {
+            const select = $(selector);
+            select.find('option:not(:first)').remove();
+            
+            $.each(data, function(i, item) {
+                select.append($('<option></option>').val(item).text(item));
+            });
+        }
+        
+        // 初始化UI
+        function initUI() {
+            updateRefreshStatusUI();
+            updateRefreshIntervalUI();
+        }
+        
+        // 更新刷新状态UI
+        function updateRefreshStatusUI() {
+            if (autoRefreshEnabled) {
+                $('#refreshStatus').removeClass('paused').addClass('active');
+                $('#autoRefreshText').text('自动刷新');
+                $('#autoRefreshSwitch').prop('checked', true);
+            } else {
+                $('#refreshStatus').removeClass('active').addClass('paused');
+                $('#autoRefreshText').text('已暂停');
+                $('#autoRefreshSwitch').prop('checked', false);
+            }
+        }
+        
+        // 更新刷新间隔UI
+        function updateRefreshIntervalUI() {
+            $('#refreshInterval').val(currentInterval);
+        }
+    </script>
+} 

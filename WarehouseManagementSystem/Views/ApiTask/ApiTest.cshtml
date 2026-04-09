@@ -1,0 +1,241 @@
+@{
+    ViewData["Title"] = "API接口测试";
+}
+
+<div class="container-fluid mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">API接口测试工具</h5>
+            <div>
+                <button type="button" class="btn btn-sm btn-light" onclick="location.href='@Url.Action("Index", "ApiTask")'">
+                    <i class="fas fa-list"></i> 返回任务列表
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <form id="apiTestForm">
+                        <div class="mb-3">
+                            <label for="requestUrl" class="form-label">请求地址</label>
+                            <input type="text" class="form-control" id="requestUrl" placeholder="https://api.example.com/endpoint" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="requestMethod" class="form-label">请求方法</label>
+                            <select class="form-select" id="requestMethod">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="DELETE">DELETE</option>
+                                <option value="PATCH">PATCH</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="contentType" class="form-label">Content-Type</label>
+                            <select class="form-select" id="contentType">
+                                <option value="application/json">application/json</option>
+                                <option value="application/x-www-form-urlencoded">application/x-www-form-urlencoded</option>
+                                <option value="multipart/form-data">multipart/form-data</option>
+                                <option value="text/plain">text/plain</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">请求头</label>
+                            <div id="headerContainer">
+                                <div class="header-row d-flex mb-2">
+                                    <input type="text" class="form-control me-2" placeholder="Header名称" name="headerName[]">
+                                    <input type="text" class="form-control" placeholder="Header值" name="headerValue[]">
+                                    <button type="button" class="btn btn-outline-danger ms-2 remove-header" onclick="removeHeader(this)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary mt-2" onclick="addHeader()">
+                                <i class="fas fa-plus"></i> 添加请求头
+                            </button>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="requestBody" class="form-label">请求体</label>
+                            <textarea class="form-control" id="requestBody" rows="8" placeholder='{
+    "key": "value",
+    "example": 123
+}'></textarea>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="saveToHistory">
+                            <label class="form-check-label" for="saveToHistory">保存到历史记录</label>
+                        </div>
+                        
+                        <button type="button" class="btn btn-primary" onclick="sendRequest()">
+                            <i class="fas fa-paper-plane"></i> 发送请求
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">响应信息</label>
+                        <div class="d-flex justify-content-between mb-2">
+                            <div>
+                                <span class="badge bg-secondary" id="responseStatus">-</span>
+                                <span class="badge bg-info" id="responseTime">-</span>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyResponse()">
+                                    <i class="fas fa-copy"></i> 复制
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearResponse()">
+                                    <i class="fas fa-eraser"></i> 清除
+                                </button>
+                            </div>
+                        </div>
+                        <div class="border rounded p-3 bg-light" style="height: 500px; overflow: auto;">
+                            <pre id="responseContent" class="mb-0">// 响应将显示在这里</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // 添加请求头
+        function addHeader() {
+            const headerRow = `
+                <div class="header-row d-flex mb-2">
+                    <input type="text" class="form-control me-2" placeholder="Header名称" name="headerName[]">
+                    <input type="text" class="form-control" placeholder="Header值" name="headerValue[]">
+                    <button type="button" class="btn btn-outline-danger ms-2 remove-header" onclick="removeHeader(this)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            $("#headerContainer").append(headerRow);
+        }
+        
+        // 移除请求头
+        function removeHeader(button) {
+            $(button).closest('.header-row').remove();
+        }
+        
+        // 发送请求
+        function sendRequest() {
+            const url = $("#requestUrl").val();
+            if (!url) {
+                alert("请输入请求地址");
+                return;
+            }
+            
+            // 收集请求头
+            const headers = {};
+            $(".header-row").each(function() {
+                const name = $(this).find('input[name="headerName[]"]').val();
+                const value = $(this).find('input[name="headerValue[]"]').val();
+                if (name && value) {
+                    headers[name] = value;
+                }
+            });
+            
+            // 添加Content-Type
+            const contentType = $("#contentType").val();
+            if (contentType) {
+                headers["Content-Type"] = contentType;
+            }
+            
+            // 准备请求参数
+            const method = $("#requestMethod").val();
+            const requestBody = $("#requestBody").val();
+            
+            // 更新UI
+            $("#responseStatus").text("请求中...");
+            $("#responseTime").text("");
+            $("#responseContent").text("正在发送请求...");
+            
+            // 记录开始时间
+            const startTime = new Date();
+            
+            // 发送API请求
+            $.ajax({
+                url: '@Url.Action("TestApiEndpoint", "ApiTask")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    url: url,
+                    method: method,
+                    headers: headers,
+                    body: requestBody,
+                    saveToHistory: $("#saveToHistory").is(":checked")
+                }),
+                success: function(result) {
+                    // 计算响应时间
+                    const endTime = new Date();
+                    const responseTime = endTime - startTime;
+                    
+                    // 更新UI
+                    if (result.success) {
+                        $("#responseStatus").text(result.statusCode).removeClass("bg-secondary bg-danger").addClass(result.statusCode < 400 ? "bg-success" : "bg-danger");
+                        $("#responseTime").text(`${responseTime}ms`);
+                        
+                        // 格式化JSON响应
+                        try {
+                            const formattedResponse = JSON.stringify(JSON.parse(result.response), null, 2);
+                            $("#responseContent").text(formattedResponse);
+                        } catch (e) {
+                            // 如果不是JSON，直接显示
+                            $("#responseContent").text(result.response);
+                        }
+                    } else {
+                        $("#responseStatus").text("错误").removeClass("bg-secondary bg-success").addClass("bg-danger");
+                        $("#responseTime").text(`${responseTime}ms`);
+                        $("#responseContent").text("请求失败: " + result.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // 计算响应时间
+                    const endTime = new Date();
+                    const responseTime = endTime - startTime;
+                    
+                    // 更新UI
+                    $("#responseStatus").text("错误").removeClass("bg-secondary bg-success").addClass("bg-danger");
+                    $("#responseTime").text(`${responseTime}ms`);
+                    $("#responseContent").text("请求失败: " + error);
+                }
+            });
+        }
+        
+        // 复制响应内容
+        function copyResponse() {
+            const responseContent = $("#responseContent").text();
+            
+            // 创建临时文本区域
+            const textarea = document.createElement('textarea');
+            textarea.value = responseContent;
+            document.body.appendChild(textarea);
+            
+            // 选择并复制文本
+            textarea.select();
+            document.execCommand('copy');
+            
+            // 移除临时元素
+            document.body.removeChild(textarea);
+            
+            // 提示用户
+            alert("响应内容已复制到剪贴板");
+        }
+        
+        // 清除响应内容
+        function clearResponse() {
+            $("#responseStatus").text("-").removeClass("bg-success bg-danger").addClass("bg-secondary");
+            $("#responseTime").text("-");
+            $("#responseContent").text("// 响应将显示在这里");
+        }
+    </script>
+} 

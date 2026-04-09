@@ -1,0 +1,719 @@
+@model List<WarehouseManagementSystem.Models.PLC.RCS_PlcDevice>
+
+@{
+    ViewData["Title"] = "PLC信号管理";
+}
+
+<div class="container-fluid">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-microchip me-2"></i>PLC设备列表</h5>
+                <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addDeviceModal">
+                    <i class="fas fa-plus me-1"></i>添加设备
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>备注</th>
+                            <th>IP地址</th>
+                            <th>DB块</th>
+                            <th>端口</th>
+                            <th>状态</th>
+                            <th>品牌</th>
+                            <th>工位点</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var device in Model)
+                        {
+                            <tr>
+                                <td>@device.Id</td>
+                                <td><strong>@device.Remark</strong></td>
+                                <td>@device.IpAddress</td>
+                                <td>@device.ModuleAddress</td>
+                                <td>@device.Port</td>
+                                <td>
+                                    @if (device.IsEnabled)
+                                    {
+                                        <span class="badge bg-success">启用</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">禁用</span>
+                                    }
+                                </td>
+                                <td>@device.Brand</td>
+                                <td>@device.StationPoint</td>
+                                <td>@device.CreateTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-info" onclick="showSignals('@device.IpAddress', '@device.Remark')">
+                                            <i class="fas fa-list me-1"></i>信号列表
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-warning" onclick="editDevice(@device.Id)">
+                                            <i class="fas fa-edit me-1"></i>编辑
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="deleteDevice(@device.Id)">
+                                            <i class="fas fa-trash me-1"></i>删除
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-4 d-none" id="signalListCard">
+        <div class="card-header bg-info text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-signal me-2"></i>信号列表 - <span id="deviceName"></span></h5>
+                <div>
+                    <button type="button" class="btn btn-light me-2" id="addSignalBtn">
+                        <i class="fas fa-plus me-1"></i>添加信号
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="hideSignals()">
+                        <i class="fas fa-times me-1"></i>关闭
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>数据类型</th>
+                            <th>偏移量</th>
+                            <th>名称</th>
+                            <th>写入方</th>
+                            <th>当前值</th>
+                            <th>备注</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="signalTableBody">
+                        <!-- 信号数据将通过JavaScript动态加载 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加设备模态框 -->
+<div class="modal fade" id="addDeviceModal" tabindex="-1" aria-labelledby="addDeviceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addDeviceModalLabel"><i class="fas fa-plus-circle me-2"></i>添加PLC设备</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addDeviceForm">
+                    <div class="mb-3">
+                        <label for="ipAddress" class="form-label">IP地址</label>
+                        <input type="text" class="form-control" id="ipAddress" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="port" class="form-label">端口</label>
+                        <input type="number" class="form-control" id="port" value="102" required>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="isEnabled" checked>
+                        <label class="form-check-label" for="isEnabled">启用</label>
+                    </div>
+                    <div class="mb-3">
+                        <label for="brand" class="form-label">品牌</label>
+                        <select class="form-select" id="brand" required>
+                            <option value="西门子">西门子</option>
+                            <option value="欧姆龙">欧姆龙</option>
+                          
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="stationPoint" class="form-label">工位点</label>
+                        <input type="text" class="form-control" id="stationPoint">
+                    </div>
+                    <div class="mb-3">
+                        <label for="signalRequestPoint" class="form-label">信号请求点</label>
+                        <input type="text" class="form-control" id="signalRequestPoint">
+                    </div>
+                    <div class="mb-3">
+                        <label for="leaveResetPoint" class="form-label">离开复位点</label>
+                        <input type="text" class="form-control" id="leaveResetPoint">
+                    </div>
+                    <div class="mb-3">
+                        <label for="moduleAddress" class="form-label">模块地址</label>
+                        <input type="text" class="form-control" id="moduleAddress">
+                    </div>
+                    <div class="mb-3">
+                        <label for="remark" class="form-label">备注</label>
+                        <textarea class="form-control" id="remark" rows="2"></textarea>
+                    </div>
+                    <input type="hidden" id="deviceId" value="0">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>取消</button>
+                <button type="button" class="btn btn-primary" id="saveDeviceBtn"><i class="fas fa-save me-1"></i>保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加信号模态框 -->
+<div class="modal fade" id="addSignalModal" tabindex="-1" aria-labelledby="addSignalModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="addSignalModalLabel"><i class="fas fa-plus-circle me-2"></i>添加PLC信号</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addSignalForm">
+                    <input type="hidden" id="plcDeviceId">
+                    <input type="hidden" id="signalId" value="0">
+                    <div class="mb-3">
+                        <label for="dataType" class="form-label">数据类型</label>
+                        <select class="form-select" id="dataType" required>
+                            <option value="Bool">Bool</option>
+                            <option value="Int">Int</option>
+                            <option value="String">String</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="offset" class="form-label">偏移量</label>
+                        <input type="text" class="form-control" id="offset" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="signalName" class="form-label">信号名称</label>
+                        <input type="text" class="form-control" id="signalName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="writer" class="form-label">写入方</label>
+                        <select class="form-select" id="writer" required>
+                            <option value="AGV">AGV</option>
+                            <option value="PLC">PLC</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="currentValue" class="form-label">当前值</label>
+                        <input type="text" class="form-control" id="currentValue">
+                    </div>
+                    <div class="mb-3">
+                        <label for="signalRemark" class="form-label">备注</label>
+                        <textarea class="form-control" id="signalRemark" rows="2"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times me-1"></i>取消</button>
+                <button type="button" class="btn btn-info text-white" id="saveSignalBtn"><i class="fas fa-save me-1"></i>保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let currentDeviceIp = '';
+        const deviceModal = new bootstrap.Modal(document.getElementById('addDeviceModal'));
+        const signalModal = new bootstrap.Modal(document.getElementById('addSignalModal'));
+
+        // 显示信号列表
+        function showSignals(deviceIp, deviceRemark) {
+            currentDeviceIp = deviceIp;
+            $('#deviceName').text(`${deviceRemark || 'PLC设备'} (${deviceIp})`);
+            $('#plcDeviceId').val(deviceIp);
+            loadSignals(deviceIp);
+            $('#signalListCard').removeClass('d-none');
+            // 滚动到信号列表区域
+            $('html, body').animate({
+                scrollTop: $("#signalListCard").offset().top - 20
+            }, 500);
+        }
+
+        // 隐藏信号列表
+        function hideSignals() {
+            $('#signalListCard').addClass('d-none');
+            currentDeviceIp = '';
+        }
+
+        // 根据ID查找设备
+        function findDeviceById(deviceId) {
+            var devices = @Html.Raw(Json.Serialize(Model));
+        
+            // 确保deviceId是数字类型
+            deviceId = parseInt(deviceId);
+            
+            for (var i = 0; i < devices.length; i++) {
+                // 确保比较的两个值都是数字类型
+                if (parseInt(devices[i].id) === deviceId) {
+                    return devices[i];
+                }
+            }
+            
+            console.error('未找到ID为' + deviceId + '的设备');
+            return null;
+        }
+
+        // 加载信号
+        function loadSignals(deviceIp) {
+            showLoading('#signalTableBody');
+            $.ajax({
+                url: `/PlcSignal/GetSignalsByDevice?deviceId=${deviceIp}`,
+                type: 'GET',
+                success: function(signals) {
+                    const tbody = $('#signalTableBody');
+                    tbody.empty();
+                    
+                    if (!signals || signals.length === 0) {
+                        tbody.append(`
+                            <tr>
+                                <td colspan="8" class="text-center">暂无信号数据</td>
+                            </tr>
+                        `);
+                        return;
+                    }
+                    
+                    signals.forEach(signal => {
+                        let currentValueDisplay = '';
+                        if (signal.dataType === 'Bool') {
+                            currentValueDisplay = signal.currentValue === '1' || signal.currentValue === 'true' ? 
+                                '<span class="badge bg-success">True</span>' : 
+                                '<span class="badge bg-secondary">False</span>';
+                        } else {
+                            currentValueDisplay = signal.currentValue || '';
+                        }
+                        
+                        const row = `
+                            <tr>
+                                <td>${signal.id}</td>
+                                <td><span class="badge bg-${getBadgeColor(signal.dataType)}">${signal.dataType}</span></td>
+                                <td>${signal.offset}</td>
+                                <td>${signal.name}</td>
+                                <td><span class="badge bg-${signal.writer === 'AGV' ? 'primary' : 'warning'}">${signal.writer}</span></td>
+                                <td>${currentValueDisplay}</td>
+                                <td>${signal.remark || '-'}</td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-warning" onclick="editSignal(${signal.id})">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="deleteSignal(${signal.id})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                        tbody.append(row);
+                    });
+                },
+                error: function(error) {
+                    console.error('获取信号失败', error);
+                    $('#signalTableBody').html(`
+                        <tr>
+                            <td colspan="8" class="text-center text-danger">
+                                <i class="fas fa-exclamation-triangle me-2"></i>获取信号列表失败，请重试
+                            </td>
+                        </tr>
+                    `);
+                }
+            });
+        }
+        
+        // 显示加载中
+        function showLoading(selector) {
+            $(selector).html(`
+                <tr>
+                    <td colspan="8" class="text-center">
+                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                            <span class="visually-hidden">加载中...</span>
+                        </div>
+                        <span>加载中...</span>
+                    </td>
+                </tr>
+            `);
+        }
+        
+        // 获取数据类型对应的徽章颜色
+        function getBadgeColor(dataType) {
+            switch(dataType) {
+                case 'Bool': return 'success';
+                case 'Int': return 'info';
+                case 'String': return 'primary';
+                default: return 'secondary';
+            }
+        }
+
+        // 验证设备表单
+        function validateDeviceForm() {
+            const ipAddress = $('#ipAddress').val().trim();
+            const brand = $('#brand').val();
+            
+            if (!ipAddress) {
+                showToast('错误', 'IP地址不能为空', 'danger');
+                $('#ipAddress').focus();
+                return false;
+            }
+            
+            // IP地址验证
+            const ipPattern = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/;
+            if (!ipPattern.test(ipAddress)) {
+                showToast('错误', 'IP地址格式不正确', 'danger');
+                $('#ipAddress').focus();
+                return false;
+            }
+            
+            const parts = ipAddress.split('.');
+            for (let i = 0; i < parts.length; i++) {
+                const part = parseInt(parts[i]);
+                if (part < 0 || part > 255) {
+                    showToast('错误', 'IP地址格式不正确', 'danger');
+                    $('#ipAddress').focus();
+                    return false;
+                }
+            }
+            
+            if (!brand) {
+                showToast('错误', '品牌不能为空', 'danger');
+                $('#brand').focus();
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // 验证信号表单
+        function validateSignalForm() {
+            const name = $('#signalName').val().trim();
+            const offset = $('#offset').val().trim();
+            
+            if (!name) {
+                showToast('错误', '信号名称不能为空', 'danger');
+                $('#signalName').focus();
+                return false;
+            }
+            
+            if (!offset) {
+                showToast('错误', '偏移量不能为空', 'danger');
+                $('#offset').focus();
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // 显示Toast消息
+        function showToast(title, message, type = 'success') {
+            // 检查是否已存在Toast容器
+            if ($('#toast-container').length === 0) {
+                $('body').append(`
+                    <div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080"></div>
+                `);
+            }
+            
+            const id = 'toast-' + Date.now();
+            const toast = `
+                <div id="${id}" class="toast align-items-center text-white bg-${type} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <strong>${title}：</strong> ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            
+            $('#toast-container').append(toast);
+            const toastEl = document.getElementById(id);
+            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastEl, {
+                delay: 2500
+            });
+            toastBootstrap.show();
+            
+            // 自动移除toast元素
+            $(toastEl).on('hidden.bs.toast', function() {
+                $(this).remove();
+            });
+        }
+
+        // 添加/编辑设备
+        $('#saveDeviceBtn').click(function() {
+            if (!validateDeviceForm()) {
+                return;
+            }
+            
+            const deviceId = parseInt($('#deviceId').val());
+            const device = {
+                Id: deviceId,
+                IpAddress: $('#ipAddress').val().trim(),
+                Port: parseInt($('#port').val()),
+                IsEnabled: $('#isEnabled').prop('checked'),
+                Brand: $('#brand').val(),
+                StationPoint: $('#stationPoint').val().trim(),
+                SignalRequestPoint: $('#signalRequestPoint').val().trim(),
+                LeaveResetPoint: $('#leaveResetPoint').val().trim(),
+                ModuleAddress: $('#moduleAddress').val().trim(),
+                Remark: $('#remark').val().trim()
+            };
+            
+            const url = deviceId > 0 ? '/PlcSignal/UpdateDevice' : '/PlcSignal/AddDevice';
+            const action = deviceId > 0 ? '更新' : '添加';
+            
+            // 禁用保存按钮并显示加载状态
+            const saveBtn = $('#saveDeviceBtn');
+            const originalText = saveBtn.html();
+            saveBtn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>处理中...');
+            saveBtn.prop('disabled', true);
+            
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(device),
+                success: function(response) {
+                    if (response.success) {
+                        deviceModal.hide();
+                        showToast('成功', `${action}设备成功`, 'success');
+                        
+                        // 延迟刷新，让用户看到Toast消息
+                        setTimeout(() => {
+                            location.reload();
+                        }, 800);
+                    } else {
+                        showToast('错误', `${action}设备失败: ${response.message}`, 'danger');
+                        saveBtn.html(originalText);
+                        saveBtn.prop('disabled', false);
+                    }
+                },
+                error: function(error) {
+                    console.error(`${action}设备失败`, error);
+                    showToast('错误', `${action}设备失败，请查看控制台日志`, 'danger');
+                    saveBtn.html(originalText);
+                    saveBtn.prop('disabled', false);
+                }
+            });
+        });
+
+        // 添加信号按钮点击事件
+        $('#addSignalBtn').click(function() {
+            $('#addSignalForm')[0].reset();
+            $('#signalId').val(0);
+            $('#plcDeviceId').val(currentDeviceIp);
+            $('#addSignalModalLabel').html('<i class="fas fa-plus-circle me-2"></i>添加PLC信号');
+            signalModal.show();
+        });
+
+        // 保存信号（添加/编辑）
+        $('#saveSignalBtn').click(function() {
+            if (!validateSignalForm()) {
+                return;
+            }
+            
+            const signalId = parseInt($('#signalId').val());
+            const signal = {
+                Id: signalId,
+                PlcDeviceId: $('#plcDeviceId').val(),
+                DataType: $('#dataType').val(),
+                Offset: $('#offset').val().trim(),
+                Name: $('#signalName').val().trim(),
+                Writer: $('#writer').val(),
+                CurrentValue: $('#currentValue').val(),
+                Remark: $('#signalRemark').val().trim()
+            };
+            
+            const url = signalId > 0 ? '/PlcSignal/UpdateSignal' : '/PlcSignal/AddSignal';
+            const action = signalId > 0 ? '更新' : '添加';
+            
+            // 禁用保存按钮并显示加载状态
+            const saveBtn = $('#saveSignalBtn');
+            const originalText = saveBtn.html();
+            saveBtn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>处理中...');
+            saveBtn.prop('disabled', true);
+            
+            $.ajax({
+                url: url,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(signal),
+                success: function(response) {
+                    if (response.success) {
+                        signalModal.hide();
+                        showToast('成功', `${action}信号成功`, 'success');
+                        loadSignals(currentDeviceIp);
+                        saveBtn.html(originalText);
+                        saveBtn.prop('disabled', false);
+                    } else {
+                        showToast('错误', `${action}信号失败: ${response.message}`, 'danger');
+                        saveBtn.html(originalText);
+                        saveBtn.prop('disabled', false);
+                    }
+                },
+                error: function(error) {
+                    console.error(`${action}信号失败`, error);
+                    showToast('错误', `${action}信号失败，请查看控制台日志`, 'danger');
+                    saveBtn.html(originalText);
+                    saveBtn.prop('disabled', false);
+                }
+            });
+        });
+
+        // 编辑设备
+        function editDevice(deviceId) {
+            // 重置表单
+            $('#addDeviceForm')[0].reset();
+            $('#deviceId').val(deviceId);
+            $('#addDeviceModalLabel').html('<i class="fas fa-edit me-2"></i>编辑PLC设备');
+            
+            // 获取设备信息
+            const device = findDeviceById(deviceId);
+            if (device) {
+                $('#ipAddress').val(device.ipAddress);
+                $('#port').val(device.port);
+                $('#isEnabled').prop('checked', device.isEnabled);
+                $('#brand').val(device.brand);
+                $('#stationPoint').val(device.stationPoint);
+                $('#signalRequestPoint').val(device.signalRequestPoint);
+                $('#leaveResetPoint').val(device.leaveResetPoint);
+                $('#moduleAddress').val(device.moduleAddress);
+                $('#remark').val(device.remark);
+                
+                deviceModal.show();
+            } else {
+                showToast('错误', '设备信息获取失败', 'danger');
+            }
+        }
+
+        // 删除设备
+        function deleteDevice(deviceId) {
+            if (confirm('确定要删除这个设备吗？这将同时删除所有关联的信号！')) {
+                $.ajax({
+                    url: '/PlcSignal/DeleteDevice',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(deviceId),
+                    success: function(response) {
+                        if (response.success) {
+                            showToast('成功', '删除设备成功', 'success');
+                            // 延迟刷新，让用户看到Toast消息
+                            setTimeout(() => {
+                                location.reload();
+                            }, 800);
+                        } else {
+                            showToast('错误', '删除设备失败: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function(error) {
+                        console.error('删除设备失败', error);
+                        showToast('错误', '删除设备失败，请查看控制台日志', 'danger');
+                    }
+                });
+            }
+        }
+
+        // 编辑信号
+        function editSignal(signalId) {
+            // 重置表单
+            $('#addSignalForm')[0].reset();
+            $('#signalId').val(signalId);
+            $('#plcDeviceId').val(currentDeviceIp);
+            $('#addSignalModalLabel').html('<i class="fas fa-edit me-2"></i>编辑PLC信号');
+            
+            // 显示加载状态
+            const saveBtnEl = document.getElementById('saveSignalBtn');
+            saveBtnEl.disabled = true;
+            saveBtnEl.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>加载中...';
+            
+            // 获取信号信息
+            $.ajax({
+                url: `/PlcSignal/GetSignalById?id=${signalId}`,
+                type: 'GET',
+                success: function(signal) {
+                    $('#dataType').val(signal.dataType);
+                    $('#offset').val(signal.offset);
+                    $('#signalName').val(signal.name);
+                    $('#writer').val(signal.writer);
+                    $('#currentValue').val(signal.currentValue);
+                    $('#signalRemark').val(signal.remark);
+                    
+                    // 恢复按钮状态
+                    saveBtnEl.disabled = false;
+                    saveBtnEl.innerHTML = '<i class="fas fa-save me-1"></i>保存';
+                    
+                    signalModal.show();
+                },
+                error: function(error) {
+                    console.error('获取信号信息失败', error);
+                    showToast('错误', '获取信号信息失败，请查看控制台日志', 'danger');
+                    
+                    // 恢复按钮状态
+                    saveBtnEl.disabled = false;
+                    saveBtnEl.innerHTML = '<i class="fas fa-save me-1"></i>保存';
+                }
+            });
+        }
+
+        // 删除信号
+        function deleteSignal(signalId) {
+            if (confirm('确定要删除这个信号吗？')) {
+                $.ajax({
+                    url: '/PlcSignal/DeleteSignal',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(signalId),
+                    success: function(response) {
+                        if (response.success) {
+                            showToast('成功', '删除信号成功', 'success');
+                            loadSignals(currentDeviceIp);
+                        } else {
+                            showToast('错误', '删除信号失败: ' + response.message, 'danger');
+                        }
+                    },
+                    error: function(error) {
+                        console.error('删除信号失败', error);
+                        showToast('错误', '删除信号失败，请查看控制台日志', 'danger');
+                    }
+                });
+            }
+        }
+
+        // 文档加载完成后初始化
+        $(document).ready(function() {
+            // 设置表单输入框按回车时触发保存按钮点击
+            $('#addDeviceForm input').keypress(function(e) {
+                if (e.which === 13) {
+                    $('#saveDeviceBtn').click();
+                    return false;
+                }
+            });
+            
+            $('#addSignalForm input').keypress(function(e) {
+                if (e.which === 13) {
+                    $('#saveSignalBtn').click();
+                    return false;
+                }
+            });
+            
+            // 添加设备按钮点击事件 - 重置表单
+            $('button[data-bs-target="#addDeviceModal"]').click(function() {
+                $('#addDeviceForm')[0].reset();
+                $('#deviceId').val(0);
+                $('#addDeviceModalLabel').html('<i class="fas fa-plus-circle me-2"></i>添加PLC设备');
+            });
+        });
+    </script>
+} 

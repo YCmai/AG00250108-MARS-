@@ -1,0 +1,150 @@
+2025-09-23 15:54:54.875 +08:00 [INF] API任务处理服务已初始化，轮询间隔: 5秒
+2025-09-23 15:54:54.935 +08:00 [INF] IO处理服务已启动
+2025-09-23 15:54:54.940 +08:00 [INF] 网络连接监控任务已启动
+2025-09-23 15:54:54.942 +08:00 [INF] 开始清理过期IO任务数据...
+2025-09-23 15:54:55.732 +08:00 [INF] 正在启动PLC通信托管服务...
+2025-09-23 15:54:55.734 +08:00 [INF] 尝试重置PLC通信服务锁状态...
+2025-09-23 15:54:55.736 +08:00 [INF] 正在重置PLC通信服务锁状态...
+2025-09-23 15:54:55.738 +08:00 [INF] 成功获取服务锁，立即释放
+2025-09-23 15:54:55.741 +08:00 [INF] 正在启动PLC通信服务...
+2025-09-23 15:54:55.743 +08:00 [INF] 开始重置所有设备锁...
+2025-09-23 15:54:55.744 +08:00 [INF] 所有设备锁已重置
+2025-09-23 15:54:56.531 +08:00 [DBG] IO任务清理完成，没有需要清理的记录
+2025-09-23 15:54:56.542 +08:00 [INF] 发现新的IO设备: 192.168.200.121
+2025-09-23 15:54:56.544 +08:00 [WRN] 没有启用的PLC设备，通信服务未启动
+2025-09-23 15:54:56.548 +08:00 [INF] PLC配置刷新任务已启动
+2025-09-23 15:54:56.550 +08:00 [INF] PLC连接状态监控任务已启动
+2025-09-23 15:54:56.553 +08:00 [INF] PLC通信托管服务已启动
+2025-09-23 15:54:56.556 +08:00 [INF] PLC任务处理器正在启动...
+2025-09-23 15:54:56.563 +08:00 [INF] PLC任务处理循环已启动
+2025-09-23 15:54:56.567 +08:00 [INF] PLC任务处理器已启动
+2025-09-23 15:54:56.568 +08:00 [INF] 心跳服务正在启动...
+2025-09-23 15:54:56.570 +08:00 [INF] 心跳处理循环已启动
+2025-09-23 15:54:56.582 +08:00 [INF] 心跳服务已启动
+2025-09-23 15:54:56.583 +08:00 [INF] API任务处理服务已启动
+2025-09-23 15:54:56.587 +08:00 [INF] API服务网络连接监控任务已启动
+2025-09-23 15:54:56.770 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-09-23 15:54:56.811 +08:00 [INF] 默认API端点 api.example.com 的初始网络状态: 离线
+2025-09-23 15:54:56.841 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-09-23 15:54:57.073 +08:00 [INF] 设备 192.168.200.121 的网络连接状态: 离线
+2025-09-23 15:54:57.075 +08:00 [INF] 当前活跃IO设备: 1个
+2025-09-23 15:54:59.845 +08:00 [WRN] Failed to determine the https port for redirect.
+2025-09-23 15:55:00.348 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:05.006 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:06.705 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:06.888 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-09-23 15:55:09.168 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:10.823 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:11.566 +08:00 [INF] 正在刷新PLC设备配置...
+2025-09-23 15:55:12.315 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:14.129 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:16.957 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-09-23 15:55:20.396 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:21.233 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:24.485 +08:00 [INF] 任务 147975 已成功取消
+2025-09-23 15:55:26.578 +08:00 [INF] 正在刷新PLC设备配置...
+2025-09-23 15:55:27.003 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-09-23 15:55:27.296 +08:00 [INF] 任务 147976 已成功取消
+2025-09-23 15:55:27.306 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:29.100 +08:00 [INF] 任务 147977 已成功取消
+2025-09-23 15:55:31.468 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:33.110 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:35.093 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:36.160 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:37.054 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-09-23 15:55:37.255 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:38.285 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:39.437 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:40.201 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:41.261 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:41.582 +08:00 [INF] 正在刷新PLC设备配置...
+2025-09-23 15:55:42.228 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:47.098 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156
+2025-09-23 15:55:47.844 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:49.078 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:49.896 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:52.235 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:53.586 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:54.920 +08:00 [WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+2025-09-23 15:55:56.594 +08:00 [INF] 正在刷新PLC设备配置...
+2025-09-23 15:55:57.127 +08:00 [WRN] 检查主机 api.example.com 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.Net.Sockets.SocketException (11001): 不知道这样的主机。
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at System.Net.Dns.<GetAddrInfoWithTelemetryAsync>g__CompleteAsync|34_0[T](Task task, String hostName, ValueStopwatch stopwatch)
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.GetAddressAndSendAsync(String hostNameOrAddress, Int32 timeout, Byte[] buffer, PingOptions options)
+   at WarehouseManagementSystem.Services.ApiTaskProcessorService.CheckNetworkConnectionAsync(String hostNameOrAddress) in E:\插件集成\WarehouseManagementSystem\Services\ApiTaskProcessorService.cs:line 156

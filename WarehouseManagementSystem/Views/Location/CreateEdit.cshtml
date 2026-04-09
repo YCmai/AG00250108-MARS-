@@ -1,0 +1,170 @@
+@model RCS_Locations
+@using EnumExtensions;
+<!-- Modal Alert Box -->
+<!-- Message Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-@(TempData["MessageType"]?.ToString().ToLower()) text-white">
+                <h5 class="modal-title" id="messageModalLabel">
+                    <i class="bi bi-check-circle me-2"></i>Notification
+
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <p class="lead">@TempData["Message"]</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="closebtn" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .custom-header {
+        padding: 0.5rem 1rem; /* Reduce the height of the top red area */
+    }
+
+    .btn-close {
+        margin-right: -1rem; /* Reduce the right margin of the close button */
+    }
+
+    .btn-close-white {
+        filter: invert(1); /* Make the close button white */
+    }
+
+    .modal-title {
+        font-size: 1.25rem; /* Adjust title font size */
+    }
+
+    .custom-footer {
+        justify-content: center; /* Center the close button */
+        padding: 0.5rem; /* Reduce the height of the bottom area */
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.75rem; /* Adjust the size of the close button */
+    }
+</style>
+
+<form asp-action="CreateEdit" asp-controller="Location" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group mb-2">
+        <label asp-for="Name" class="control-label">Map Node</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        @*   <label asp-for="NodeRemark" class="control-label">NodeRemark</label>
+        <input asp-for="NodeRemark" class="form-control" />
+        <span asp-validation-for="NodeRemark" class="text-danger"></span> *@
+
+        <label asp-for="NodeRemark" class="control-label">Node Remark</label>
+        @if (Model.Id == 0)
+        {
+            <input asp-for="NodeRemark" class="form-control" />
+        }
+        else
+        {
+            <input asp-for="NodeRemark" class="form-control" readonly />
+            <input type="hidden" asp-for="NodeRemark" /> <!-- Pass Name value -->
+            <span asp-validation-for="NodeRemark" class="text-danger"></span>
+        }
+        <span asp-validation-for="NodeRemark" class="text-danger"></span>
+
+
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="WattingNode" class="control-label">Operation Point</label>
+        <input asp-for="WattingNode" class="form-control" />
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="MaterialCode" class="control-label">Material Code</label>
+        <input asp-for="MaterialCode" class="form-control" />
+    </div>
+
+    @*  <div class="form-group mb-2">
+    <label asp-for="PalletID" class="control-label">托盘ID</label>
+    <input asp-for="PalletID" class="form-control" />
+    </div> *@
+
+    @*   <div class="form-group mb-2">
+    <label asp-for="Quanitity" class="control-label">数量</label>
+    <input asp-for="Quanitity" class="form-control" />
+    </div> *@
+
+    @*   <div class="form-group mb-2">
+    <label asp-for="Weight" class="control-label">重量</label>
+    <input asp-for="Weight" class="form-control" />
+    </div> *@
+
+    <div class="form-group mb-2">
+        <label asp-for="EntryDate" class="control-label">Entry Date</label>
+        <input asp-for="EntryDate" class="form-control" />
+    </div>
+
+    <div class="form-group mb-2">
+        <label asp-for="Group" class="control-label">Group</label>
+        <input asp-for="Group" class="form-control" />
+        <span asp-validation-for="Group" class="text-danger"></span>
+    </div>
+
+     <div class="form-group mb-2">
+    <label asp-for="LiftingHeight" class="control-label">Pickup Height</label>
+    <input asp-for="LiftingHeight" class="form-control" />
+    <span asp-validation-for="LiftingHeight" class="text-danger"></span>
+    </div>
+     <div class="form-group mb-2">
+        <label asp-for="UnloadHeight" class="control-label">Unload Height</label>
+        <input asp-for="UnloadHeight" class="form-control" />
+        <span asp-validation-for="UnloadHeight" class="text-danger"></span>
+    </div>
+    <div class="form-group mb-2">
+        <label asp-for="Lock" class="control-label">Lock</label>
+        <select asp-for="Lock" class="form-control">
+            <option value="true">True</option>
+            <option value="false">False</option>
+        </select>
+        <span asp-validation-for="Lock" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-2">
+        <label asp-for="Enabled" class="control-label">Enabled Status</label>
+        <select asp-for="Enabled" class="form-control">
+            <option value="true">Enabled</option>
+            <option value="false">Disabled</option>
+        </select>
+        <span asp-validation-for="Enabled" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+
+    <a asp-action="Index" asp-controller="Location" class="btn btn-secondary ms-2">Back</a>
+</form>
+
+@if (TempData["Message"] != null)
+{
+    <script>
+        $(document).ready(function () {
+            // Show notification modal
+            $('#messageModal').modal('show');
+
+            // Check if it's a success notification, if so, redirect to Index page after showing
+            if ('@TempData["MessageType"]' === 'success' && '@TempData["RedirectAfterDelay"]' === 'True') {
+                // Auto close modal and redirect after 2 seconds
+                setTimeout(function () {
+                    $('#messageModal').modal('hide');
+                    window.location.href = '@Url.Action("Index", "Location")';
+                }, 2000);
+
+                // Also redirect when user manually clicks close button or X
+                $('#messageModal').on('hidden.bs.modal', function () {
+                    window.location.href = '@Url.Action("Index", "Location")';
+                });
+            }
+        });
+    </script>
+}
+

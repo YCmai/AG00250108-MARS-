@@ -1,0 +1,875 @@
+﻿@using WarehouseManagementSystem.Models
+@model PagedResult<RCS_UserTasks>
+@{
+    Layout = "_Layout";
+}
+<div>
+    <!-- Statistics Panel -->
+    <div class="row mb-4" id="statisticsPanel">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title" id="totalTasks">-</h4>
+                            <p class="card-text">Total Tasks</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-tasks fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title" id="completedTasks">-</h4>
+                            <p class="card-text">Completed</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title" id="runningTasks">-</h4>
+                            <p class="card-text">In Progress</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-spinner fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title" id="completionRate">-</h4>
+                            <p class="card-text">Completion Rate</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-percentage fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Operation Panel -->
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <div class="d-flex align-items-end gap-3">
+                <div class="flex-grow-1">
+                    <label for="filterDate">Start Time</label>
+                    <input type="date" id="filterDate" class="form-control" value="@ViewData["filterDate"]" />
+                </div>
+
+                <div class="flex-grow-1">
+                    <label for="endDate">End Time</label>
+                    <input type="date" id="endDate" class="form-control" value="@ViewData["endDate"]" />
+                </div>
+
+                <div>
+                    <button class="btn btn-primary px-4" onclick="submitForm()">Search</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 text-end">
+            <button class="btn btn-primary" onclick="showCreateTaskModal()">
+                <i class="fas fa-plus"></i> Create Task
+            </button>
+            <button class="btn btn-success" onclick="exportTasks()">
+                <i class="fas fa-download"></i> Export Task Data
+            </button>
+            <button class="btn btn-info" onclick="toggleStatistics()">
+                <i class="fas fa-chart-bar"></i> Detailed Statistics
+            </button>
+        </div>
+    </div>
+
+    <!-- Detailed Statistics Panel (Hidden by Default) -->
+    <div class="row mb-4" id="detailedStatistics" style="display: none;">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Status Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="statusChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">AGV Efficiency Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="agvChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th>Task Type</th>
+                        <th>Source</th>
+                        <th>Target</th>
+                        <th>Task Status</th>
+                        <th>AGV No</th>
+                        <th>Task ID</th>
+                        <th>Created Date</th>
+                        <th>Completed Date</th>
+                        <th>Operations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Items != null && Model.Items.Any())
+                    {
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>
+                                    @item.taskType
+                                </td>
+                                <td>@item.sourcePosition</td>
+
+                                <td>@item.targetPosition</td>
+                                <td>
+                                    @{
+                                        var statusClass = item.taskStatus switch
+                                        {
+                                            TaskStatuEnum.None => "badge bg-secondary",
+                                            TaskStatuEnum.CarWash => "badge bg-info",
+                                            TaskStatuEnum.TaskStart => "badge bg-primary",
+                                            TaskStatuEnum.Confirm => "badge bg-primary",
+                                            TaskStatuEnum.ConfirmCar => "badge bg-primary",
+                                            TaskStatuEnum.PickingUp => "badge bg-warning",
+                                            TaskStatuEnum.PickDown => "badge bg-info",
+                                            TaskStatuEnum.Unloading => "badge bg-warning",
+                                            TaskStatuEnum.UnloadDown => "badge bg-info",
+                                            TaskStatuEnum.TaskFinish => "badge bg-success",
+                                            TaskStatuEnum.Canceled => "badge bg-danger",
+                                            TaskStatuEnum.CanceledWashing => "badge bg-warning",
+                                            TaskStatuEnum.CanceledWashFinish => "badge bg-success",
+                                            TaskStatuEnum.RedirectRequest => "badge bg-danger",
+                                            TaskStatuEnum.InvalidUp => "badge bg-danger",
+                                            TaskStatuEnum.InvalidDown => "badge bg-danger",
+                                            TaskStatuEnum.OrderAgv => "badge bg-warning",
+                                            TaskStatuEnum.OrderAgvFinish => "badge bg-success",
+                                            _ => "badge bg-light text-dark"
+                                        };
+
+                                        var statusText = item.taskStatus switch
+                                        {
+                                            TaskStatuEnum.None => "Not Executed",
+                                            TaskStatuEnum.CarWash => "Car Washing",
+                                            TaskStatuEnum.TaskStart => "Task Started",
+                                            TaskStatuEnum.Confirm => "Parameter Confirming",
+                                            TaskStatuEnum.ConfirmCar => "Confirm AGV Execution",
+                                            TaskStatuEnum.PickingUp => "Picking Up",
+                                            TaskStatuEnum.PickDown => "Pick Completed",
+                                            TaskStatuEnum.Unloading => "Unloading",
+                                            TaskStatuEnum.UnloadDown => "Unload Completed",
+                                            TaskStatuEnum.TaskFinish => "Task Completed",
+                                            TaskStatuEnum.Canceled => "Cancelled",
+                                            TaskStatuEnum.CanceledWashing => "Washing After Cancel",
+                                            TaskStatuEnum.CanceledWashFinish => "Cancel Wash Completed",
+                                            TaskStatuEnum.RedirectRequest => "Pickup Route Error",
+                                            TaskStatuEnum.InvalidUp => "Invalid Pickup Point",
+                                            TaskStatuEnum.InvalidDown => "Invalid Unload Point",
+                                            TaskStatuEnum.OrderAgv => "Unload Route Error",
+                                            TaskStatuEnum.OrderAgvFinish => "Error Task Completed",
+                                            _ => item.taskStatus.ToString()
+                                        };
+                                    }
+                                    <span class="@statusClass">@statusText</span>
+                                </td>
+                                <td>@item.robotCode</td>
+                                <td>@item.runTaskId</td>
+                                <td>@(item.creatTime?.ToString("yyyy-MM-dd HH:mm:ss") ?? "-")</td>
+                                <td>@(item.endTime?.ToString("yyyy-MM-dd HH:mm:ss") ?? "-")</td>
+                              
+                                <td>
+                                    @if (item.taskStatus < TaskStatuEnum.TaskFinish && !item.IsCancelled) // 30 indicates task completion
+                                    {
+                                        <button class="btn btn-danger btn-sm cancel-task"
+                                                data-task-id="@item.ID"
+                                                onclick="cancelTask(@item.ID)">
+                                            Cancel Task
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="9" class="text-center">No data available</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination Navigation -->
+    <div class="d-flex justify-content-end">
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm">
+                @if (Model.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(Model.PageNumber - 1)&filterDate=@ViewData["filterDate"]&endDate=@ViewData["endDate"]">Previous</a>
+                    </li>
+                }
+
+                <li class="page-item disabled">
+                    <span class="page-link">Current Page: @Model.PageNumber / @Model.TotalPages</span>
+                </li>
+
+                @if (Model.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="?page=@(Model.PageNumber + 1)&filterDate=@ViewData["filterDate"]&endDate=@ViewData["endDate"]">Next</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Create Task Modal -->
+<div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createTaskModalLabel">
+                    <i class="fas fa-plus"></i> Create New Task
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-success" id="createTaskSuccessAlert" style="display: none;"></div>
+                <div class="alert alert-danger" id="createTaskErrorAlert" style="display: none;"></div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Select Source</label>
+                        <input type="text" class="form-control mb-2" id="createTaskSourceSearch" placeholder="Search source location..." oninput="filterCreateTaskLocations('source')">
+                        <div class="location-select-container" id="createTaskSourceGrid" style="max-height: 250px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 4px; padding: 10px;">
+                            <div class="text-center text-muted py-3">
+                                <i class="fas fa-spinner fa-spin"></i> Loading...
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Select Target</label>
+                        <input type="text" class="form-control mb-2" id="createTaskTargetSearch" placeholder="Search target location..." oninput="filterCreateTaskLocations('target')">
+                        <div class="location-select-container" id="createTaskTargetGrid" style="max-height: 250px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 4px; padding: 10px;">
+                            <div class="text-center text-muted py-3">
+                                <i class="fas fa-spinner fa-spin"></i> Loading...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <span id="createTaskSelectedSource" class="badge bg-primary fs-6 px-3 py-2">Not Selected</span>
+                                    <i class="fas fa-arrow-right mx-3 text-primary"></i>
+                                    <span id="createTaskSelectedTarget" class="badge bg-success fs-6 px-3 py-2">Not Selected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="createTaskSubmitBtn" onclick="confirmCreateTask()">
+                    <i class="fas fa-check"></i> Confirm Create
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let statusChart = null;
+    let agvChart = null;
+
+    $(document).ready(function() {
+        loadStatistics();
+        
+        // Listen for filter condition changes, reload statistics
+        $('#filterDate, #endDate').change(function() {
+            loadStatistics();
+        });
+    });
+
+    function submitForm() {
+        var filterDate = document.getElementById("filterDate").value;
+        var endDate = document.getElementById("endDate").value;
+
+        window.location.href = "/Tasks/Index?page=1" +
+            "&filterDate=" + encodeURIComponent(filterDate) +
+            "&endDate=" + encodeURIComponent(endDate);
+    }
+
+    function loadStatistics() {
+        var filterDate = $('#filterDate').val();
+        var endDate = $('#endDate').val();
+        
+        console.log('Loading statistics with filterDate:', filterDate, 'endDate:', endDate);
+        
+        $.ajax({
+            url: '/Tasks/GetTaskStatistics',
+            type: 'GET',
+            data: { 
+                filterDate: filterDate, 
+                endDate: endDate 
+            },
+            success: function(response) {
+                console.log('Statistics response:', response);
+                if (response.success) {
+                    updateStatisticsCards(response.data);
+                    updateCharts(response.data);
+                } else {
+                    console.error('Failed to load statistics:', response.message);
+                    showStatisticsError();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Failed to load statistics:', status, error);
+                console.error('Response:', xhr.responseText);
+                showStatisticsError();
+            }
+        });
+    }
+
+    function showStatisticsError() {
+        $('#totalTasks').text('Error');
+        $('#completedTasks').text('Error');
+        $('#runningTasks').text('Error');
+        $('#completionRate').text('Error');
+    }
+
+    function updateStatisticsCards(data) {
+        console.log('updateStatisticsCards called with data:', data);
+        $('#totalTasks').text(data.totalTasks);
+        $('#completedTasks').text(data.completedTasks);
+        $('#runningTasks').text(data.runningTasks);
+        $('#completionRate').text(data.completionRate + '%');
+    }
+
+    function updateCharts(data) {
+        console.log('updateCharts called with data:', data);
+        
+        // Update status distribution pie chart
+        if (statusChart) {
+            statusChart.destroy();
+        }
+        
+        // Check if data exists
+        if (!data.statusDistribution || data.statusDistribution.length === 0) {
+            console.log('No status distribution data available');
+            return;
+        }
+        
+        var statusCtx = document.getElementById('statusChart').getContext('2d');
+        statusChart = new Chart(statusCtx, {
+            type: 'pie',
+            data: {
+                labels: data.statusDistribution.map(item => item.status),
+                datasets: [{
+                    data: data.statusDistribution.map(item => item.count),
+                    backgroundColor: [
+                        '#28a745', '#ffc107', '#17a2b8', '#dc3545', 
+                        '#6c757d', '#007bff', '#6f42c1', '#fd7e14'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Update AGV efficiency bar chart
+        if (agvChart) {
+            agvChart.destroy();
+        }
+        
+        // Check if AGV data exists
+        if (!data.agvStatistics || data.agvStatistics.length === 0) {
+            console.log('No AGV statistics data available');
+            return;
+        }
+        
+        var agvCtx = document.getElementById('agvChart').getContext('2d');
+        agvChart = new Chart(agvCtx, {
+            type: 'bar',
+            data: {
+                labels: data.agvStatistics.map(item => item.agvCode),
+                datasets: [{
+                    label: 'Total Tasks',
+                    data: data.agvStatistics.map(item => item.taskCount),
+                    backgroundColor: '#007bff'
+                }, {
+                    label: 'Completed',
+                    data: data.agvStatistics.map(item => item.completedCount),
+                    backgroundColor: '#28a745'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    function toggleStatistics() {
+        var panel = $('#detailedStatistics');
+        if (panel.is(':visible')) {
+            panel.slideUp();
+        } else {
+            panel.slideDown();
+            // If charts have not been created, reload statistics
+            if (!statusChart || !agvChart) {
+                loadStatistics();
+            }
+        }
+    }
+
+    function exportTasks() {
+        var filterDate = $('#filterDate').val();
+        var endDate = $('#endDate').val();
+        
+        // Construct export URL
+        var exportUrl = '/Tasks/ExportTasks?';
+        if (filterDate) exportUrl += 'filterDate=' + encodeURIComponent(filterDate) + '&';
+        if (endDate) exportUrl += 'endDate=' + encodeURIComponent(endDate);
+        
+        // Create hidden download link
+        var link = document.createElement('a');
+        link.href = exportUrl;
+        link.download = '';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+
+    function cancelTask(taskId) {
+        if (confirm('Are you sure you want to cancel this task?')) {
+            $.ajax({
+                url: '/Tasks/CancelTask',
+                type: 'POST',
+                data: { id: taskId },
+                success: function (result) {
+                    if (result.success) {
+                        alert('Task cancelled successfully!');
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        alert(result.message)
+                    }
+                },
+                error: function () {
+                    alert('Failed to cancel task, please try again later');
+                }
+            });
+        }
+    }
+
+    // ========== Create task related functions ==========
+    let createTaskLocations = [];
+    let createTaskFilteredSourceLocations = [];
+    let createTaskFilteredTargetLocations = [];
+    let createTaskSelectedSource = '';
+    let createTaskSelectedTarget = '';
+
+    // Show create task modal
+    function showCreateTaskModal() {
+        createTaskSelectedSource = '';
+        createTaskSelectedTarget = '';
+        $('#createTaskSourceSearch').val('');
+        $('#createTaskTargetSearch').val('');
+        $('#createTaskSelectedSource').text('Not Selected').removeClass('bg-primary').addClass('bg-secondary');
+        $('#createTaskSelectedTarget').text('Not Selected').removeClass('bg-success').addClass('bg-secondary');
+        $('#createTaskSuccessAlert').hide();
+        $('#createTaskErrorAlert').hide();
+        
+        const modalElement = document.getElementById('createTaskModal');
+        const modal = new bootstrap.Modal(modalElement);
+        
+        // Remove previous event listeners (if any)
+        $(modalElement).off('shown.bs.modal');
+        
+        // Load location data after modal is shown
+        $(modalElement).on('shown.bs.modal', function () {
+            loadCreateTaskLocations();
+        });
+        
+        modal.show();
+    }
+
+    // Load location data
+    async function loadCreateTaskLocations() {
+        try {
+            const sourceGrid = document.getElementById('createTaskSourceGrid');
+            const targetGrid = document.getElementById('createTaskTargetGrid');
+            
+            sourceGrid.innerHTML = '<div class="text-center text-muted py-3"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+            targetGrid.innerHTML = '<div class="text-center text-muted py-3"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+            
+            const response = await fetch('/MobileTask/GetLocations');
+            const result = await response.json();
+            
+            if (result.success) {
+                createTaskLocations = result.data;
+                createTaskFilteredSourceLocations = [...createTaskLocations];
+                createTaskFilteredTargetLocations = [...createTaskLocations];
+                populateCreateTaskLocationButtons();
+            } else {
+                console.error('Failed to get location data:', result.message);
+                sourceGrid.innerHTML = '<div class="text-center text-danger py-3">Load Failed</div>';
+                targetGrid.innerHTML = '<div class="text-center text-danger py-3">Load Failed</div>';
+            }
+        } catch (error) {
+            console.error('Failed to get location data:', error.message);
+            const sourceGrid = document.getElementById('createTaskSourceGrid');
+            const targetGrid = document.getElementById('createTaskTargetGrid');
+            sourceGrid.innerHTML = '<div class="text-center text-danger py-3">Load Failed</div>';
+            targetGrid.innerHTML = '<div class="text-center text-danger py-3">Load Failed</div>';
+        }
+    }
+
+    // Populate location buttons
+    function populateCreateTaskLocationButtons() {
+        const sourceGrid = document.getElementById('createTaskSourceGrid');
+        const targetGrid = document.getElementById('createTaskTargetGrid');
+        
+        sourceGrid.innerHTML = '';
+        targetGrid.innerHTML = '';
+        
+        // Populate source buttons
+        if (createTaskFilteredSourceLocations.length === 0) {
+            sourceGrid.innerHTML = '<div class="text-center text-muted py-3">No matching locations found</div>';
+        } else {
+            createTaskFilteredSourceLocations.forEach(location => {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-sm btn-outline-primary m-1';
+                btn.style.cssText = 'min-width: 80px; margin: 3px;';
+                btn.textContent = location.nodeRemark;
+                if (createTaskSelectedSource === location.name) {
+                    btn.classList.remove('btn-outline-primary');
+                    btn.classList.add('btn-primary');
+                }
+                btn.onclick = () => selectCreateTaskSource(location.name, location.nodeRemark);
+                sourceGrid.appendChild(btn);
+            });
+        }
+        
+        // Populate target buttons
+        if (createTaskFilteredTargetLocations.length === 0) {
+            targetGrid.innerHTML = '<div class="text-center text-muted py-3">No matching locations found</div>';
+        } else {
+            createTaskFilteredTargetLocations.forEach(location => {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-sm btn-outline-success m-1';
+                btn.style.cssText = 'min-width: 80px; margin: 3px;';
+                btn.textContent = location.nodeRemark;
+                
+                // Disable target button if it's the same as the source
+                if (location.name === createTaskSelectedSource) {
+                    btn.classList.add('disabled');
+                    btn.disabled = true;
+                    btn.style.opacity = '0.5';
+                } else if (createTaskSelectedTarget === location.name) {
+                    btn.classList.remove('btn-outline-success');
+                    btn.classList.add('btn-success');
+                }
+                
+                btn.onclick = () => selectCreateTaskTarget(location.name, location.nodeRemark);
+                targetGrid.appendChild(btn);
+            });
+        }
+    }
+
+    // Select source location
+    function selectCreateTaskSource(name, remark) {
+        createTaskSelectedSource = name;
+        $('#createTaskSelectedSource').text(remark).removeClass('bg-secondary').addClass('bg-primary');
+        
+        // Clear target selection if it's the same as the source
+        if (createTaskSelectedTarget === createTaskSelectedSource) {
+            createTaskSelectedTarget = '';
+            $('#createTaskSelectedTarget').text('Not Selected').removeClass('bg-success').addClass('bg-secondary');
+        }
+        
+        populateCreateTaskLocationButtons();
+    }
+
+    // Select target location
+    function selectCreateTaskTarget(name, remark) {
+        if (name === createTaskSelectedSource) {
+            console.error('Target cannot be the same as source');
+            return;
+        }
+        
+        createTaskSelectedTarget = name;
+        $('#createTaskSelectedTarget').text(remark).removeClass('bg-secondary').addClass('bg-success');
+        
+        populateCreateTaskLocationButtons();
+    }
+
+    // Filter locations
+    function filterCreateTaskLocations(type) {
+        const searchValue = document.getElementById('createTask' + (type === 'source' ? 'Source' : 'Target') + 'Search').value.toLowerCase();
+        
+        if (type === 'source') {
+            createTaskFilteredSourceLocations = createTaskLocations.filter(location => 
+                location.nodeRemark.toLowerCase().includes(searchValue) ||
+                location.name.toLowerCase().includes(searchValue)
+            );
+        } else {
+            createTaskFilteredTargetLocations = createTaskLocations.filter(location => 
+                location.nodeRemark.toLowerCase().includes(searchValue) ||
+                location.name.toLowerCase().includes(searchValue)
+            );
+        }
+        
+        populateCreateTaskLocationButtons();
+    }
+
+    // Confirm create task
+    async function confirmCreateTask() {
+        if (!createTaskSelectedSource || !createTaskSelectedTarget) {
+            console.error('Please select source and target locations');
+            return;
+        }
+        
+        if (createTaskSelectedSource === createTaskSelectedTarget) {
+            console.error('Source and target cannot be the same');
+            return;
+        }
+
+        try {
+            const submitBtn = document.getElementById('createTaskSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+            
+            // Check for duplicate tasks
+            const checkResponse = await fetch(`/MobileTask/CheckDuplicateTask?sourcePosition=${encodeURIComponent(createTaskSelectedSource)}&targetPosition=${encodeURIComponent(createTaskSelectedTarget)}`);
+            const checkResult = await checkResponse.json();
+            
+            if (!checkResult.success) {
+                console.error('Failed to check for duplicate tasks:', checkResult.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Confirm Create';
+                return;
+            }
+            
+            if (checkResult.data.isDuplicate) {
+                console.error('Duplicate task found, please wait for the previous task to complete');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Confirm Create';
+                return;
+            }
+            
+            // Create task
+            const response = await fetch('/MobileTask/CreateTask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    sourcePosition: createTaskSelectedSource,
+                    targetPosition: createTaskSelectedTarget
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                console.log('Task created successfully!');
+                setTimeout(() => {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('createTaskModal'));
+                    modal.hide();
+                    location.reload();
+                }, 1500);
+            } else {
+                console.error('Failed to create task:', result.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Confirm Create';
+            }
+        } catch (error) {
+            showCreateTaskError('创建任务失败: ' + error.message);
+            const submitBtn = document.getElementById('createTaskSubmitBtn');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-check"></i> 确认创建';
+        }
+    }
+
+    // 显示成功消息
+    function showCreateTaskSuccess(message) {
+        $('#createTaskErrorAlert').hide();
+        $('#createTaskSuccessAlert').text(message).show();
+    }
+
+    // 显示错误消息
+    function showCreateTaskError(message) {
+        $('#createTaskSuccessAlert').hide();
+        $('#createTaskErrorAlert').text(message).show();
+    }
+</script>
+
+<style>
+    .badge {
+        padding: 6px 10px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+    
+    .badge:hover {
+        opacity: 0.9;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    /* 状态徽章的阴影效果 */
+    .badge.bg-warning {
+        box-shadow: 0 2px 4px rgba(255, 193, 7, 0.2);
+    }
+    .badge.bg-primary {
+        box-shadow: 0 2px 4px rgba(13, 110, 253, 0.2);
+    }
+    .badge.bg-success {
+        box-shadow: 0 2px 4px rgba(25, 135, 84, 0.2);
+    }
+    .badge.bg-secondary {
+        box-shadow: 0 2px 4px rgba(108, 117, 125, 0.2);
+    }
+    .badge.bg-danger {
+        box-shadow: 0 2px 4px rgba(220, 53, 69, 0.2);
+    }
+
+    /* 任务类型徽章的阴影效果 */
+    .badge.bg-info {
+        box-shadow: 0 2px 4px rgba(13, 202, 240, 0.2);
+    }
+
+    /* 统计卡片样式 */
+    .card {
+        border: none;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .card-title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+
+    /* 按钮样式 */
+    .btn {
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    /* 图表容器样式 */
+    #statusChart, #agvChart {
+        max-height: 300px;
+    }
+
+    /* 创建任务模态框样式 */
+    .location-select-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .location-select-container .btn {
+        transition: all 0.2s ease;
+    }
+
+    .location-select-container .btn:hover:not(.disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .location-select-container .btn.disabled {
+        cursor: not-allowed;
+    }
+
+</style>
+
+<style>
+    /* 响应式调整 */
+    @@media (max-width: 768px) {
+        .card-title {
+            font-size: 1.5rem;
+        }
+        
+        .col-md-3 {
+            margin-bottom: 1rem;
+        }
+        
+        .btn {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>

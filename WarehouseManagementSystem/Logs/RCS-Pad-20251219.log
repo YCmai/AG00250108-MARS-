@@ -1,0 +1,1076 @@
+2025-12-19 08:58:30.750 +08:00 [INF] IO处理服务已启动
+2025-12-19 08:58:30.813 +08:00 [INF] 网络连接监控任务已启动
+2025-12-19 08:58:30.816 +08:00 [INF] 开始清理过期IO任务数据...
+2025-12-19 08:58:32.543 +08:00 [DBG] IO任务清理完成，没有需要清理的记录
+2025-12-19 08:58:32.623 +08:00 [INF] 发现新的IO设备: 192.168.200.121
+2025-12-19 08:58:32.687 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 08:58:32.743 +08:00 [INF] 设备 192.168.200.121 的网络连接状态: 离线
+2025-12-19 08:58:32.744 +08:00 [INF] 当前活跃IO设备: 1个
+2025-12-19 08:58:34.739 +08:00 [WRN] Failed to determine the https port for redirect.
+2025-12-19 08:58:40.856 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 08:58:51.029 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 08:59:01.294 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 08:59:01.399 +08:00 [WRN] Source location 1 is in the same group as target group 11
+2025-12-19 08:59:01.403 +08:00 [WRN] Source location 2 is in the same group as target group 11
+2025-12-19 08:59:11.398 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 08:59:21.499 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 08:59:31.552 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 08:59:41.599 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 08:59:50.184 +08:00 [INF] 任务 147994 已成功取消
+2025-12-19 08:59:51.650 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:00:01.703 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:00:10.035 +08:00 [WRN] Source location 1 is in the same group as target group 11
+2025-12-19 09:00:10.038 +08:00 [WRN] Source location 2 is in the same group as target group 11
+2025-12-19 09:00:11.758 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:00:16.845 +08:00 [INF] 任务 147995 已成功取消
+2025-12-19 09:00:21.845 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:00:31.905 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:00:42.019 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:00:52.214 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:01:02.274 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:01:12.395 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:01:22.521 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:01:32.582 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:01:42.643 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:01:52.707 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:02:02.757 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:02:12.811 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:02:22.863 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:02:32.919 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:02:42.982 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:02:53.042 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:03:03.104 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:03:13.167 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:03:23.230 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:03:33.291 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:03:43.346 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:03:53.393 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:04:03.471 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:04:13.562 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:04:23.619 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:04:33.798 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:04:43.858 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:04:53.970 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:05:04.083 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:05:14.133 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:05:24.188 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:05:34.296 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:05:44.335 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:05:54.401 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:06:04.440 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:06:14.548 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:06:24.604 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:06:34.669 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:06:44.719 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:06:54.770 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:07:04.818 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:07:14.868 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:07:24.923 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:07:34.979 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:07:45.046 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:07:55.111 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:08:05.169 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:08:15.221 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:08:25.273 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:08:35.318 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:08:45.434 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:08:55.493 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:09:05.579 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:09:15.635 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:09:25.813 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:09:35.859 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:09:45.911 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:09:55.971 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:10:06.035 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:10:16.112 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:10:26.183 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:10:36.237 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:10:46.290 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:10:56.342 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:11:06.396 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:11:16.561 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:11:26.621 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:11:36.683 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:11:46.730 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:11:56.788 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:12:06.863 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:12:16.915 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:12:26.977 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:12:37.032 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:12:47.079 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:12:57.115 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:13:07.170 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:13:17.230 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:13:27.289 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:13:37.336 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:13:47.378 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:13:57.446 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:14:07.495 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:14:17.556 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:14:27.618 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:14:37.660 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:14:47.772 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:14:57.837 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:15:07.891 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:15:17.959 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:15:28.008 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:15:38.113 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:15:48.171 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:15:58.223 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:16:08.281 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:16:18.342 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:16:28.458 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:16:38.517 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:16:48.579 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:16:58.639 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:17:08.689 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:17:18.734 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:17:28.876 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:17:38.937 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:17:49.007 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:17:59.050 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356
+2025-12-19 09:18:09.104 +08:00 [WRN] 检查IP 192.168.200.121 的网络连接时出错
+System.Net.NetworkInformation.PingException: An exception occurred during a Ping request.
+ ---> System.ComponentModel.Win32Exception (1232): 不能访问网络位置。有关网络排除故障的信息，请参阅 Windows 帮助。
+   at System.Net.NetworkInformation.Ping.GetStatusFromCode(Int32 statusCode)
+   at System.Net.NetworkInformation.Ping.DoSendPingCore(IPAddress address, Byte[] buffer, Int32 timeout, PingOptions options, Boolean isAsync)
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   --- End of inner exception stack trace ---
+   at System.Net.NetworkInformation.Ping.SendPingAsyncInternal(IPAddress address, Int32 timeout, Byte[] buffer, PingOptions options)
+   at IOProcessorService.CheckNetworkConnectionAsync(String ipAddress) in E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\Services\Io\IOProcessorService.cs:line 356

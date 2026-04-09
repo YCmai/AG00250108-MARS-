@@ -1,0 +1,179 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = WarehouseManagementSystem
+build_property.RootNamespace = WarehouseManagementSystem
+build_property.ProjectDir = E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem
+build_property._RazorSourceGeneratorDebug = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/ApiTask/ApiTest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBpVGFza1xBcGlUZXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/ApiTask/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXBpVGFza1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Auth/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Auth/PasswordGenerator.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxQYXNzd29yZEdlbmVyYXRvci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Auth/PasswordTest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxQYXNzd29yZFRlc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Auth/Profile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxQcm9maWxlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/AutoPlcTask/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0b1BsY1Rhc2tcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Database/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGF0YWJhc2VcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/DisplayLocation/CreateEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGlzcGxheUxvY2F0aW9uXENyZWF0ZUVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/DisplayLocation/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGlzcGxheUxvY2F0aW9uXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Home/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBY2Nlc3NEZW5pZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/IOMonitor/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSU9Nb25pdG9yXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Location/CreateEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9jYXRpb25cQ3JlYXRlRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Location/History.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9jYXRpb25cSGlzdG9yeS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Location/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9jYXRpb25cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Location/Statistics.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9jYXRpb25cU3RhdGlzdGljcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Logs/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9nc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Material/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWF0ZXJpYWxcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Material/InStock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWF0ZXJpYWxcSW5TdG9jay5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Material/Inventory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWF0ZXJpYWxcSW52ZW50b3J5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Material/OutStock.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWF0ZXJpYWxcT3V0U3RvY2suY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/MobileLocation/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9iaWxlTG9jYXRpb25cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/MobileTask/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9iaWxlVGFza1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/MobileTask/Index_backup.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9iaWxlVGFza1xJbmRleF9iYWNrdXAuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/MobileTask/TaskList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTW9iaWxlVGFza1xUYXNrTGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/PlcSignalStatus/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxjU2lnbmFsU3RhdHVzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/PlcSignal/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGxjU2lnbmFsXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Setting/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2V0dGluZ1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Shared/_Pagination.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9QYWdpbmF0aW9uLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Tasks/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFza3NcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Test/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGVzdFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/UserManagement/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlck1hbmFnZW1lbnRcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/UserManagement/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlck1hbmFnZW1lbnRcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/UserManagement/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlck1hbmFnZW1lbnRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/UserManagement/Permissions.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlck1hbmFnZW1lbnRcUGVybWlzc2lvbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[E:/NDCProject/AG00250108 MARS沙特/WarehouseManagementSystem/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-y4pt18lm38

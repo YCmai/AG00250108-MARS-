@@ -1,0 +1,236 @@
+@model LocationStatisticsViewModel
+
+@{
+    ViewData["Title"] = "储位统计";
+}
+
+<div class="container-fluid">
+    <!-- 储位统计概览卡片 -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-primary">总储位数</h5>
+                    <h2 class="mb-0">@Model.TotalLocations</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-warning">已使用</h5>
+                    <h2 class="mb-0">@Model.UsedLocations</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-success">可用储位</h5>
+                    <h2 class="mb-0">@Model.AvailableLocations</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-info">使用率</h5>
+                    <h2 class="mb-0">@Model.UsagePercentage%</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 储位使用率图表 -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">储位使用率</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <canvas id="storageUsageChart" height="250"></canvas>
+                </div>
+                <div class="col-md-6">
+                    <canvas id="groupBarChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分组储位统计表格 -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">区域储位统计</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>区域名称</th>
+                            <th>总储位数</th>
+                            <th>已使用</th>
+                            <th>可用储位</th>
+                            <th>已锁定</th>
+                            <th>使用率</th>
+                            <th>状态图表</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.GroupStatistics != null && Model.GroupStatistics.Any())
+                        {
+                            foreach (var group in Model.GroupStatistics)
+                            {
+                                <tr>
+                                    <td>@group.GroupName</td>
+                                    <td>@group.TotalCount</td>
+                                    <td>@group.UsedCount</td>
+                                    <td>@group.AvailableCount</td>
+                                    <td>@group.LockedCount</td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar @(group.UsagePercentage < 70 ? "bg-success" : (group.UsagePercentage < 90 ? "bg-warning" : "bg-danger"))" 
+                                                 role="progressbar" 
+                                                 style="width: @(group.UsagePercentage)%;" 
+                                                 aria-valuenow="@group.UsagePercentage" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="100">
+                                                @group.UsagePercentage%
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="width: 120px;">
+                                        <canvas id="chart-@group.GroupName.Replace(" ", "-")" height="30"></canvas>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center">暂无区域储位数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+   <script src="~/lib/chart.js/dist/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 储位使用率饼图
+            const usageCtx = document.getElementById('storageUsageChart').getContext('2d');
+            new Chart(usageCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['已使用', '可用'],
+                    datasets: [{
+                        data: [@Model.UsedLocations, @Model.AvailableLocations],
+                        backgroundColor: ['#ff6384', '#36a2eb'],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: '整体储位使用情况'
+                        }
+                    }
+                }
+            });
+            
+            // 分组储位条形图
+            const groupData = {
+                labels: [@Html.Raw(string.Join(",", Model.GroupStatistics.Select(g => $"'{g.GroupName}'")))],
+                datasets: [
+                    {
+                        label: '已使用',
+                        data: [@string.Join(",", Model.GroupStatistics.Select(g => g.UsedCount))],
+                        backgroundColor: '#ff6384',
+                    },
+                    {
+                        label: '可用',
+                        data: [@string.Join(",", Model.GroupStatistics.Select(g => g.AvailableCount))],
+                        backgroundColor: '#36a2eb',
+                    },
+                    {
+                        label: '已锁定',
+                        data: [@string.Join(",", Model.GroupStatistics.Select(g => g.LockedCount))],
+                        backgroundColor: '#ffce56',
+                    }
+                ]
+            };
+            
+            const groupCtx = document.getElementById('groupBarChart').getContext('2d');
+            new Chart(groupCtx, {
+                type: 'bar',
+                data: groupData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: true,
+                            text: '各区域储位使用情况'
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                        },
+                        y: {
+                            stacked: true
+                        }
+                    }
+                }
+            });
+            
+            // 为每个区域创建小型图表
+            @foreach (var group in Model.GroupStatistics)
+            {
+                <text>
+                const @($"ctx_{group.GroupName.Replace(" ", "_")}") = document.getElementById('@($"chart-{group.GroupName.Replace(" ", "-")}")').getContext('2d');
+                new Chart(@($"ctx_{group.GroupName.Replace(" ", "_")}"), {
+                    type: 'pie',
+                    data: {
+                        labels: ['已使用', '可用', '已锁定'],
+                        datasets: [{
+                            data: [@group.UsedCount, @group.AvailableCount, @group.LockedCount],
+                            backgroundColor: ['#ff6384', '#36a2eb', '#ffce56'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label + ': ' + context.raw;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                </text>
+            }
+        });
+    </script>
+}

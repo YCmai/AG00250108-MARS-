@@ -1,0 +1,160 @@
+@model WarehouseManagementSystem.Models.User
+
+@{
+    ViewData["Title"] = "Create User";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>Create User
+                </h5>
+                <a href="@Url.Action("Index")" class="btn btn-light">
+                    <i class="fas fa-arrow-left me-1"></i>Back to User List
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <div>@error.ErrorMessage</div>
+                    }
+                </div>
+            }
+
+            <form asp-action="Create" method="post">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Username" class="form-label">
+                                <i class="fas fa-user me-1"></i>Username <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Username" class="form-control" placeholder="Please enter username" required />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DisplayName" class="form-label">
+                                <i class="fas fa-id-card me-1"></i>Display Name <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="DisplayName" class="form-control" placeholder="Please enter display name" required />
+                            <span asp-validation-for="DisplayName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">
+                                <i class="fas fa-envelope me-1"></i>Email Address
+                            </label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="Please enter email address" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label">
+                                <i class="fas fa-lock me-1"></i>Password <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="Please enter password (at least 6 characters)" required />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                            <small class="form-text text-muted">Password must be at least 6 characters long</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="ConfirmPassword" class="form-label">
+                                <i class="fas fa-lock me-1"></i>Confirm Password <span class="text-danger">*</span>
+                            </label>
+                            <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" placeholder="Please enter password again" required />
+                            <span id="confirmPasswordError" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input asp-for="IsAdmin" class="form-check-input" type="checkbox" />
+                                <label asp-for="IsAdmin" class="form-check-label">
+                                    <i class="fas fa-crown me-1"></i>Administrator Privileges
+                                </label>
+                            </div>
+                            <small class="form-text text-muted">Administrators have access to all modules</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input asp-for="IsActive" class="form-check-input" type="checkbox" checked />
+                                <label asp-for="IsActive" class="form-check-label">
+                                    <i class="fas fa-toggle-on me-1"></i>Active Status
+                                </label>
+                            </div>
+                            <small class="form-text text-muted">Only active users can log into the system</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between">
+                            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Create User
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Password confirmation validation
+        $('#ConfirmPassword').on('blur', function() {
+            var password = $('#Password').val();
+            var confirmPassword = $(this).val();
+            
+            if (password !== confirmPassword) {
+                $('#confirmPasswordError').text('Password and confirm password do not match');
+            } else {
+                $('#confirmPasswordError').text('');
+            }
+        });
+
+        // Form submission validation
+        $('form').on('submit', function(e) {
+            var password = $('#Password').val();
+            var confirmPassword = $('#ConfirmPassword').val();
+            
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                alert('Password and confirm password do not match, please re-enter');
+                return false;
+            }
+            
+            if (password.length < 6) {
+                e.preventDefault();
+                alert('Password must be at least 6 characters long');
+                return false;
+            }
+        });
+
+        // Username real-time validation
+        $('#Username').on('blur', function() {
+            var username = $(this).val();
+            if (username.length < 3) {
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+    });
+</script>

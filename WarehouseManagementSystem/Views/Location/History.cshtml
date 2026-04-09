@@ -1,0 +1,308 @@
+@model PagedResult<LocationHistory>
+
+@{
+    ViewData["Title"] = "储位历史记录";
+}
+
+<div class="container-fluid">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">储位操作历史记录</h5>
+        </div>
+        <div class="card-body">
+            <!-- 搜索和筛选表单 -->
+            <form method="get" class="mb-4">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="searchString" class="form-label">搜索关键词</label>
+                        <input type="text" class="form-control" id="searchString" name="searchString" 
+                               value="@ViewData["SearchString"]" placeholder="储位编码/名称/物料">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="group" class="form-label">储位区域</label>
+                        <select class="form-select" id="group" name="group">
+                            <option value="">-- 全部区域 --</option>
+                            <!-- 这里可以从数据库获取所有的区域并循环生成选项 -->
+                            @if (ViewData["Group"]?.ToString() == "A区")
+                            {
+                                <option value="A区" selected>A区</option>
+                            }
+                            else
+                            {
+                                <option value="A区">A区</option>
+                            }
+                            
+                            @if (ViewData["Group"]?.ToString() == "B区")
+                            {
+                                <option value="B区" selected>B区</option>
+                            }
+                            else
+                            {
+                                <option value="B区">B区</option>
+                            }
+                            
+                            @if (ViewData["Group"]?.ToString() == "C区")
+                            {
+                                <option value="C区" selected>C区</option>
+                            }
+                            else
+                            {
+                                <option value="C区">C区</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="startDate" class="form-label">开始日期</label>
+                        <input type="date" class="form-control" id="startDate" name="startDate" 
+                               value="@ViewData["StartDate"]">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="endDate" class="form-label">结束日期</label>
+                        <input type="date" class="form-control" id="endDate" name="endDate" 
+                               value="@ViewData["EndDate"]">
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search"></i> 搜索
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- 历史记录表格 -->
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>操作时间</th>
+                            <th>储位编码</th>
+                            <th>储位名称</th>
+                            <th>区域</th>
+                            <th>操作类型</th>
+                            <th>物料编码</th>
+                            <th>物料名称</th>
+                            <th>操作人</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Items.Any())
+                        {
+                            foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>@item.OperationTime.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>@item.LocationCode</td>
+                                    <td>@item.LocationName</td>
+                                    <td>@item.Group</td>
+                                    <td>
+                                        @{
+                                            string badgeClass = "secondary";
+                                            switch (item.OperationType)
+                                            {
+                                                case "入库":
+                                                    badgeClass = "success";
+                                                    break;
+                                                case "出库":
+                                                    badgeClass = "danger";
+                                                    break;
+                                                case "移库":
+                                                    badgeClass = "info";
+                                                    break;
+                                                case "锁定":
+                                                    badgeClass = "warning";
+                                                    break;
+                                                case "解锁":
+                                                    badgeClass = "primary";
+                                                    break;
+                                            }
+                                        }
+                                        <span class="badge bg-@badgeClass">@item.OperationType</span>
+                                    </td>
+                                    <td>@(string.IsNullOrEmpty(item.MaterialCode) ? "-" : item.MaterialCode)</td>
+                                    <td>@(string.IsNullOrEmpty(item.MaterialName) ? "-" : item.MaterialName)</td>
+                                    <td>@item.OperatorName</td>
+                                    <td>@(string.IsNullOrEmpty(item.Remarks) ? "-" : item.Remarks)</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9" class="text-center">暂无历史记录数据</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 分页 -->
+            @if (Model.TotalPages > 1)
+            {
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                        <span>显示 @((Model.PageNumber - 1) * Model.PageSize + 1) 到 @(Math.Min(Model.PageNumber * Model.PageSize, Model.TotalItems)) 条，共 @Model.TotalItems 条记录</span>
+                    </div>
+                    <nav>
+                        <ul class="pagination mb-0">
+                            @if (Model.PageNumber > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("History", new { 
+                                        page = 1, 
+                                        searchString = ViewData["SearchString"],
+                                        group = ViewData["Group"],
+                                        startDate = ViewData["StartDate"],
+                                        endDate = ViewData["EndDate"]
+                                    })">首页</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("History", new { 
+                                        page = Model.PageNumber - 1, 
+                                        searchString = ViewData["SearchString"],
+                                        group = ViewData["Group"],
+                                        startDate = ViewData["StartDate"],
+                                        endDate = ViewData["EndDate"]
+                                    })">&laquo;</a>
+                                </li>
+                            }
+
+                            @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.TotalPages, Model.PageNumber + 2); i++)
+                            {
+                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("History", new { 
+                                        page = i, 
+                                        searchString = ViewData["SearchString"],
+                                        group = ViewData["Group"],
+                                        startDate = ViewData["StartDate"],
+                                        endDate = ViewData["EndDate"]
+                                    })">@i</a>
+                                </li>
+                            }
+
+                            @if (Model.PageNumber < Model.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("History", new { 
+                                        page = Model.PageNumber + 1, 
+                                        searchString = ViewData["SearchString"],
+                                        group = ViewData["Group"],
+                                        startDate = ViewData["StartDate"],
+                                        endDate = ViewData["EndDate"]
+                                    })">&raquo;</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("History", new { 
+                                        page = Model.TotalPages, 
+                                        searchString = ViewData["SearchString"],
+                                        group = ViewData["Group"],
+                                        startDate = ViewData["StartDate"],
+                                        endDate = ViewData["EndDate"]
+                                    })">末页</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- 统计信息卡片 -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">操作类型统计</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="operationTypeChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">操作时间分布</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="operationTimeChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+   <script src="~/lib/chart.js/dist/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 由于当前没有实际数据，我们创建一些模拟数据用于图表展示
+            
+            // 操作类型统计图表
+            const typeCtx = document.getElementById('operationTypeChart').getContext('2d');
+            new Chart(typeCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['入库', '出库', '移库', '锁定', '解锁'],
+                    datasets: [{
+                        data: [45, 30, 15, 5, 5],
+                        backgroundColor: [
+                            '#4caf50', // 入库 - 绿色
+                            '#f44336', // 出库 - 红色
+                            '#2196f3', // 移库 - 蓝色
+                            '#ff9800', // 锁定 - 橙色
+                            '#9c27b0'  // 解锁 - 紫色
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        title: {
+                            display: true,
+                            text: '操作类型占比'
+                        }
+                    }
+                }
+            });
+            
+            // 操作时间分布图表
+            const timeCtx = document.getElementById('operationTimeChart').getContext('2d');
+            new Chart(timeCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                    datasets: [{
+                        label: '操作次数',
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: '一周内操作次数'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,747 @@
+@{
+    ViewData["Title"] = "PLC信号状态";
+    Layout = "_Layout";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" rel="stylesheet" />
+<!-- 本地备份 -->
+<!-- <link href="~/lib/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" /> -->
+
+<style>
+    .card-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background-color: #f0f2f5;
+        padding: 0.5rem 0.75rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    }
+
+    /* 表格结构采用双层设计，外层处理水平滚动，内层处理垂直滚动 */
+    .horizontal-scroll-container {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        border: 1px solid #dee2e6;
+        border-bottom: none;
+        border-radius: 4px 4px 0 0;
+    }
+    
+    .vertical-scroll-container {
+        height: calc(100vh - 150px); /* 预留头部和水平滚动条空间 */
+        overflow-y: auto;
+        overflow-x: hidden;
+        border: 1px solid #dee2e6;
+        border-top: none;
+        border-radius: 0 0 4px 4px;
+    }
+    
+    /* 确保两个容器中的表格宽度一致 */
+    .header-table, .body-table {
+        table-layout: fixed;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin: 0;
+    }
+    
+    .header-table {
+        border-bottom: 2px solid #adb5bd;
+    }
+    
+    .body-table {
+        border-top: none;
+    }
+    
+    /* 单元格基础宽度（JS按需重算） */
+    .signal-table th, .signal-table td {
+        min-width: 60px;
+        width: auto;
+        vertical-align: middle;
+        text-align: center;
+        font-size: 0.7rem; /* 更小的字体 */
+        padding: 0.15rem 0.1rem; /* 减小内边距 */
+        overflow: hidden;
+        text-overflow: ellipsis; /* 文本溢出显示省略号 */
+    }
+
+    /* 标题可以换行显示 */
+    .signal-table th {
+        background-color: #dee2e6;
+        font-weight: 600;
+        white-space: normal; /* 允许换行 */
+        height: auto; /* 自适应高度 */
+        word-break: break-word; /* 在单词内换行 */
+        font-size: 0.65rem; /* 标题更小字体 */
+        min-height: 40px; /* 确保有足够高度显示换行文本 */
+        line-height: 1.1; /* 减小行高，使文本更紧凑 */
+    }
+    
+    /* 0值显示绿色 */
+    .status-false {
+        background-color: #43a047 !important; /* 深绿色 */
+        color: #fff !important;
+        font-weight: bold;
+        border: 1px solid #2e7031 !important; /* 减小边框厚度 */
+    }
+    
+    /* 1值显示红色 */
+    .status-true {
+        background-color: #e53935 !important; /* 深红色 */
+        color: #fff !important;
+        font-weight: bold;
+        border: 1px solid #b71c1c !important; /* 减小边框厚度 */
+    }
+    
+    /* 连接失败橙红色 */
+    .status-error {
+        background-color: #ff5722 !important; /* 更深橙红色 */
+        color: #fff !important;
+        font-weight: bold;
+        border: 1px solid #bf360c !important; /* 减小边框厚度 */
+    }
+    
+    .refresh-info {
+        font-size: 0.7rem;
+        color: #6c757d;
+    }
+    
+    .signal-value {
+        font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    /* 第一列宽度调整 */
+    .header-table th:first-child,
+    .body-table td:first-child,
+    .body-table th:first-child {
+        min-width: 100px;
+        max-width: 150px;
+        width: 120px;
+        text-align: left;
+        font-weight: bold;
+        background-color: #f0f2f5;
+        border-right: 2px solid #adb5bd;
+        white-space: normal; /* 允许工位名称换行 */
+        word-break: break-word; /* 在单词内换行 */
+    }
+    
+    /* 紧凑式操作区样式 */
+    .operations-panel {
+        padding: 3px 4px;
+        background-color: #f0f2f5;
+        border-radius: 4px;
+        margin-bottom: 4px;
+    }
+    
+    /* 最大限度缩小字体和间距 */
+    .container-fluid {
+        padding: 0.25rem;
+    }
+    
+    .card-body {
+        padding: 0.25rem !important;
+        overflow: hidden; /* 防止内容溢出 */
+    }
+    
+    /* 垂直布局的控制区 */
+    .controls-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    
+    .controls-row {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+    }
+    
+    .signal-select {
+        min-width: 100px;
+    }
+    
+    .refresh-controls {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .pause-btn.paused {
+        background-color: #ffc107;
+        border-color: #e0a800;
+    }
+    
+    .form-select-sm {
+        padding: 0.1rem;
+        font-size: 0.7rem;
+        height: auto;
+    }
+    
+    .btn-sm {
+        padding: 0.1rem 0.3rem;
+        font-size: 0.7rem;
+    }
+    
+    h5.mb-0 {
+        font-size: 0.9rem;
+    }
+    
+    /* 表格紧凑布局 */
+    .table {
+        margin-bottom: 0;
+        table-layout: fixed; /* 固定表格布局 */
+        width: 100%;
+    }
+    
+    .table-bordered td, .table-bordered th {
+        border: 1px solid #dee2e6;
+    }
+    
+    /* 加载指示器样式 */
+    .loading-indicator {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        background: rgba(255,255,255,0.8);
+        padding: 15px;
+        border-radius: 5px;
+        display: none;
+    }
+    
+    /* 自定义滚动条样式 */
+    .horizontal-scroll-container::-webkit-scrollbar,
+    .vertical-scroll-container::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    
+    .horizontal-scroll-container::-webkit-scrollbar-track,
+    .vertical-scroll-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+    
+    .horizontal-scroll-container::-webkit-scrollbar-thumb,
+    .vertical-scroll-container::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+    
+    .horizontal-scroll-container::-webkit-scrollbar-thumb:hover,
+    .vertical-scroll-container::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+    
+    /* 隐藏AGV文本的样式 */
+    .hide-agv-text {
+        display: inline-block;
+        width: 0;
+        height: 0;
+        overflow: hidden;
+        font-size: 0;
+    }
+    
+    /* 响应式调整 */
+    @@media (max-width: 768px) {
+        .card-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .operations-panel, .refresh-controls {
+            margin-top: 5px;
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="bi bi-broadcast me-1"></i>PLC信号状态
+            </h5>
+            <div class="controls-wrapper">
+                <div class="controls-row">
+                    <select id="deviceSelect" class="form-select form-select-sm">
+                        <option value="">--选择设备--</option>
+                    </select>
+                    <select id="signalSelect" class="form-select form-select-sm signal-select">
+                        <option value="">--选择信号--</option>
+                    </select>
+                </div>
+                <div class="controls-row">
+                    <div class="btn-group btn-group-sm">
+                        <button id="setTrueBtn" class="btn btn-success btn-sm" disabled>
+                            <i class="bi bi-check-circle-fill"></i> 设1
+                        </button>
+                        <button id="setFalseBtn" class="btn btn-danger btn-sm" disabled>
+                            <i class="bi bi-x-circle-fill"></i> 设0
+                        </button>
+                    </div>
+                    <div class="refresh-controls">
+                        <button id="pauseRefreshBtn" class="btn btn-sm btn-outline-primary pause-btn">
+                            <i class="bi bi-pause-fill"></i> 暂停
+                        </button>
+                        <button id="manualRefreshBtn" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                        <span id="lastRefreshTime" class="refresh-info">
+                            刷新: 未刷新
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <div id="deviceContainer">
+                <!-- 分离式表头和表体结构 -->
+                <!-- 表头区域(水平滚动) -->
+                <div id="headerContainer" class="horizontal-scroll-container">
+                    <table class="table table-bordered signal-table header-table" id="headerTable">
+                        <thead>
+                            <tr id="headerRow"></tr>
+                        </thead>
+                    </table>
+                </div>
+                
+                <!-- 表体区域(垂直滚动) -->
+                <div id="bodyContainer" class="vertical-scroll-container">
+                    <table class="table table-bordered table-hover signal-table body-table" id="bodyTable">
+                        <tbody id="signalTableBody"></tbody>
+                    </table>
+                </div>
+                
+                <!-- 加载状态显示 -->
+                <div id="loadingState" class="text-center py-3">
+                    <div class="spinner-border spinner-border-sm text-primary" role="status">
+                        <span class="visually-hidden">加载中...</span>
+                    </div>
+                    <p class="mt-1 small">加载PLC设备和信号...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 加载指示器 -->
+<div class="loading-indicator">
+    <div class="spinner-border spinner-border-sm text-primary" role="status">
+        <span class="visually-hidden">加载中...</span>
+    </div>
+    <span class="ms-2 small">更新数据...</span>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            var refreshInterval;
+            var isLoading = false;
+            var allDevices = [];
+            var signalsByDevice = {}; // 用于存储每个设备的信号
+            var isAutoRefreshPaused = false; // 是否暂停自动刷新
+            // 列宽缓存，避免每秒刷新导致抖动
+            var cachedColumnSpec = null; // { key: string, firstCol: number, cell: number }
+            var resizeTimer = null;
+            
+            // 同步两个容器的水平滚动
+            $('#headerContainer').scroll(function() {
+                $('#bodyContainer').scrollLeft($(this).scrollLeft());
+            });
+            
+            $('#bodyContainer').scroll(function() {
+                $('#headerContainer').scrollLeft($(this).scrollLeft());
+            });
+            
+            // 初始加载
+            loadData();
+            startAutoRefresh();
+            
+            // 暂停/继续自动刷新
+            $('#pauseRefreshBtn').click(function() {
+                isAutoRefreshPaused = !isAutoRefreshPaused;
+                if (isAutoRefreshPaused) {
+                    // 暂停刷新
+                    clearInterval(refreshInterval);
+                    $(this).html('<i class="bi bi-play-fill"></i> 继续');
+                    $(this).addClass('paused');
+                } else {
+                    // 恢复刷新
+                    startAutoRefresh();
+                    $(this).html('<i class="bi bi-pause-fill"></i> 暂停');
+                    $(this).removeClass('paused');
+                }
+            });
+            
+            // 手动刷新
+            $('#manualRefreshBtn').click(function() {
+                loadData(true);
+            });
+            
+            // 信号下拉选择变更事件
+            $('#deviceSelect').change(function() {
+                updateSignalSelect();
+            });
+            
+            $('#signalSelect').change(function() {
+                var selectedValue = $(this).val();
+                if (selectedValue) {
+                    $('#setTrueBtn, #setFalseBtn').prop('disabled', false);
+                } else {
+                    $('#setTrueBtn, #setFalseBtn').prop('disabled', true);
+                }
+            });
+            
+            // 设置按钮点击事件
+            $('#setTrueBtn').click(function() {
+                var signalId = $('#signalSelect').val();
+                if (signalId) {
+                    setSignalValue(signalId, true);
+                }
+            });
+            
+            $('#setFalseBtn').click(function() {
+                var signalId = $('#signalSelect').val();
+                if (signalId) {
+                    setSignalValue(signalId, false);
+                }
+            });
+            
+            // 更新信号选择下拉框
+            function updateSignalSelect() {
+                var deviceId = $('#deviceSelect').val();
+                var $signalSelect = $('#signalSelect');
+                
+                $signalSelect.empty();
+                $signalSelect.append('<option value="">--选择信号--</option>');
+                
+                if (deviceId && signalsByDevice[deviceId]) {
+                    debugger;
+                    // 只添加非PLC写入的布尔类型信号
+                    var signals = signalsByDevice[deviceId].filter(function(signal) {
+                        return (signal.dataType === 'Bool' || signal.dataType === 'String') && signal.writer !== 'PLC' && signal.name !== '进站心跳' && signal.name !== '出站心跳'
+                    });
+                    
+                    signals.forEach(function(signal) {
+                        $signalSelect.append('<option value="' + signal.id + '">' + signal.name + ' (' + signal.offset + ')</option>');
+                    });
+                }
+                
+                $signalSelect.trigger('change');
+            }
+            
+            // 加载所有设备和信号数据
+            function loadData(showLoadingIndicator) {
+                if (isLoading) return;
+                
+                isLoading = true;
+                
+                if (!allDevices.length) {
+                    // 首次加载显示页面内加载区域
+                    $("#loadingState").show();
+                    $("#headerContainer, #bodyContainer").hide();
+                } else if (showLoadingIndicator) {
+                    // 手动刷新显示悬浮加载指示器
+                    $(".loading-indicator").fadeIn(200);
+                }
+                
+                $.ajax({
+                    url: '/PlcSignalStatus/GetAllDevices',
+                    type: 'GET',
+                    cache: false,
+                    success: function(response) {
+                        isLoading = false;
+                        $("#loadingState").hide();
+                        $("#headerContainer, #bodyContainer").show();
+                        $(".loading-indicator").fadeOut(200);
+                        
+                        if (response.success) {
+                          
+                            allDevices = response.data;
+                            updateDeviceSignalDropdowns(allDevices);
+                            updateLastRefreshTime();
+                            renderSplitTableView(allDevices);
+                        } else {
+                            showToast('错误', response.message, 'error');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        isLoading = false;
+                        $("#loadingState").hide();
+                        $("#headerContainer, #bodyContainer").show();
+                        $(".loading-indicator").fadeOut(200);
+                        showToast('错误', '加载PLC设备和信号数据失败', 'error');
+                    }
+                });
+            }
+            
+            // 更新设备和信号下拉菜单
+            function updateDeviceSignalDropdowns(devices) {
+                var $deviceSelect = $('#deviceSelect');
+                
+                // 暂存当前选中的值
+                var currentDeviceId = $deviceSelect.val();
+                
+                // 清空并重新填充
+                $deviceSelect.empty();
+                $deviceSelect.append('<option value="">--选择设备--</option>');
+                
+                signalsByDevice = {};
+                
+                devices.forEach(function(device) {
+                    var displayName = device.remark || ('设备#' + device.id);
+                    $deviceSelect.append('<option value="' + device.id + '">' + displayName + '</option>');
+                    
+                    // 储存设备的信号
+                    signalsByDevice[device.id] = device.signals || [];
+                });
+                
+                // 如果之前有选中的设备，尝试恢复
+                if (currentDeviceId && $deviceSelect.find('option[value="' + currentDeviceId + '"]').length > 0) {
+                    $deviceSelect.val(currentDeviceId);
+                }
+                
+                updateSignalSelect();
+            }
+            
+            // 设置信号值
+            function setSignalValue(signalId, value) {
+                $(".loading-indicator").fadeIn(200);
+                
+                $.ajax({
+                    url: '/PlcSignalStatus/TriggerSignal',
+                    type: 'POST',
+                    data: { signalId: signalId, value: value },
+                    success: function(response) {
+                        $(".loading-indicator").fadeOut(200);
+                        if (response.success) {
+                            showToast('成功', '信号状态已更新', 'success');
+                            loadData(); // 刷新数据
+                        } else {
+                            showToast('错误', response.message, 'error');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $(".loading-indicator").fadeOut(200);
+                        showToast('错误', '设置信号状态失败', 'error');
+                    }
+                });
+            }
+            
+            // 自动刷新 - 使用Ajax定时更新信号状态
+            function startAutoRefresh() {
+                if (refreshInterval) {
+                    clearInterval(refreshInterval);
+                }
+                refreshInterval = setInterval(function() {
+                    if (!isAutoRefreshPaused && !isLoading) {
+                        refreshSignalStates();
+                    }
+                }, 500); // 1秒刷新一次
+            }
+            
+            // 仅刷新信号状态 - 轻量级刷新
+            function refreshSignalStates() {
+                $.ajax({
+                    url: '/PlcSignalStatus/GetAllDevices',
+                    type: 'GET',
+                    cache: false,
+                    success: function(response) {
+                        if (response.success) {
+                            allDevices = response.data;
+                            updateLastRefreshTime();
+                            // 只更新表格，不更新下拉框
+                            renderSplitTableView(allDevices);
+                        }
+                    }
+                });
+            }
+            
+            // 更新刷新时间
+            function updateLastRefreshTime() {
+                var now = new Date();
+                var timeString = now.getHours().toString().padStart(2, '0') + ':' + 
+                                 now.getMinutes().toString().padStart(2, '0') + ':' + 
+                                 now.getSeconds().toString().padStart(2, '0');
+                $('#lastRefreshTime').text('刷新: ' + timeString);
+            }
+            
+            // 显示Toast消息
+            function showToast(title, message, type) {
+                // 创建toast容器
+                if ($('#toast-container').length === 0) {
+                    $('body').append('<div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>');
+                }
+                
+                // 确定toast类型
+                var bgClass = 'bg-primary';
+                if (type === 'success') bgClass = 'bg-success';
+                if (type === 'error') bgClass = 'bg-danger';
+                if (type === 'warning') bgClass = 'bg-warning';
+                if (type === 'info') bgClass = 'bg-info';
+                
+                // 创建toast元素
+                var toastId = 'toast-' + Date.now();
+                var toastHtml = `
+                    <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+                        <div class="toast-header ${bgClass} text-white">
+                            <strong class="me-auto">${title}</strong>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            ${message}
+                        </div>
+                    </div>
+                `;
+                
+                // 添加到容器
+                $('#toast-container').append(toastHtml);
+                
+                // 显示toast
+                var toastElement = document.getElementById(toastId);
+                var toast = new bootstrap.Toast(toastElement);
+                toast.show();
+                
+                // 自动移除
+                $(toastElement).on('hidden.bs.toast', function() {
+                    $(this).remove();
+                });
+            }
+
+            // 处理字符串中的AGV文本，隐藏AGV三个字符
+            function processSignalTitle(name) {
+                return name.replace(/AGV/g, '<span class="hide-agv-text">AGV</span>');
+            }
+
+            // 分离式表格渲染 - 表头和表体分开
+            function renderSplitTableView(devices) {
+                var container = $('#deviceContainer');
+                
+                if (devices.length === 0) {
+                    container.html('<div class="alert alert-info text-center">没有发现PLC设备</div>');
+                    return;
+                }
+                
+                // 1. 提取所有工位点和信号名称
+                var workstations = [];
+                var signalNames = [];
+                var signalMap = {}; // 工位+信号名 -> 信号对象
+                
+                devices.forEach(function(device) {
+                    if (device.signals && device.signals.length > 0) {
+                        // 使用remark作为设备名
+                        var workstation = device.remark || ('设备#' + device.id);
+                        
+                        if (!workstations.includes(workstation)) {
+                            workstations.push(workstation);
+                        }
+                        
+                        device.signals.forEach(function(signal) {
+                            if (!signalNames.includes(signal.name)) {
+                                signalNames.push(signal.name);
+                            }
+                            
+                            var key = workstation + '|' + signal.name;
+                            signalMap[key] = signal;
+                        });
+                    }
+                });
+                
+                // 2. 渲染表头行
+                var headerRow = $('#headerRow');
+                headerRow.empty();
+                
+                headerRow.append('<th>工位点</th>');
+                
+                signalNames.forEach(function(name) {
+                    // 在显示标题时处理AGV文本
+                    headerRow.append('<th>' + processSignalTitle(name) + '</th>');
+                });
+                
+                // 3. 渲染表体
+                var tableBody = $('#signalTableBody');
+                tableBody.empty();
+                
+                workstations.forEach(function(workstation) {
+                    var row = $('<tr>');
+                    
+                    // 工位名称
+                    row.append('<td>' + workstation + '</td>');
+                    
+                    // 信号值
+                    signalNames.forEach(function(signalName) {
+                        var key = workstation + '|' + signalName;
+                        var signal = signalMap[key];
+                        
+                        if (signal) {
+                            var valueClass = '';
+                            var displayValue = '';
+                            
+                            // 连接失败判断
+                            if (signal.status === 99 || signal.error === true || signal.currentValue === null) {
+                                valueClass = 'status-error';
+                                displayValue = '连接失败';
+                            } else if (signal.dataType === 'Bool') {
+                                // 根据实际值确定样式：0为绿色，1为红色
+                                var isTrueValue = (signal.currentValue === true || signal.currentValue === 1 || signal.currentValue === "1");
+                                valueClass = isTrueValue ? 'status-true' : 'status-false';
+                                displayValue = isTrueValue ? 'true' : 'false';
+                            } else {
+                                displayValue = signal.currentValue || '';
+                            }
+                            
+                            row.append('<td class="' + valueClass + '"><div class="signal-value">' + displayValue + '</div></td>');
+                        } else {
+                            row.append('<td>-</td>');
+                        }
+                    });
+                    
+                    tableBody.append(row);
+                });
+                
+                // 4. 自适应且稳定：仅在列集合变化或窗口尺寸变化时重新计算列宽
+                var key = signalNames.join('|');
+                var columns = signalNames.length + 1; // 加上“工位点”列
+                var needRecalc = !cachedColumnSpec || cachedColumnSpec.key !== key;
+
+                function applyWidths(spec) {
+                    $('.header-table, .body-table').css('width', '100%');
+                    $('#headerRow th:first-child').css('width', spec.firstCol + 'px');
+                    $('#signalTableBody td:first-child').css('width', spec.firstCol + 'px');
+                    $('#headerRow th:not(:first-child)').css('width', spec.cell + 'px');
+                    $('#signalTableBody td:not(:first-child)').css('width', spec.cell + 'px');
+                }
+
+                if (needRecalc) {
+                    var containerWidth = $('#headerContainer').innerWidth();
+                    var minCell = 60;
+                    var autoCell = Math.max(minCell, Math.floor(containerWidth / columns));
+                    var firstColWidth = Math.max(120, Math.floor(autoCell * 1.5));
+                    cachedColumnSpec = { key: key, firstCol: firstColWidth, cell: autoCell };
+                    applyWidths(cachedColumnSpec);
+                } else {
+                    applyWidths(cachedColumnSpec);
+                }
+
+                // 5. 监听窗口尺寸变化（防抖），仅在尺寸变动时重算一次
+                $(window).off('resize.plcTable');
+                $(window).on('resize.plcTable', function() {
+                    if (resizeTimer) clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(function() {
+                        var containerWidth2 = $('#headerContainer').innerWidth();
+                        var minCell2 = 60;
+                        var autoCell2 = Math.max(minCell2, Math.floor(containerWidth2 / columns));
+                        var firstColWidth2 = Math.max(120, Math.floor(autoCell2 * 1.5));
+                        cachedColumnSpec = { key: key, firstCol: firstColWidth2, cell: autoCell2 };
+                        applyWidths(cachedColumnSpec);
+                    }, 120);
+                });
+            }
+        });
+    </script>
+}

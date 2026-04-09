@@ -1,0 +1,530 @@
+@model WarehouseManagementSystem.Models.InventoryViewModel
+
+@{
+    ViewData["Title"] = "库存管理";
+}
+
+<div class="container-fluid">
+    <!-- 库存概览卡片 -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-primary">物料总数</h5>
+                    <h2 class="mb-0">@Model.TotalMaterialCount</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-warning">低库存预警</h5>
+                    <h2 class="mb-0">@Model.LowStockCount</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">库存概览</h5>
+                    <canvas id="inventoryStatusChart" height="80"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 搜索和物料库存列表 -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">物料库存列表</h5>
+            <button class="btn btn-primary" onclick="openStockAdjustModal()">
+                <i class="fas fa-balance-scale"></i> 库存盘点调整
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <form method="get" class="d-flex">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="searchString" value="@ViewData["SearchString"]" placeholder="输入物料编码或名称搜索">
+                            <button class="btn btn-outline-primary" type="submit">
+                                <i class="fas fa-search"></i> 搜索
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>物料编码</th>
+                            <th>物料名称</th>
+                            <th>规格型号</th>
+                            <th>单位</th>
+                            <th>当前库存</th>
+                            <th>库存状态</th>
+                            <th>上次更新</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Materials.Items.Any())
+                        {
+                            foreach (var item in Model.Materials.Items)
+                            {
+                                <tr>
+                                    <td>@item.Code</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Specification</td>
+                                    <td>@item.Unit</td>
+                                    <td>
+                                        <b>@item.Quantity</b>
+                                        <small class="text-muted d-block">
+                                            范围: @item.MinStock - @item.MaxStock
+                                        </small>
+                                    </td>
+                                    <td>
+                                        @if (item.Quantity <= item.MinStock)
+                                        {
+                                            <span class="badge bg-danger">库存不足</span>
+                                        }
+                                        else if (item.Quantity >= item.MaxStock)
+                                        {
+                                            <span class="badge bg-warning">库存过多</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">库存正常</span>
+                                        }
+                                    </td>
+                                    <td>@(item.UpdateTime?.ToString("yyyy-MM-dd HH:mm") ?? item.CreateTime.ToString("yyyy-MM-dd HH:mm"))</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="openAdjustModal('@item.Id', '@item.Code', '@item.Name', @item.Quantity)">
+                                                <i class="fas fa-edit"></i> 调整
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-info" onclick="openHistoryModal('@item.Code')">
+                                                <i class="fas fa-history"></i> 历史
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center">没有找到物料记录</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (Model.Materials.TotalPages > 1)
+            {
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                        <span>显示 @((Model.Materials.PageNumber - 1) * Model.Materials.PageSize + 1) 到 @(Math.Min(Model.Materials.PageNumber * Model.Materials.PageSize, Model.Materials.TotalItems)) 条，共 @Model.Materials.TotalItems 条记录</span>
+                    </div>
+                    <nav>
+                        <ul class="pagination mb-0">
+                            @if (Model.Materials.PageNumber > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Inventory", new { page = 1, searchString = ViewData["SearchString"] })">首页</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Inventory", new { page = Model.Materials.PageNumber - 1, searchString = ViewData["SearchString"] })">&laquo;</a>
+                                </li>
+                            }
+
+                            @for (int i = Math.Max(1, Model.Materials.PageNumber - 2); i <= Math.Min(Model.Materials.TotalPages, Model.Materials.PageNumber + 2); i++)
+                            {
+                                <li class="page-item @(i == Model.Materials.PageNumber ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Inventory", new { page = i, searchString = ViewData["SearchString"] })">@i</a>
+                                </li>
+                            }
+
+                            @if (Model.Materials.PageNumber < Model.Materials.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Inventory", new { page = Model.Materials.PageNumber + 1, searchString = ViewData["SearchString"] })">&raquo;</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Inventory", new { page = Model.Materials.TotalPages, searchString = ViewData["SearchString"] })">末页</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- 低库存预警 -->
+    @if (Model.LowStockMaterials.Any())
+    {
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-exclamation-triangle"></i> 库存预警 (@Model.LowStockMaterials.Count)
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>物料编码</th>
+                                <th>物料名称</th>
+                                <th>规格型号</th>
+                                <th>单位</th>
+                                <th>当前库存</th>
+                                <th>最小库存</th>
+                                <th>差额</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.LowStockMaterials)
+                            {
+                                <tr>
+                                    <td>@item.Code</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Specification</td>
+                                    <td>@item.Unit</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.MinStock</td>
+                                    <td class="text-danger">@(item.Quantity - item.MinStock)</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" onclick="location.href='@Url.Action("InStock")'">
+                                            <i class="fas fa-sign-in-alt"></i> 入库
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- 库存调整模态框 -->
+<div class="modal fade" id="adjustModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">库存调整</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="adjustForm">
+                    <input type="hidden" id="materialId" name="MaterialCode">
+                    <div class="mb-3">
+                        <label class="form-label">物料信息</label>
+                        <div class="form-control bg-light" id="materialInfo" readonly></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">当前库存</label>
+                        <div class="form-control bg-light" id="currentStock" readonly></div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newStock" class="form-label">调整后库存 <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="newStock" name="Quantity" step="0.01" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="adjustReason" class="form-label">调整原因 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="adjustReason" name="Reason" required>
+                            <option value="">请选择调整原因</option>
+                            <option value="盘点调整">盘点调整</option>
+                            <option value="质量问题">质量问题</option>
+                            <option value="报损处理">报损处理</option>
+                            <option value="系统错误">系统错误</option>
+                            <option value="其他原因">其他原因</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="adjustRemark" class="form-label">备注</label>
+                        <textarea class="form-control" id="adjustRemark" name="Remark" rows="2"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="saveAdjust">保存调整</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 历史记录模态框 -->
+<div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">库存变动历史</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>操作类型</th>
+                                <th>变动数量</th>
+                                <th>操作前库存</th>
+                                <th>操作后库存</th>
+                                <th>操作人</th>
+                                <th>操作时间</th>
+                                <th>备注</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 批量盘点模态框 -->
+<div class="modal fade" id="stockTakeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">库存盘点</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> 批量盘点功能用于调整多个物料的库存数量。请先下载当前库存Excel模板，填写盘点结果后上传。
+                </p>
+                
+                <div class="mb-3">
+                    <a href="#" class="btn btn-outline-primary" id="downloadTemplate">
+                        <i class="fas fa-download"></i> 下载库存盘点模板
+                    </a>
+                </div>
+                
+                <form id="stockTakeForm">
+                    <div class="mb-3">
+                        <label for="stockTakeFile" class="form-label">上传盘点结果 <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" id="stockTakeFile" name="file" accept=".xlsx, .xls" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="stockTakeRemark" class="form-label">盘点备注</label>
+                        <textarea class="form-control" id="stockTakeRemark" name="Remark" rows="2"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="uploadStockTake">上传盘点结果</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+     <script src="~/lib/chart.js/dist/chart.umd.min.js"></script>
+    <script>
+        // 初始化模态框
+        let adjustModal = new bootstrap.Modal(document.getElementById('adjustModal'));
+        let historyModal = new bootstrap.Modal(document.getElementById('historyModal'));
+        let stockTakeModal = new bootstrap.Modal(document.getElementById('stockTakeModal'));
+        
+        // 图表初始化
+        window.onload = function() {
+            const ctx = document.getElementById('inventoryStatusChart').getContext('2d');
+            
+            // 计算各种库存状态的数量
+            let normal = 0;
+            let low = 0;
+            let high = 0;
+            
+            @foreach (var item in Model.Materials.Items)
+            {
+                <text>
+                if (@(item.Quantity) <= @(item.MinStock)) {
+                    low++;
+                } else if (@(item.Quantity) >= @(item.MaxStock)) {
+                    high++;
+                } else {
+                    normal++;
+                }
+                </text>
+            }
+            
+            const data = {
+                labels: ['库存正常', '库存不足', '库存过多'],
+                datasets: [{
+                    data: [normal, low, high],
+                    backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
+                    hoverOffset: 4
+                }]
+            };
+            
+            const config = {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            };
+            
+            new Chart(ctx, config);
+        };
+        
+        // 打开调整模态框
+        function openAdjustModal(id, code, name, quantity) {
+            document.getElementById('materialId').value = code;
+            document.getElementById('materialInfo').textContent = `${code} - ${name}`;
+            document.getElementById('currentStock').textContent = quantity;
+            document.getElementById('newStock').value = quantity;
+            document.getElementById('adjustForm').reset();
+            adjustModal.show();
+        }
+        
+        // 打开历史模态框
+        function openHistoryModal(code) {
+            document.getElementById('historyTableBody').innerHTML = '<tr><td colspan="7" class="text-center">加载中...</td></tr>';
+            historyModal.show();
+            
+            // 获取历史记录
+            fetch(`/api/Material/history/${code}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        let html = '';
+                        data.forEach(item => {
+                            let typeText = '';
+                            let typeClass = '';
+                            
+                            switch(item.type) {
+                                case 0:
+                                    typeText = '入库';
+                                    typeClass = 'success';
+                                    break;
+                                case 1:
+                                    typeText = '出库';
+                                    typeClass = 'danger';
+                                    break;
+                                case 2:
+                                    typeText = '库存调整';
+                                    typeClass = 'warning';
+                                    break;
+                                case 3:
+                                    typeText = '库内移位';
+                                    typeClass = 'info';
+                                    break;
+                                default:
+                                    typeText = '未知';
+                                    typeClass = 'secondary';
+                            }
+                            
+                            html += `<tr>
+                                <td><span class="badge bg-${typeClass}">${typeText}</span></td>
+                                <td>${item.quantity}</td>
+                                <td>${item.beforeQuantity}</td>
+                                <td>${item.afterQuantity}</td>
+                                <td>${item.operatorName || '-'}</td>
+                                <td>${new Date(item.createTime).toLocaleString()}</td>
+                                <td>${item.remark || '-'}</td>
+                            </tr>`;
+                        });
+                        document.getElementById('historyTableBody').innerHTML = html;
+                    } else {
+                        document.getElementById('historyTableBody').innerHTML = '<tr><td colspan="7" class="text-center">暂无历史记录</td></tr>';
+                    }
+                })
+                .catch(error => {
+                    console.error('获取历史记录失败:', error);
+                    document.getElementById('historyTableBody').innerHTML = '<tr><td colspan="7" class="text-center text-danger">获取历史记录失败，请稍后再试</td></tr>';
+                });
+        }
+        
+        // 打开库存盘点模态框
+        function openStockAdjustModal() {
+            stockTakeModal.show();
+        }
+        
+        // 保存库存调整
+        document.getElementById('saveAdjust').addEventListener('click', function() {
+            let form = document.getElementById('adjustForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            const materialCode = document.getElementById('materialId').value;
+            const newQuantity = parseFloat(document.getElementById('newStock').value);
+            const reason = document.getElementById('adjustReason').value;
+            const remark = document.getElementById('adjustRemark').value;
+            
+            const data = {
+                materialCode: materialCode,
+                quantity: newQuantity,
+                type: 2, // 库存调整
+                remark: `原因: ${reason}${remark ? ' - ' + remark : ''}`
+            };
+            
+            fetch('/api/Material/adjust', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.succeeded) {
+                        adjustModal.hide();
+                        window.location.reload();
+                    } else {
+                        alert(`调整失败: ${result.message}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('库存调整失败:', error);
+                    alert('库存调整失败，请稍后再试');
+                });
+        });
+        
+        // 下载盘点模板
+        document.getElementById('downloadTemplate').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // 这里需要实现下载模板的逻辑，通常是调用后端接口
+            alert('此功能尚未实现，请手动创建Excel文件，包含物料编码、物料名称和盘点数量列');
+        });
+        
+        // 上传盘点结果
+        document.getElementById('uploadStockTake').addEventListener('click', function() {
+            let form = document.getElementById('stockTakeForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            // 这里需要实现上传盘点结果的逻辑，通常是将Excel文件提交到后端接口
+            alert('此功能尚未实现，请手动逐个物料调整库存');
+        });
+    </script>
+}

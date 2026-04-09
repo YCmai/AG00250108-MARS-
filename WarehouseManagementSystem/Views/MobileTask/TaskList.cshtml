@@ -1,0 +1,592 @@
+@{
+    ViewData["Title"] = "Task List - Mobile";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>@ViewData["Title"]</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin: 0;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0;
+        }
+
+        .main-content {
+            flex: 1;
+         
+            padding-bottom: 100px;
+        }
+
+        .task-list {
+            margin-bottom: 20px;
+        }
+
+        .task-item {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .task-id {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .task-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .status-none { background: #f8f9fa; color: #6c757d; }
+        .status-start { background: #e3f2fd; color: #1976d2; }
+        .status-confirm { background: #fff3e0; color: #f57c00; }
+        .status-picking { background: #e8f5e8; color: #388e3c; }
+        .status-picked { background: #e1f5fe; color: #0288d1; }
+        .status-unloading { background: #fce4ec; color: #c2185b; }
+        .status-completed { background: #e8f5e8; color: #388e3c; }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .cancel-btn {
+            flex: 1;
+            padding: 10px 12px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cancel-btn:hover {
+            background: #c0392b;
+            transform: translateY(-1px);
+        }
+
+        .cancel-btn:active {
+            transform: translateY(0);
+        }
+
+        .cancel-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .task-route {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .route-arrow {
+            margin: 0 12px;
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .task-time {
+            font-size: 13px;
+            color: #888;
+            display: flex;
+            align-items: center;
+        }
+
+        .time-icon {
+            margin-right: 5px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .no-data-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .page-btn {
+            padding: 8px 16px;
+            border: 2px solid #e1e5e9;
+            background: white;
+            color: #2196f3;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .page-btn:hover {
+            background: #2196f3;
+            color: white;
+            border-color: #2196f3;
+        }
+
+        .page-btn.active {
+            background: #2196f3;
+            color: white;
+            border-color: #2196f3;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #34495e;
+            padding: 15px 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: #bdc3c7;
+            text-align: center;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            flex: 1;
+            margin: 0 5px;
+            font-size: 14px;
+        }
+
+        .nav-item.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .nav-item:hover {
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #2196f3;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .refresh-btn {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: rgba(33, 150, 243, 0.9);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.1);
+            background: rgba(33, 150, 243, 1);
+        }
+
+        @@media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .task-item {
+                padding: 15px;
+            }
+            
+            .header {
+                margin: 0 -15px 20px -15px;
+            }
+            
+            .refresh-btn {
+                right: 20px;
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Task List</h1>
+        </div>
+
+        <div class="main-content">
+            <div class="loading" id="loadingDiv">
+                <div class="spinner"></div>
+                <div>Loading task list...</div>
+            </div>
+
+            <div class="task-list" id="taskList">
+                <!-- Task list will be dynamically generated here -->
+            </div>
+
+            <div class="pagination" id="pagination" style="display: none;">
+                <button class="page-btn" id="prevBtn" onclick="changePage(currentPage - 1)">Previous</button>
+                <span class="page-info" id="pageInfo">1 / 1</span>
+                <button class="page-btn" id="nextBtn" onclick="changePage(currentPage + 1)">Next</button>
+            </div>
+
+            <div class="no-data" id="noDataDiv" style="display: none;">
+                <div class="no-data-icon">📋</div>
+                <div>No active tasks</div>
+            </div>
+        </div>
+
+        <button class="refresh-btn" onclick="loadTasks()" title="Refresh">
+            🔄
+        </button>
+
+        <div class="bottom-nav">
+            <div class="nav-container">
+                <a href="/MobileLocation/Index" class="nav-item">Location Management</a>
+                <a href="/MobileTask/TaskList" class="nav-item active">Task List</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let totalPages = 1;
+        const pageSize = 5;
+
+        // Initialize after page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTasks();
+        });
+
+        // Load task list
+        async function loadTasks(page = 1) {
+            try {
+                showLoading(true);
+                const response = await fetch(`/MobileTask/GetTasks?pageIndex=${page}&pageSize=${pageSize}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentPage = result.pageIndex;
+                    totalPages = result.totalPages;
+                    renderTaskList(result.data);
+                    updatePagination(result);
+                } else {
+                    showNoData();
+                    console.error('Failed to get task list:', result.message);
+                }
+            } catch (error) {
+                showNoData();
+                console.error('Failed to get task list:', error);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Render task list
+        function renderTaskList(tasks) {
+            const taskListDiv = document.getElementById('taskList');
+            
+            if (!tasks || tasks.length === 0) {
+                showNoData();
+                return;
+            }
+
+            let html = '';
+            tasks.forEach(task => {
+                // Check if task is still running (not finished or cancelled)
+                // Status 11 = Task Completed, Status 30/31/32 = Cancelled
+                const isCompleted = task.taskStatus === 11;
+                const isCancelled = task.taskStatus === 30 || task.taskStatus === 31 || task.taskStatus === 32 || task.isCancelled;
+                const isRunning = !isCompleted && !isCancelled;
+                
+                const cancelBtnHtml = isRunning ? `
+                    <div class="task-actions">
+                        <button class="cancel-btn" onclick="cancelTask(${task.id}, '${task.requestCode}')">
+                            Cancel Task
+                        </button>
+                    </div>
+                ` : '';
+                
+                html += `
+                    <div class="task-item">
+                        <div class="task-header">
+                            <div class="task-id">Task #${task.requestCode}</div>
+                            <div class="task-status ${getStatusClass(task.taskStatus)}">${getStatusDisplayName(task.taskStatus)}</div>
+                        </div>
+                        <div class="task-route">
+                            <span>${task.sourcePosition}</span>
+                            <span class="route-arrow">→</span>
+                            <span>${task.targetPosition}</span>
+                        </div>
+                        <div class="task-time">
+                            <span class="time-icon">🕒</span>
+                            Created: ${formatDateTime(task.creatTime)}
+                        </div>
+                        ${cancelBtnHtml}
+                    </div>
+                `;
+            });
+            
+            taskListDiv.innerHTML = html;
+            document.getElementById('noDataDiv').style.display = 'none';
+        }
+
+        // Get CSS class for status
+        function getStatusClass(status) {
+            const statusMap = {
+                '-1': 'status-none',
+                '1': 'status-start',
+                '2': 'status-confirm',
+                '3': 'status-confirm',
+                '4': 'status-picking',
+                '6': 'status-picked',
+                '8': 'status-unloading',
+                '10': 'status-unloading',
+                '11': 'status-completed'
+            };
+            return statusMap[status.toString()] || 'status-none';
+        }
+
+        // Get status display name in English
+        function getStatusDisplayName(status) {
+            const statusMap = {
+                '-1': 'Not Started',
+                '0': 'Not Started',
+                '1': 'Task Started',
+                '2': 'Parameter Confirmation',
+                '3': 'Confirming AGV',
+                '4': 'Picking Up',
+                '5': 'Pickup Completed',
+                '6': 'Pickup Completed',
+                '7': 'Unloading',
+                '8': 'Unloading',
+                '9': 'Unload Completed',
+                '10': 'Unload Completed',
+                '11': 'Task Completed',
+                '20': 'Cancelled',
+                '30': 'Cancelled'
+            };
+            return statusMap[status.toString()] || `Status ${status}`;
+        }
+
+        // Format date time
+        function formatDateTime(dateString) {
+            if (!dateString) return '-';
+            
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) {
+                return 'Just now';
+            } else if (diffMins < 60) {
+                return `${diffMins} minutes ago`;
+            } else if (diffHours < 24) {
+                return `${diffHours} hours ago`;
+            } else if (diffDays < 7) {
+                return `${diffDays} days ago`;
+            } else {
+                return date.toLocaleDateString('en-US', {
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+        }
+
+        // Update pagination info
+        function updatePagination(result) {
+            const paginationDiv = document.getElementById('pagination');
+            const pageInfoSpan = document.getElementById('pageInfo');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (result.totalPages > 1) {
+                paginationDiv.style.display = 'flex';
+                pageInfoSpan.textContent = `${currentPage} / ${totalPages}`;
+                prevBtn.disabled = currentPage <= 1;
+                nextBtn.disabled = currentPage >= totalPages;
+            } else {
+                paginationDiv.style.display = 'none';
+            }
+        }
+
+        // Change page
+        function changePage(page) {
+            if (page < 1 || page > totalPages) return;
+            loadTasks(page);
+        }
+
+        // Show loading state
+        function showLoading(show) {
+            document.getElementById('loadingDiv').style.display = show ? 'block' : 'none';
+            if (!show) {
+                document.getElementById('taskList').style.display = 'block';
+            } else {
+                document.getElementById('taskList').style.display = 'none';
+                document.getElementById('noDataDiv').style.display = 'none';
+            }
+        }
+
+        // Show no data state
+        function showNoData() {
+            document.getElementById('taskList').style.display = 'none';
+            document.getElementById('pagination').style.display = 'none';
+            document.getElementById('noDataDiv').style.display = 'block';
+        }
+
+        // Cancel task
+        async function cancelTask(taskId, requestCode) {
+            if (!confirm(`Are you sure you want to cancel task #${requestCode}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/Tasks/CancelTask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `id=${taskId}`
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`Task #${requestCode} cancelled successfully`);
+                    loadTasks(currentPage);
+                } else {
+                    alert(`Failed to cancel task: ${result.message}`);
+                }
+            } catch (error) {
+                console.error('Failed to cancel task:', error);
+                alert('Failed to cancel task, please try again');
+            }
+        }
+
+        // Auto refresh (every 30 seconds)
+        setInterval(() => {
+            loadTasks(currentPage);
+        }, 30000);
+    </script>
+</body>
+</html>

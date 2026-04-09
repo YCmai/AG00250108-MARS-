@@ -1,0 +1,169 @@
+@model WarehouseManagementSystem.Models.User
+
+@{
+    ViewData["Title"] = "Edit User";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid">
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-user-edit me-2"></i>Edit User - @Model.Username
+                </h5>
+                <a href="@Url.Action("Index")" class="btn btn-light">
+                    <i class="fas fa-arrow-left me-1"></i>Back to User List
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <div>@error.ErrorMessage</div>
+                    }
+                </div>
+            }
+
+            <form asp-action="Edit" method="post">
+                <input asp-for="Id" type="hidden" />
+                <input asp-for="CreatedAt" type="hidden" />
+                <input asp-for="Password" type="hidden" />
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="Username" class="form-label">
+                                <i class="fas fa-user me-1"></i>Username <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Username" class="form-control" placeholder="Please enter username" required />
+                            <span asp-validation-for="Username" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DisplayName" class="form-label">
+                                <i class="fas fa-id-card me-1"></i>Display Name <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="DisplayName" class="form-control" placeholder="Please enter display name" required />
+                            <span asp-validation-for="DisplayName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">
+                                <i class="fas fa-envelope me-1"></i>Email Address
+                            </label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="Please enter email address" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-info-circle me-1"></i>User Information
+                            </label>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <table class="table table-sm mb-0">
+                                        <tr>
+                                            <td><strong>Created Time:</strong></td>
+                                            <td>@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Last Login:</strong></td>
+                                            <td>@(Model.LastLoginAt?.ToString("yyyy-MM-dd HH:mm") ?? "Never logged in")</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Updated Time:</strong></td>
+                                            <td>@(Model.UpdatedAt?.ToString("yyyy-MM-dd HH:mm") ?? "Not updated")</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input asp-for="IsAdmin" class="form-check-input" type="checkbox" />
+                                <label asp-for="IsAdmin" class="form-check-label">
+                                    <i class="fas fa-crown me-1"></i>Administrator Privileges
+                                </label>
+                            </div>
+                            <small class="form-text text-muted">Administrators have access to all modules</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                                <label asp-for="IsActive" class="form-check-label">
+                                    <i class="fas fa-toggle-on me-1"></i>Active Status
+                                </label>
+                            </div>
+                            <small class="form-text text-muted">Only active users can log into the system</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <a href="@Url.Action("ChangePassword", "Auth")" class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-key me-1"></i>Change Password
+                            </a>
+                            <small class="form-text text-muted d-block mt-1">Click to change user password</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between">
+                            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Username real-time validation
+        $('#Username').on('blur', function() {
+            var username = $(this).val();
+            if (username.length < 3) {
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+
+        // Display name validation
+        $('#DisplayName').on('blur', function() {
+            var displayName = $(this).val();
+            if (displayName.length < 2) {
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+
+        // Email format validation
+        $('#Email').on('blur', function() {
+            var email = $(this).val();
+            
+            if (email && email.indexOf('@@') === -1) {
+                $(this).addClass('is-invalid');
+            } else {
+                $(this).removeClass('is-invalid');
+            }
+        });
+    });
+</script>

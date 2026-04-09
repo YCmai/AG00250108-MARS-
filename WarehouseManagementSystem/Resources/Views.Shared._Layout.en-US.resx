@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="LocationManage" xml:space="preserve">
+    <value>Location Management</value>
+  </data>
+  <data name="LocationSetting" xml:space="preserve">
+    <value>Location Settings</value>
+  </data>
+  <data name="MaterialManage" xml:space="preserve">
+    <value>Material Management</value>
+  </data>
+  <data name="MaterialInStock" xml:space="preserve">
+    <value>Material In-Stock</value>
+  </data>
+  <data name="MaterialOutStock" xml:space="preserve">
+    <value>Material Out-Stock</value>
+  </data>
+  <data name="InventoryManage" xml:space="preserve">
+    <value>Inventory Management</value>
+  </data>
+  <data name="LocationStatistics" xml:space="preserve">
+    <value>Location Statistics</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>History</value>
+  </data>
+  <data name="TaskManage" xml:space="preserve">
+    <value>Task Management</value>
+  </data>
+  <data name="SystemLog" xml:space="preserve">
+    <value>System Log</value>
+  </data>
+  <data name="WarehouseManagement" xml:space="preserve">
+    <value>Warehouse Management System</value>
+  </data>
+  <data name="SystemRunning" xml:space="preserve">
+    <value>System Running</value>
+  </data>
+</root> 

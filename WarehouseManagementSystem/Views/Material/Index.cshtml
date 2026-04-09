@@ -1,0 +1,419 @@
+@model PagedResult<RCS_Materials>
+
+@{
+    ViewData["Title"] = "物料管理";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid">
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">物料管理</h5>
+            <button class="btn btn-primary" onclick="openCreateModal()">
+                <i class="fas fa-plus"></i> 添加物料
+            </button>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <form method="get" class="d-flex">
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="searchString" value="@ViewData["SearchString"]" placeholder="输入物料编码、名称或规格搜索">
+                            <button class="btn btn-outline-primary" type="submit">
+                                <i class="fas fa-search"></i> 搜索
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>物料编码</th>
+                            <th>物料名称</th>
+                            <th>规格型号</th>
+                            <th>单位</th>
+                            <th>库存数量</th>
+                            <th>最小库存</th>
+                            <th>最大库存</th>
+                            <th>库存状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Items.Any())
+                        {
+                            foreach (var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>@item.Code</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Specification</td>
+                                    <td>@item.Unit</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.MinStock</td>
+                                    <td>@item.MaxStock</td>
+                                    <td>
+                                        @if (item.Quantity <= item.MinStock)
+                                        {
+                                            <span class="badge bg-danger">库存不足</span>
+                                        }
+                                        else if (item.Quantity >= item.MaxStock)
+                                        {
+                                            <span class="badge bg-warning">库存过多</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">库存正常</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="openEditModal('@item.Id')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-info" onclick="openDetailModal('@item.Id')">
+                                                <i class="fas fa-info-circle"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="confirmDelete('@item.Id', '@item.Name')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9" class="text-center">没有找到物料记录</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @if (Model.TotalPages > 1)
+            {
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                        <span>显示 @((Model.PageNumber - 1) * Model.PageSize + 1) 到 @(Math.Min(Model.PageNumber * Model.PageSize, Model.TotalItems)) 条，共 @Model.TotalItems 条记录</span>
+                    </div>
+                    <nav>
+                        <ul class="pagination mb-0">
+                            @if (Model.PageNumber > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = 1, searchString = ViewData["SearchString"] })">首页</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = Model.PageNumber - 1, searchString = ViewData["SearchString"] })">&laquo;</a>
+                                </li>
+                            }
+
+                            @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.TotalPages, Model.PageNumber + 2); i++)
+                            {
+                                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = i, searchString = ViewData["SearchString"] })">@i</a>
+                                </li>
+                            }
+
+                            @if (Model.PageNumber < Model.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = Model.PageNumber + 1, searchString = ViewData["SearchString"] })">&raquo;</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("Index", new { page = Model.TotalPages, searchString = ViewData["SearchString"] })">末页</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- 物料编辑/添加模态框 -->
+<div class="modal fade" id="materialModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="materialModalTitle">添加物料</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="materialForm">
+                    <input type="hidden" id="materialId" name="Id" value="0">
+                    <div class="mb-3">
+                        <label for="code" class="form-label">物料编码 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="code" name="Code" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">物料名称 <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" name="Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="specification" class="form-label">规格型号</label>
+                        <input type="text" class="form-control" id="specification" name="Specification">
+                    </div>
+                    <div class="mb-3">
+                        <label for="unit" class="form-label">单位</label>
+                        <input type="text" class="form-control" id="unit" name="Unit">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="minStock" class="form-label">最小库存</label>
+                            <input type="number" class="form-control" id="minStock" name="MinStock" step="0.01" min="0">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="maxStock" class="form-label">最大库存</label>
+                            <input type="number" class="form-control" id="maxStock" name="MaxStock" step="0.01" min="0">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="remark" class="form-label">备注</label>
+                        <textarea class="form-control" id="remark" name="Remark" rows="2"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="saveMaterial">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 物料详情模态框 -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">物料详情</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">物料编码:</div>
+                    <div class="col-8" id="detail-code"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">物料名称:</div>
+                    <div class="col-8" id="detail-name"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">规格型号:</div>
+                    <div class="col-8" id="detail-specification"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">单位:</div>
+                    <div class="col-8" id="detail-unit"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">当前库存:</div>
+                    <div class="col-8" id="detail-quantity"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">库存范围:</div>
+                    <div class="col-8">
+                        <span id="detail-minStock"></span> - <span id="detail-maxStock"></span>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">库存状态:</div>
+                    <div class="col-8" id="detail-status"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">创建时间:</div>
+                    <div class="col-8" id="detail-createTime"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">更新时间:</div>
+                    <div class="col-8" id="detail-updateTime"></div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-4 fw-bold">备注:</div>
+                    <div class="col-8" id="detail-remark"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" id="viewHistory">查看历史记录</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 删除确认模态框 -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">确认删除</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                您确定要删除物料 <span id="deleteMaterialName" class="fw-bold"></span> 吗？此操作不可逆。
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">删除</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // 初始化模态框
+        let materialModal = new bootstrap.Modal(document.getElementById('materialModal'));
+        let detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
+        let deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+        
+        // 打开创建模态框
+        function openCreateModal() {
+            document.getElementById('materialModalTitle').textContent = '添加物料';
+            document.getElementById('materialForm').reset();
+            document.getElementById('materialId').value = '0';
+            document.getElementById('code').readOnly = false;
+            materialModal.show();
+        }
+        
+        // 打开编辑模态框
+        function openEditModal(id) {
+            document.getElementById('materialModalTitle').textContent = '编辑物料';
+            document.getElementById('materialForm').reset();
+            
+            // 获取物料信息
+            fetch(`/api/Material/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('materialId').value = data.id;
+                    document.getElementById('code').value = data.code;
+                    document.getElementById('code').readOnly = true;
+                    document.getElementById('name').value = data.name;
+                    document.getElementById('specification').value = data.specification || '';
+                    document.getElementById('unit').value = data.unit || '';
+                    document.getElementById('minStock').value = data.minStock;
+                    document.getElementById('maxStock').value = data.maxStock;
+                    document.getElementById('remark').value = data.remark || '';
+                    
+                    materialModal.show();
+                })
+                .catch(error => {
+                    console.error('获取物料信息失败:', error);
+                    alert('获取物料信息失败，请稍后再试');
+                });
+        }
+        
+        // 打开详情模态框
+        function openDetailModal(id) {
+            fetch(`/api/Material/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('detail-code').textContent = data.code;
+                    document.getElementById('detail-name').textContent = data.name;
+                    document.getElementById('detail-specification').textContent = data.specification || '-';
+                    document.getElementById('detail-unit').textContent = data.unit || '-';
+                    document.getElementById('detail-quantity').textContent = data.quantity;
+                    document.getElementById('detail-minStock').textContent = data.minStock;
+                    document.getElementById('detail-maxStock').textContent = data.maxStock;
+                    
+                    // 设置库存状态
+                    let statusElement = document.getElementById('detail-status');
+                    if (data.quantity <= data.minStock) {
+                        statusElement.innerHTML = '<span class="badge bg-danger">库存不足</span>';
+                    } else if (data.quantity >= data.maxStock) {
+                        statusElement.innerHTML = '<span class="badge bg-warning">库存过多</span>';
+                    } else {
+                        statusElement.innerHTML = '<span class="badge bg-success">库存正常</span>';
+                    }
+                    
+                    document.getElementById('detail-createTime').textContent = new Date(data.createTime).toLocaleString();
+                    document.getElementById('detail-updateTime').textContent = data.updateTime ? new Date(data.updateTime).toLocaleString() : '-';
+                    document.getElementById('detail-remark').textContent = data.remark || '-';
+                    
+                    // 设置查看历史记录按钮
+                    document.getElementById('viewHistory').onclick = function() {
+                        window.location.href = `/api/Material/history/${data.code}`;
+                    };
+                    
+                    detailModal.show();
+                })
+                .catch(error => {
+                    console.error('获取物料详情失败:', error);
+                    alert('获取物料详情失败，请稍后再试');
+                });
+        }
+        
+        // 确认删除
+        function confirmDelete(id, name) {
+            document.getElementById('deleteMaterialName').textContent = name;
+            document.getElementById('confirmDeleteBtn').onclick = function() {
+                deleteMaterial(id);
+            };
+            deleteModal.show();
+        }
+        
+        // 删除物料
+        function deleteMaterial(id) {
+            fetch(`/api/Material/${id}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        deleteModal.hide();
+                        window.location.reload();
+                    } else {
+                        throw new Error('删除物料失败');
+                    }
+                })
+                .catch(error => {
+                    console.error('删除物料失败:', error);
+                    alert('删除物料失败，请稍后再试');
+                });
+        }
+        
+        // 保存物料
+        document.getElementById('saveMaterial').addEventListener('click', function() {
+            let form = document.getElementById('materialForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            let formData = new FormData(form);
+            let material = {};
+            formData.forEach((value, key) => {
+                material[key] = value;
+            });
+            
+            let isNew = material.Id === '0';
+            let url = isNew ? '/api/Material' : `/api/Material/${material.Id}`;
+            
+            fetch(url, {
+                method: isNew ? 'POST' : 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(material)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        materialModal.hide();
+                        window.location.reload();
+                    } else {
+                        throw new Error('保存物料失败');
+                    }
+                })
+                .catch(error => {
+                    console.error('保存物料失败:', error);
+                    alert('保存物料失败，请稍后再试');
+                });
+        });
+    </script>
+} 

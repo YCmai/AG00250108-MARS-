@@ -1,0 +1,97 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|e:\\ndcproject\\ag00250108 mars\u6C99\u7279\\warehousemanagementsystem\\controllers\\mobiletaskcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|solutionrelative:controllers\\mobiletaskcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|e:\\ndcproject\\ag00250108 mars\u6C99\u7279\\warehousemanagementsystem\\views\\mobilelocation\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|solutionrelative:views\\mobilelocation\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 11,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:130:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:133:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:132:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MobileTaskController.cs",
+              "DocumentMoniker": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Controllers\\MobileTaskController.cs",
+              "RelativeDocumentMoniker": "Controllers\\MobileTaskController.cs",
+              "ToolTip": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Controllers\\MobileTaskController.cs",
+              "RelativeToolTip": "Controllers\\MobileTaskController.cs",
+              "ViewState": "AQIAAJsCAAAAAAAAAAAWwKgCAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-12T01:42:07.688Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Views\\MobileLocation\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\MobileLocation\\Index.cshtml",
+              "ToolTip": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Views\\MobileLocation\\Index.cshtml",
+              "RelativeToolTip": "Views\\MobileLocation\\Index.cshtml",
+              "ViewState": "AQIAAE4BAAAAAAAAAAAhwF8BAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-12-26T03:51:22.768Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
