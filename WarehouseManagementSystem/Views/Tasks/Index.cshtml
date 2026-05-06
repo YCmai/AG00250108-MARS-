@@ -156,6 +156,7 @@
                                     @{
                                         var statusClass = item.taskStatus switch
                                         {
+                                            TaskStatuEnum.PendingCondition => "badge bg-warning text-dark",
                                             TaskStatuEnum.None => "badge bg-secondary",
                                             TaskStatuEnum.CarWash => "badge bg-info",
                                             TaskStatuEnum.TaskStart => "badge bg-primary",
@@ -179,6 +180,7 @@
 
                                         var statusText = item.taskStatus switch
                                         {
+                                            TaskStatuEnum.PendingCondition => "Pending Conditions",
                                             TaskStatuEnum.None => "Not Executed",
                                             TaskStatuEnum.CarWash => "Car Washing",
                                             TaskStatuEnum.TaskStart => "Task Started",

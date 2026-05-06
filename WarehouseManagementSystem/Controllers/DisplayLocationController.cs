@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http;
@@ -26,6 +26,7 @@ public class DisplayLocationController : Controller
     // 获取储位列表页面，支持搜索和分页
     public async Task<IActionResult> Index(string searchString, int page = 1)
     {
+        _logger.LogInformation("Fetching location list. Search: {Search}, Page: {Page}", searchString, page);
         try
         {
             int pageSize = 5000;
@@ -77,6 +78,7 @@ public class DisplayLocationController : Controller
     // 创建或编辑储位页面
     public async Task<IActionResult> CreateEdit(int? id)
     {
+        _logger.LogInformation("Loading Create/Edit view for Location ID: {Id}", id);
         try
         {
             if (id == null)
@@ -106,9 +108,11 @@ public class DisplayLocationController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> CreateEdit(RCS_Locations location)
     {
+        _logger.LogInformation("Saving location: {LocationName}, Group: {Group}", location?.Name, location?.Group);
         try
         {
             var (success, message) = await _locationService.CreateOrUpdateLocation(location);
+            _logger.LogInformation("Save result for {LocationName}: {Success}, Message: {Message}", location?.Name, success, message);
             
             TempData["Message"] = message;
             TempData["MessageType"] = success ? "success" : "danger";
@@ -132,9 +136,11 @@ public class DisplayLocationController : Controller
     [HttpPost]
     public async Task<IActionResult> DeleteConfirmed(int id, int type)
     {
+        _logger.LogInformation("Processing location operation. ID: {Id}, Type: {Type}", id, type);
         try
         {
             var (success, message) = await _locationService.HandleLocationOperation(id, type);
+            _logger.LogInformation("Operation result for ID {Id}: {Success}, Message: {Message}", id, success, message);
             return Json(new { success, message });
         }
         catch (Exception ex)
@@ -148,6 +154,7 @@ public class DisplayLocationController : Controller
     [HttpPost]
     public async Task<IActionResult> BatchClearMaterials(List<int> locationIds)
     {
+        _logger.LogInformation("Batch clearing materials for IDs: {Ids}", string.Join(",", locationIds ?? new List<int>()));
         try
         {
             if (locationIds == null || !locationIds.Any())
@@ -156,6 +163,7 @@ public class DisplayLocationController : Controller
             }
             
             var (success, message, affectedCount) = await _locationService.BatchClearMaterialsByIds(locationIds);
+            _logger.LogInformation("Batch clear result: {Success}, Affected: {Count}", success, affectedCount);
             return Json(new { success, message, affectedCount });
         }
         catch (Exception ex)
@@ -169,6 +177,7 @@ public class DisplayLocationController : Controller
     [HttpPost]
     public async Task<IActionResult> BatchToggleLock(List<int> locationIds, bool lockState)
     {
+        _logger.LogInformation("Batch toggling lock state to {LockState} for IDs: {Ids}", lockState, string.Join(",", locationIds ?? new List<int>()));
         try
         {
             if (locationIds == null || !locationIds.Any())
@@ -177,6 +186,7 @@ public class DisplayLocationController : Controller
             }
             
             var (success, message, affectedCount) = await _locationService.BatchToggleLockByIds(locationIds, lockState);
+            _logger.LogInformation("Batch lock toggle result: {Success}, Affected: {Count}", success, affectedCount);
             return Json(new { success, message, affectedCount });
         }
         catch (Exception ex)
@@ -191,6 +201,7 @@ public class DisplayLocationController : Controller
     [HttpPost]
     public async Task<IActionResult> BatchClearMaterialsByGroup(string group)
     {
+        _logger.LogInformation("Batch clearing materials for Group: {Group}", group);
         try
         {
             if (string.IsNullOrEmpty(group))
@@ -199,6 +210,7 @@ public class DisplayLocationController : Controller
             }
             
             var (success, message, affectedCount) = await _locationService.BatchClearMaterials(group);
+            _logger.LogInformation("Batch clear by group result: {Success}, Affected: {Count}", success, affectedCount);
             return Json(new { success, message, affectedCount });
         }
         catch (Exception ex)
@@ -212,6 +224,7 @@ public class DisplayLocationController : Controller
     [HttpPost]
     public async Task<IActionResult> BatchToggleLockByGroup(string group, bool lockState)
     {
+        _logger.LogInformation("Batch toggling lock state to {LockState} for Group: {Group}", lockState, group);
         try
         {
             if (string.IsNullOrEmpty(group))
@@ -220,6 +233,7 @@ public class DisplayLocationController : Controller
             }
             
             var (success, message, affectedCount) = await _locationService.BatchToggleLock(group, lockState);
+            _logger.LogInformation("Batch lock toggle by group result: {Success}, Affected: {Count}", success, affectedCount);
             return Json(new { success, message, affectedCount });
         }
         catch (Exception ex)
@@ -234,6 +248,7 @@ public class DisplayLocationController : Controller
     [HttpPost]
     public async Task<IActionResult> BatchToggleEnabled(List<int> locationIds, bool enabledState)
     {
+        _logger.LogInformation("Batch toggling enabled state to {EnabledState} for IDs: {Ids}", enabledState, string.Join(",", locationIds ?? new List<int>()));
         try
         {
             if (locationIds == null || !locationIds.Any())
@@ -242,6 +257,7 @@ public class DisplayLocationController : Controller
             }
             
             var (success, message, affectedCount) = await _locationService.BatchToggleEnabledByIds(locationIds, enabledState);
+            _logger.LogInformation("Batch enabled toggle result: {Success}, Affected: {Count}", success, affectedCount);
             return Json(new { success, message, affectedCount });
         }
         catch (Exception ex)
@@ -256,6 +272,7 @@ public class DisplayLocationController : Controller
     [HttpPost]
     public async Task<IActionResult> BatchToggleEnabledByGroup(string group, bool enabledState)
     {
+        _logger.LogInformation("Batch toggling enabled state to {EnabledState} for Group: {Group}", enabledState, group);
         try
         {
             if (string.IsNullOrEmpty(group))
@@ -264,6 +281,7 @@ public class DisplayLocationController : Controller
             }
             
             var (success, message, affectedCount) = await _locationService.BatchToggleEnabled(group, enabledState);
+            _logger.LogInformation("Batch enabled toggle by group result: {Success}, Affected: {Count}", success, affectedCount);
             return Json(new { success, message, affectedCount });
         }
         catch (Exception ex)
@@ -278,6 +296,7 @@ public class DisplayLocationController : Controller
     [HttpGet]
     public IActionResult DownloadTemplate()
     {
+        _logger.LogInformation("Downloading location import template");
         try
         {
             // 设置EPPlus许可证上下文
@@ -340,6 +359,7 @@ public class DisplayLocationController : Controller
     [HttpPost]
     public async Task<IActionResult> PreviewExcel(IFormFile file)
     {
+        _logger.LogInformation("Previewing Excel file: {FileName}", file?.FileName);
         try
         {
             if (file == null || file.Length == 0)
@@ -396,6 +416,7 @@ public class DisplayLocationController : Controller
     [HttpPost]
     public async Task<IActionResult> ImportExcel(IFormFile file)
     {
+        _logger.LogInformation("Importing Excel file: {FileName}", file?.FileName);
         try
         {
             if (file == null || file.Length == 0)
@@ -568,6 +589,7 @@ public class DisplayLocationController : Controller
                         }
                     }
 
+                    _logger.LogInformation("Successfully imported {Count} locations", successCount);
                     return Json(new { 
                         success = true, 
                         message = $"成功导入 {successCount} 个储位",

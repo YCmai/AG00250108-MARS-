@@ -96,6 +96,15 @@
             background: #2980b9;
         }
 
+        .batch-btn-occupy {
+            background: #8e44ad;
+            color: white;
+        }
+
+        .batch-btn-occupy:hover {
+            background: #7d3c98;
+        }
+
         .batch-btn-lock {
             background: #e74c3c;
             color: white;
@@ -218,40 +227,34 @@
         }
 
         .location-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 12px;
-            padding: 0;
-            grid-auto-flow: dense;
-        }
-
-        /* Group layout: 2x2 cells per group with spacing */
-        .location-grid {
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0;
             padding: 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            max-width: 100%;
         }
         
-        /* Special grid for FG/PM with no gap */
-        .location-grid.fg-pm-grid {
-            gap: 0;
-        }
-
-        .location-group {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+        .location-row {
+            display: flex;
+            flex-wrap: nowrap;
             gap: 0;
             flex: 0 0 auto;
         }
 
-        .location-group .location-cell {
-            width: 40px;
-            height: 40px;
+        .location-row + .location-row {
+            margin-top: -1px;
+        }
+
+        .location-row .location-cell + .location-cell {
+            margin-left: -1px;
         }
 
         .location-cell {
-            aspect-ratio: 1;
+            width: 46px;
+            height: 46px;
             background: white;
             border-radius: 0;
             box-shadow: none;
@@ -431,7 +434,7 @@
 
         .modal-actions {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(3, 1fr);
             gap: 12px;
         }
 
@@ -463,6 +466,20 @@
         }
 
         .modal-btn-clear:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .modal-btn-occupy {
+            background: #8e44ad;
+            color: white;
+        }
+
+        .modal-btn-occupy:hover {
+            background: #7d3c98;
+        }
+
+        .modal-btn-occupy:disabled {
             background: #bdc3c7;
             cursor: not-allowed;
         }
@@ -809,9 +826,9 @@
                 margin: 0 -15px 20px -15px;
             }
             
-            .location-grid {
-                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-                gap: 10px;
+            .location-cell {
+                width: 42px;
+                height: 42px;
             }
 
             .location-code {
@@ -820,9 +837,9 @@
         }
 
         @@media (min-width: 769px) {
-            .location-grid {
-                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-                gap: 15px;
+            .location-cell {
+                width: 46px;
+                height: 46px;
             }
         }
     </style>
@@ -866,10 +883,16 @@
                     <span>🗑️</span>
                     <span>Clear</span>
                 </button>
+                <button class="batch-btn batch-btn-occupy" onclick="batchSetOccupied()">
+                    <span>📦</span>
+                    <span>Occupy</span>
+                </button>
                 <button class="batch-btn batch-btn-lock" onclick="batchToggleLock(true)">
                     <span>🔒</span>
                     <span>Lock</span>
                 </button>
+            </div>
+            <div class="batch-btn-group">
                 <button class="batch-btn batch-btn-unlock" onclick="batchToggleLock(false)">
                     <span>🔓</span>
                     <span>Unlock</span>
@@ -914,7 +937,7 @@
                     <div class="modal-subtitle" id="taskModalSubtitle">Select target group and priority</div>
                 </div>
                 
-                <div class="form-group">
+                <div class="form-group" style="display: none;">
                     <label class="form-label">Target Group</label>
                     <div class="group-select-grid" id="groupSelectGrid">
                         <!-- Group options will be dynamically generated here -->
@@ -979,7 +1002,7 @@
             
             // Hide task assignment button for FG group (default)
             const taskAssignmentGroup = document.getElementById('taskAssignmentGroup');
-            if (currentGroup !== 'FG/PM') {
+            if (currentGroup !== 'FG/PM' && currentGroup !== 'RPM') {
                 taskAssignmentGroup.style.display = 'none';
             }
         });
@@ -1003,7 +1026,7 @@
             
             // Show/hide task assignment button based on group
             const taskAssignmentGroup = document.getElementById('taskAssignmentGroup');
-            if (groupName === 'FG/PM') {
+            if (groupName === 'FG/PM' || groupName === 'RPM') {
                 taskAssignmentGroup.style.display = 'flex';
             } else {
                 taskAssignmentGroup.style.display = 'none';
@@ -1032,11 +1055,9 @@
                         return locGroup === currentGroup;
                     });
                     
-                    // Sort locations by name (natural sort: 1A, 1B, 2A, 2B, 3A, 3B...)
+                    // Sort locations by aisle: A1, A2... then B1, B2...
                     locations.sort((a, b) => {
-                        const nameA = a.name || a.nodeRemark || '';
-                        const nameB = b.name || b.nodeRemark || '';
-                        return nameA.localeCompare(nameB, undefined, { numeric: true, sensitivity: 'base' });
+                        return compareLocationsByAisle(a, b);
                     });
                     
                     console.log('Filtered and sorted locations:', locations);
@@ -1076,42 +1097,86 @@
                 return;
             }
             
-            // Special handling for FG/PM group: FG zone and PM zone based on location name
-            if (currentGroup === 'FG/PM') {
-                console.log('FG/PM group - Total locations:', filteredLocations.length);
-                console.log('Locations:', filteredLocations);
-                
-                let html = '<div class="location-grid fg-pm-grid">';
-                
-                // Group all locations into 2x2 groups, but apply different zone classes based on name
-                for (let i = 0; i < filteredLocations.length; i += 4) {
-                    const group = filteredLocations.slice(i, i + 4);
-                    html += '<div class="location-group">';
-                    group.forEach((location, indexInGroup) => {
-                        const locationName = location.name || location.nodeRemark || '';
-                        // 3B and 4B are PM zone (blue border), others are FG zone (purple border)
-                        const zoneClass = (locationName.includes('3B') || locationName.includes('4B')) ? 'zone-pm' : 'zone-fg';
-                        html += renderLocationCell(location, zoneClass);
-                    });
-                    html += '</div>';
-                }
-                
-                html += '</div>';
-                container.innerHTML = html;
-            } else {
-                // Normal grouping: 2x2 groups with gaps
-                const groups = [];
-                for (let i = 0; i < filteredLocations.length; i += 4) {
-                    groups.push(filteredLocations.slice(i, i + 4));
-                }
-                
-                const gridClass = 'location-grid';
-                container.innerHTML = `<div class="${gridClass}">${groups.map((group, groupIndex) => {
-                    return `<div class="location-group">${group.map((location, indexInGroup) => {
-                        return renderLocationCell(location, '');
-                    }).join('')}</div>`;
-                }).join('')}</div>`;
+            const rows = buildAisleRows(filteredLocations);
+            container.innerHTML = `
+                <div class="location-grid">
+                    ${rows.map(row => `
+                        <div class="location-row location-row-${row.aisle.toLowerCase()}">
+                            ${row.locations.map(location => {
+                                const zoneClass = currentGroup === 'FG/PM' ? getFgPmZoneClass(location) : '';
+                                return renderLocationCell(location, zoneClass);
+                            }).join('')}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function getLocationLayoutInfo(location) {
+            const rawCode = String(location.nodeRemark || location.name || '').trim().toUpperCase();
+            const match = rawCode.match(/^(\d+)\s*([A-Z])$/) || rawCode.match(/^([A-Z])\s*(\d+)$/);
+
+            if (!match) {
+                return {
+                    aisle: '',
+                    number: Number.MAX_SAFE_INTEGER,
+                    displayCode: rawCode || '-',
+                    rawCode
+                };
             }
+
+            const number = parseInt(match[1], 10) || parseInt(match[2], 10);
+            const aisle = isNaN(parseInt(match[1], 10)) ? match[1] : match[2];
+
+            return {
+                aisle,
+                number,
+                displayCode: `${aisle}${number}`,
+                rawCode
+            };
+        }
+
+        function compareLocationsByAisle(a, b) {
+            const infoA = getLocationLayoutInfo(a);
+            const infoB = getLocationLayoutInfo(b);
+            const aisleOrder = { A: 0, B: 1 };
+            const aisleA = aisleOrder[infoA.aisle] ?? 99;
+            const aisleB = aisleOrder[infoB.aisle] ?? 99;
+
+            if (aisleA !== aisleB) {
+                return aisleA - aisleB;
+            }
+
+            if (infoA.number !== infoB.number) {
+                return infoA.number - infoB.number;
+            }
+
+            return infoA.rawCode.localeCompare(infoB.rawCode, undefined, { numeric: true, sensitivity: 'base' });
+        }
+
+        function buildAisleRows(locationItems) {
+            const sortedItems = [...locationItems].sort(compareLocationsByAisle);
+            const rows = [
+                { aisle: 'A', locations: sortedItems.filter(location => getLocationLayoutInfo(location).aisle === 'A') },
+                { aisle: 'B', locations: sortedItems.filter(location => getLocationLayoutInfo(location).aisle === 'B') }
+            ];
+
+            const otherLocations = sortedItems.filter(location => {
+                const aisle = getLocationLayoutInfo(location).aisle;
+                return aisle !== 'A' && aisle !== 'B';
+            });
+
+            if (otherLocations.length > 0) {
+                rows.push({ aisle: 'Other', locations: otherLocations });
+            }
+
+            return rows.filter(row => row.locations.length > 0);
+        }
+
+        function getFgPmZoneClass(location) {
+            const info = getLocationLayoutInfo(location);
+            // 3B and 4B are PM zone (blue border), others are FG zone (purple border)
+            return (info.aisle === 'B' && (info.number === 3 || info.number === 4)) ? 'zone-pm' : 'zone-fg';
         }
         
         // Helper function to render a single location cell
@@ -1133,7 +1198,7 @@
                 <div class="location-cell batch-mode ${statusClass} ${selectedClass} ${zoneClass}" onclick="${clickHandler}">
                     ${checkboxHtml}
                     <div class="location-status-icon">${statusIcon}</div>
-                    <div class="location-code">${location.nodeRemark || location.name}</div>
+                    <div class="location-code">${getLocationLayoutInfo(location).displayCode}</div>
                 </div>
             `;
         }
@@ -1196,6 +1261,12 @@
                         <span>🗑️</span>
                         <span>Clear</span>
                     </button>
+                    <button class="modal-btn modal-btn-occupy" 
+                            onclick="setOccupied(${location.id || location.Id})"
+                            ${!isEmpty ? 'disabled' : ''}>
+                        <span>📦</span>
+                        <span>Occupy</span>
+                    </button>
                     <button class="modal-btn ${isLocked ? 'modal-btn-unlock' : 'modal-btn-lock'}" 
                             onclick="toggleLock(${location.id || location.Id}, ${isLocked})">
                         <span>${isLocked ? '🔓' : '🔒'}</span>
@@ -1240,6 +1311,35 @@
                 }
             } catch (error) {
                 showError('Failed to clear material: ' + error.message);
+            }
+        }
+
+        // Set occupied
+        async function setOccupied(id) {
+            if (!confirm('Are you sure you want to mark this location as occupied?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/MobileLocation/BatchSetOccupied', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ids: [id] })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(result.message || 'Marked occupied successfully');
+                    hideLocationModal();
+                    await loadLocations(currentPage);
+                } else {
+                    showError(result.message || 'Set occupied failed');
+                }
+            } catch (error) {
+                showError('Failed to set occupied: ' + error.message);
             }
         }
 
@@ -1371,6 +1471,43 @@
                 }
             } catch (error) {
                 showError('Batch clear failed: ' + error.message);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Batch set occupied
+        async function batchSetOccupied() {
+            if (selectedLocationIds.size === 0) {
+                showError('Please select at least one location');
+                return;
+            }
+            
+            if (!confirm(`Are you sure you want to mark ${selectedLocationIds.size} location(s) as occupied?`)) {
+                return;
+            }
+            
+            try {
+                showLoading(true);
+                const response = await fetch('/MobileLocation/BatchSetOccupied', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ids: Array.from(selectedLocationIds) })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showSuccess(result.message);
+                    exitBatchModeKeepEnabled();
+                    await loadLocations(currentPage);
+                } else {
+                    showError(result.message);
+                }
+            } catch (error) {
+                showError('Batch occupy failed: ' + error.message);
             } finally {
                 showLoading(false);
             }
@@ -1510,15 +1647,17 @@
             // You can configure this mapping later
             const groupMapping = {
                 'FG': 'RPM',      // FG -> RPM
-                'RPM': 'FG',      // RPM -> FG
-                'FG/PM': 'FG'     // FG/PM -> FG (configurable)
+                'RPM': 'FG/PM',   // RPM -> FG/PM
+                'FG/PM': 'FG'     // FG/PM -> FG
             };
             
             selectedTargetGroup = groupMapping[currentGroup] || 'RPM';
             selectedTaskPriority = 1; // Default to low priority
             
-            // Directly confirm task assignment without showing modal
-            confirmTaskAssignmentDirect();
+            populateGroupOptions();
+            selectTaskPriority(selectedTaskPriority);
+            document.getElementById('taskModalSubtitle').textContent = `${selectedLocationIds.size} location(s) selected`;
+            document.getElementById('taskModalOverlay').classList.add('show');
         }
 
         // Hide task assignment modal
@@ -1718,8 +1857,10 @@
             
             // Determine if it's full success or partial success
             const isFullSuccess = failedCount === 0;
-            const titleText = isFullSuccess ? 'Task Creation Successful' : 'Task Creation - Partial Success';
+            const isFullFailure = createdCount === 0 && failedCount > 0;
+            const titleText = isFullSuccess ? 'Task Creation Successful' : (isFullFailure ? 'Task Creation Failed' : 'Task Creation - Partial Success');
             const subtitleText = isFullSuccess ? 'All tasks created successfully' : `${createdCount} of ${requestedCount} tasks created`;
+            const safeMessage = escapeHtml(message || '');
             
             resultModal.innerHTML = `
                 <button class="modal-btn-close" onclick="document.getElementById('resultModalOverlay').remove()">×</button>
@@ -1745,13 +1886,13 @@
                     ${failedCount > 0 ? `
                     <div class="info-row" style="background: #fff3cd; padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #ffc107;">
                         <span class="info-label" style="color: #856404; font-weight: 600;">⚠ Reason for Failure</span>
-                        <span class="info-value" style="color: #856404;">Insufficient available locations in target group or source location is in the same group as target</span>
+                        <span class="info-value" style="color: #856404;">${safeMessage || 'Task conditions are not satisfied.'}</span>
                     </div>
                     ` : ''}
-                    ${message ? `
+                    ${message && failedCount === 0 ? `
                     <div class="info-row" style="background: #e7f3ff; padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #17a2b8;">
                         <span class="info-label" style="color: #004085; font-weight: 600;">ℹ Details</span>
-                        <span class="info-value" style="color: #004085;">${message}</span>
+                        <span class="info-value" style="color: #004085;">${safeMessage}</span>
                     </div>
                     ` : ''}
                 </div>
@@ -1764,6 +1905,18 @@
             
             resultOverlay.appendChild(resultModal);
             document.body.appendChild(resultOverlay);
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, function(char) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[char];
+            });
         }
     </script>
 </body>

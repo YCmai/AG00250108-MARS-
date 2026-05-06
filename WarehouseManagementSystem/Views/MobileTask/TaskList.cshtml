@@ -97,6 +97,7 @@
         }
 
         .status-none { background: #f8f9fa; color: #6c757d; }
+        .status-pending { background: #fff7e6; color: #b26a00; }
         .status-start { background: #e3f2fd; color: #1976d2; }
         .status-confirm { background: #fff3e0; color: #f57c00; }
         .status-picking { background: #e8f5e8; color: #388e3c; }
@@ -413,6 +414,8 @@
                 const isCompleted = task.taskStatus === 11;
                 const isCancelled = task.taskStatus === 30 || task.taskStatus === 31 || task.taskStatus === 32 || task.isCancelled;
                 const isRunning = !isCompleted && !isCancelled;
+                const sourceDisplayName = task.sourceDisplayName || task.sourcePosition || '-';
+                const targetDisplayName = task.targetDisplayName || task.targetPosition || 'Waiting';
                 
                 const cancelBtnHtml = isRunning ? `
                     <div class="task-actions">
@@ -429,9 +432,9 @@
                             <div class="task-status ${getStatusClass(task.taskStatus)}">${getStatusDisplayName(task.taskStatus)}</div>
                         </div>
                         <div class="task-route">
-                            <span>${task.sourcePosition}</span>
+                            <span>${escapeHtml(sourceDisplayName)}</span>
                             <span class="route-arrow">→</span>
-                            <span>${task.targetPosition}</span>
+                            <span>${escapeHtml(targetDisplayName)}</span>
                         </div>
                         <div class="task-time">
                             <span class="time-icon">🕒</span>
@@ -446,9 +449,22 @@
             document.getElementById('noDataDiv').style.display = 'none';
         }
 
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, function (char) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#39;'
+                }[char];
+            });
+        }
+
         // Get CSS class for status
         function getStatusClass(status) {
             const statusMap = {
+                '-2': 'status-pending',
                 '-1': 'status-none',
                 '1': 'status-start',
                 '2': 'status-confirm',
@@ -465,6 +481,7 @@
         // Get status display name in English
         function getStatusDisplayName(status) {
             const statusMap = {
+                '-2': 'Pending Conditions',
                 '-1': 'Not Started',
                 '0': 'Not Started',
                 '1': 'Task Started',

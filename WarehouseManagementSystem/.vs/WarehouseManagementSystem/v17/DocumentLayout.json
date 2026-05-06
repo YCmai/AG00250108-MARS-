@@ -7,8 +7,16 @@
       "RelativeMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|solutionrelative:controllers\\mobiletaskcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|e:\\ndcproject\\ag00250108 mars\u6C99\u7279\\warehousemanagementsystem\\views\\mobilelocation\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|solutionrelative:views\\mobilelocation\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|e:\\ndcproject\\ag00250108 mars\u6C99\u7279\\warehousemanagementsystem\\services\\tasks\\pendingconditiontaskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|solutionrelative:services\\tasks\\pendingconditiontaskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|e:\\ndcproject\\ag00250108 mars\u6C99\u7279\\warehousemanagementsystem\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|e:\\ndcproject\\ag00250108 mars\u6C99\u7279\\warehousemanagementsystem\\controllers\\mobilelocationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|solutionrelative:controllers\\mobilelocationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 11,
+          "SelectedChildIndex": 12,
           "Children": [
             {
               "$type": "Bookmark",
@@ -66,28 +74,52 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PendingConditionTaskService.cs",
+              "DocumentMoniker": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Services\\Tasks\\PendingConditionTaskService.cs",
+              "RelativeDocumentMoniker": "Services\\Tasks\\PendingConditionTaskService.cs",
+              "ToolTip": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Services\\Tasks\\PendingConditionTaskService.cs",
+              "RelativeToolTip": "Services\\Tasks\\PendingConditionTaskService.cs",
+              "ViewState": "AQIAANQAAAAAAAAAAAAUwN4AAABPAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T06:56:54.033Z"
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
               "Title": "MobileTaskController.cs",
               "DocumentMoniker": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Controllers\\MobileTaskController.cs",
               "RelativeDocumentMoniker": "Controllers\\MobileTaskController.cs",
               "ToolTip": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Controllers\\MobileTaskController.cs",
               "RelativeToolTip": "Controllers\\MobileTaskController.cs",
-              "ViewState": "AQIAAJsCAAAAAAAAAAAWwKgCAAAtAAAA",
+              "ViewState": "AQIAABQDAAAAAAAAAAAtwCYDAAAcAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-12T01:42:07.688Z",
+              "WhenOpened": "2026-05-05T06:52:04.541Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Index.cshtml",
-              "DocumentMoniker": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Views\\MobileLocation\\Index.cshtml",
-              "RelativeDocumentMoniker": "Views\\MobileLocation\\Index.cshtml",
-              "ToolTip": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Views\\MobileLocation\\Index.cshtml",
-              "RelativeToolTip": "Views\\MobileLocation\\Index.cshtml",
-              "ViewState": "AQIAAE4BAAAAAAAAAAAhwF8BAAAWAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-12-26T03:51:22.768Z"
+              "DocumentIndex": 3,
+              "Title": "MobileLocationController.cs",
+              "DocumentMoniker": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Controllers\\MobileLocationController.cs",
+              "RelativeDocumentMoniker": "Controllers\\MobileLocationController.cs",
+              "ToolTip": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Controllers\\MobileLocationController.cs",
+              "RelativeToolTip": "Controllers\\MobileLocationController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAkAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-05T02:17:21.279Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AQIAADMAAAAAAAAAAAAvwEQAAAASAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-30T12:37:37.693Z"
             }
           ]
         }

@@ -20,6 +20,7 @@ using static AciModule.Domain.Entitys.RCS_UserTasks;
 using Microsoft.CodeAnalysis;
 using System.Net.Http;
 using Microsoft.Extensions.Configuration;
+using TaskBaseModule.Domain;
 
 namespace Spark.Domain.Worker
 {
@@ -92,6 +93,7 @@ namespace Spark.Domain.Worker
                     if (task.TaskStatus == TaskStatuEnum.None || task.TaskStatus == TaskStatuEnum.CarWash)
                     {
                         task.SetStatus(TaskStatuEnum.Canceled);
+                        await HandleTaskCancel(cancelTask);
                         await _ndcTaskRepos.UpdateAsync(task);
                         
                     }
@@ -107,6 +109,7 @@ namespace Spark.Domain.Worker
                 else
                 {
                     cancelTask.taskStatus = TaskStatuEnum.Canceled;
+                    await HandleTaskCancel(cancelTask);
                     await _userTasks.UpdateAsync(cancelTask);
                 }
             }
@@ -141,6 +144,10 @@ namespace Spark.Domain.Worker
                 {
                     await HandleTaskFinish(userTask);
                 }
+                else if (ndcTask.TaskStatus == TaskStatuEnum.Unloading)
+                {
+                    await HandleTaskPickDown(userTask);
+                }
                 else if (ndcTask.TaskStatus == TaskStatuEnum.Canceled)
                 {
                     await HandleTaskCancel(userTask);
@@ -163,8 +170,41 @@ namespace Spark.Domain.Worker
         private async Task HandleTaskFinish(RCS_UserTasks userTask)
         {
             // 解锁源储位和目标储位
-            var sourceLocation = await _locations.FirstOrDefaultAsync(l => l.Name == userTask.sourcePosition);
+            //var sourceLocation = await _locations.FirstOrDefaultAsync(l => l.Name == userTask.sourcePosition);
             var targetLocation = await _locations.FirstOrDefaultAsync(l => l.Name == userTask.targetPosition);
+
+            //if (sourceLocation != null)
+            //{
+            //    sourceLocation.Lock = false;
+            //    // 清空源储位的物料信息
+            //    sourceLocation.MaterialCode = null;
+            //    sourceLocation.PalletID = null;
+            //    sourceLocation.Weight = null;
+            //    sourceLocation.Quanitity = null;
+            //    await _locations.UpdateAsync(sourceLocation);
+            //}
+
+            if (targetLocation != null)
+            {
+                targetLocation.Lock = false;
+                // 把任务的物料编号放到目标储位
+                targetLocation.MaterialCode = "manual";
+                targetLocation.PalletID = null;
+                targetLocation.Weight = null;
+                targetLocation.Quanitity = null;
+                await _locations.UpdateAsync(targetLocation);
+            }
+
+            await _loggerManager.LogAndLogCritical(
+                $"任务完成：{userTask.requestCode}，物料 {userTask.MaterialCode} 已移动到 {userTask.targetPosition}");
+        }
+
+
+        private async Task HandleTaskPickDown(RCS_UserTasks userTask)
+        {
+            // 解锁源储位和目标储位
+            var sourceLocation = await _locations.FirstOrDefaultAsync(l => l.Name == userTask.sourcePosition);
+            //var targetLocation = await _locations.FirstOrDefaultAsync(l => l.Name == userTask.targetPosition);
 
             if (sourceLocation != null)
             {
@@ -177,19 +217,19 @@ namespace Spark.Domain.Worker
                 await _locations.UpdateAsync(sourceLocation);
             }
 
-            if (targetLocation != null)
-            {
-                targetLocation.Lock = false;
-                // 把任务的物料编号放到目标储位
-                targetLocation.MaterialCode = "full";
-                targetLocation.PalletID = null;
-                targetLocation.Weight = null;
-                targetLocation.Quanitity = null;
-                await _locations.UpdateAsync(targetLocation);
-            }
+            //if (targetLocation != null)
+            //{
+            //    targetLocation.Lock = false;
+            //    // 把任务的物料编号放到目标储位
+            //    targetLocation.MaterialCode = "manual";
+            //    targetLocation.PalletID = null;
+            //    targetLocation.Weight = null;
+            //    targetLocation.Quanitity = null;
+            //    await _locations.UpdateAsync(targetLocation);
+            //}
 
             await _loggerManager.LogAndLogCritical(
-                $"任务完成：{userTask.requestCode}，物料 {userTask.MaterialCode} 已移动到 {userTask.targetPosition}");
+                $"任务取货完成：{userTask.requestCode}，物料 {userTask.MaterialCode} 已清空");
         }
 
 
@@ -239,8 +279,14 @@ namespace Spark.Domain.Worker
             try
             {
                 // 获取状态为 None 的任务
-                var carWashTasks = await _userTasks.GetListAsync(x => x.taskStatus == TaskStatuEnum.None);
+                // 获取状态为 None 的任务，并按创建时间排序
+                var carWashTasks = (await _userTasks.GetListAsync(x => x.taskStatus == TaskStatuEnum.None))
+                    .OrderBy(x => x.creatTime ?? DateTime.MaxValue)
+                    .ThenBy(x => x.ID)
+                    .ToList();
+
                 if (!carWashTasks.Any()) return;
+
 
                 // 获取所有位置信息
                 var locations = await _locations.GetListAsync();
@@ -287,7 +333,7 @@ namespace Spark.Domain.Worker
                         pickupLocation.LiftingHeight,  // PickupHeight: int
                         Convert.ToInt32(unloadLocation.Name),       // UnloadPoint: string
                         unloadLocation.UnloadHeight,  // UnloadHeight: int
-                        0     // Priority: int
+                        task.priority     // Priority: int
                     );
 
                     await _ndcTaskRepos.InsertAsync(newTask);

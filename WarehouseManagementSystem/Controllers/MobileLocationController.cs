@@ -85,7 +85,15 @@ namespace WarehouseManagementSystem.Controllers
         /// </summary>
         public class BatchClearMaterialRequest
         {
-            public List<int> Ids { get; set; }
+            public List<int> Ids { get; set; } = new();
+        }
+
+        /// <summary>
+        /// Batch Set Occupied Request Model
+        /// </summary>
+        public class BatchSetOccupiedRequest
+        {
+            public List<int> Ids { get; set; } = new();
         }
 
         /// <summary>
@@ -102,7 +110,7 @@ namespace WarehouseManagementSystem.Controllers
         /// </summary>
         public class BatchToggleLockRequest
         {
-            public List<int> Ids { get; set; }
+            public List<int> Ids { get; set; } = new();
             public bool LockState { get; set; } // true=lock, false=unlock
         }
 
@@ -112,6 +120,7 @@ namespace WarehouseManagementSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> ClearMaterial([FromBody] ClearMaterialRequest request)
         {
+            _logger.LogInformation("移动端请求清除库位物料。库位ID: {Id}", request?.Id);
             try
             {
                 if (request == null || request.Id <= 0)
@@ -126,6 +135,11 @@ namespace WarehouseManagementSystem.Controllers
                 // type = 3 means clear material
                 var (success, message) = await _locationService.HandleLocationOperation(request.Id, 3);
                 
+                if (success)
+                    _logger.LogInformation("库位 {Id} 物料清除成功", request.Id);
+                else
+                    _logger.LogWarning("库位 {Id} 物料清除失败: {Message}", request.Id, message);
+
                 return Json(new
                 {
                     success = success,
@@ -134,7 +148,7 @@ namespace WarehouseManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to clear location material");
+                _logger.LogError(ex, "清除库位物料失败。ID: {Id}", request?.Id);
                 return Json(new
                 {
                     success = false,
@@ -149,6 +163,7 @@ namespace WarehouseManagementSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> BatchClearMaterial([FromBody] BatchClearMaterialRequest request)
         {
+            _logger.LogInformation("移动端请求批量清除库位物料。数量: {Count}, IDs: {Ids}", request?.Ids?.Count, request?.Ids);
             try
             {
                 if (request == null || request.Ids == null || request.Ids.Count == 0)
@@ -188,6 +203,7 @@ namespace WarehouseManagementSystem.Controllers
                 }
 
                 string resultMessage = $"Batch clear completed: {successCount} succeeded, {failCount} failed";
+                _logger.LogInformation("批量清除库位完成。成功: {Success}, 失败: {Fail}", successCount, failCount);
                 if (errors.Count > 0 && errors.Count <= 5)
                 {
                     resultMessage += ". Errors: " + string.Join("; ", errors);
@@ -203,11 +219,52 @@ namespace WarehouseManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Batch clear material failed");
+                _logger.LogError(ex, "批量清除物料失败。IDs: {Ids}", request?.Ids);
                 return Json(new
                 {
                     success = false,
                     message = "Batch clear failed: " + ex.Message
+                });
+            }
+        }
+
+        /// <summary>
+        /// Batch Set Locations Occupied
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> BatchSetOccupied([FromBody] BatchSetOccupiedRequest request)
+        {
+            _logger.LogInformation("移动端批量设置库位占用。IDs: {Ids}", request?.Ids);
+            try
+            {
+                if (request == null || request.Ids == null || request.Ids.Count == 0)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Invalid location IDs"
+                    });
+                }
+
+                var (success, message, affectedCount) = await _locationService.BatchSetOccupiedByIds(request.Ids);
+                
+                if (success)
+                    _logger.LogInformation("批量设置占用成功。受影响数量: {Count}", affectedCount);
+
+                return Json(new
+                {
+                    success = success,
+                    message = message,
+                    affectedCount = affectedCount
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "批量设置占用失败。IDs: {Ids}", request?.Ids);
+                return Json(new
+                {
+                    success = false,
+                    message = "Batch set occupied failed: " + ex.Message
                 });
             }
         }
@@ -218,6 +275,7 @@ namespace WarehouseManagementSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> ToggleLock([FromBody] ToggleLockRequest request)
         {
+            _logger.LogInformation("移动端请求锁定/解锁库位。ID: {Id}, 目标状态: {State}", request?.Id, request?.LockState);
             try
             {
                 if (request == null || request.Id <= 0)
@@ -235,6 +293,9 @@ namespace WarehouseManagementSystem.Controllers
                     request.LockState
                 );
                 
+                if (success)
+                    _logger.LogInformation("库位 {Id} 状态已更新为 {State}", request.Id, request.LockState ? "锁定" : "解锁");
+
                 return Json(new
                 {
                     success = success,
@@ -243,7 +304,7 @@ namespace WarehouseManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to lock/unlock location");
+                _logger.LogError(ex, "更新库位锁定状态失败。ID: {Id}, 目标状态: {State}", request?.Id, request?.LockState);
                 return Json(new
                 {
                     success = false,
@@ -258,6 +319,7 @@ namespace WarehouseManagementSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> BatchToggleLock([FromBody] BatchToggleLockRequest request)
         {
+            _logger.LogInformation("移动端批量锁定/解锁库位。数量: {Count}, 目标状态: {State}", request?.Ids?.Count, request?.LockState);
             try
             {
                 if (request == null || request.Ids == null || request.Ids.Count == 0)
@@ -275,6 +337,9 @@ namespace WarehouseManagementSystem.Controllers
                     request.LockState
                 );
                 
+                if (success)
+                    _logger.LogInformation("批量状态更新成功。受影响数量: {Count}", affectedCount);
+
                 return Json(new
                 {
                     success = success,
@@ -284,7 +349,7 @@ namespace WarehouseManagementSystem.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Batch lock/unlock failed");
+                _logger.LogError(ex, "批量更新锁定状态失败。数量: {Count}, 目标状态: {State}", request?.Ids?.Count, request?.LockState);
                 return Json(new
                 {
                     success = false,
@@ -294,4 +359,3 @@ namespace WarehouseManagementSystem.Controllers
         }
     }
 }
-

@@ -8,6 +8,7 @@ using Dapper;
 using System.Collections.Concurrent;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
+using System.Globalization;
 
 public interface ILocationService
 {
@@ -29,6 +30,9 @@ public interface ILocationService
 
     // 按ID列表批量清空物料
     Task<(bool success, string message, int affectedCount)> BatchClearMaterialsByIds(List<int> locationIds);
+
+    // 按ID列表批量标记储位为占用
+    Task<(bool success, string message, int affectedCount)> BatchSetOccupiedByIds(List<int> locationIds);
 
     // 按ID列表批量锁定/解锁储位
     Task<(bool success, string message, int affectedCount)> BatchToggleLockByIds(List<int> locationIds, bool lockState);
@@ -134,7 +138,6 @@ public class LocationService : ILocationService
             var totalCount = await connection.ExecuteScalarAsync<int>(countSql,
                 new { Search = $"%{searchString}%" });
 
-            // 获取所有数据，不在SQL中排序
             var sql = $@"SELECT * FROM RCS_Locations {whereClause}";
 
             var items = await connection.QueryAsync<RCS_Locations>(sql, new
@@ -142,8 +145,10 @@ public class LocationService : ILocationService
                 Search = $"%{searchString}%"
             });
 
-            // 先按Group分组，再按NodeRemark进行自然排序
             var result = items
+                .OrderBy(x => x.Group, NaturalStringComparer.Instance)
+                .ThenBy(x => x.NodeRemark, NaturalStringComparer.Instance)
+                .ThenBy(x => x.Name, NaturalStringComparer.Instance)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
 
@@ -175,19 +180,17 @@ public class LocationService : ILocationService
                 parameters.Add("@Search", $"%{searchString}%");
             }
 
-            query += " ORDER BY [Group], NodeRemark OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
-            parameters.Add("@Offset", (page - 1) * pageSize);
-            parameters.Add("@PageSize", pageSize);
-
             var items = await conn.QueryAsync<RCS_Locations>(query, parameters);
             var totalItems = await conn.ExecuteScalarAsync<int>(countQuery, parameters);
 
-            // 多级排序，假设NodeRemark格式为A-B-C
-            return (items
-                .OrderBy(x => GetNodeRemarkPart(x.NodeRemark, 0))
-                .ThenBy(x => GetNodeRemarkPart(x.NodeRemark, 1))
-                .ThenBy(x => GetNodeRemarkPart(x.NodeRemark, 2)),
-                totalItems);
+            var result = items
+                .OrderBy(x => x.Group, NaturalStringComparer.Instance)
+                .ThenBy(x => x.NodeRemark, NaturalStringComparer.Instance)
+                .ThenBy(x => x.Name, NaturalStringComparer.Instance)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize);
+
+            return (result, totalItems);
         }
         catch (Exception ex)
         {
@@ -196,15 +199,93 @@ public class LocationService : ILocationService
         }
     }
 
-    private int GetNodeRemarkPart(string nodeRemark, int index)
+    public async Task<(bool success, string message, int affectedCount)> BatchSetOccupiedByIds(List<int> locationIds)
     {
-        if (string.IsNullOrEmpty(nodeRemark)) return 0;
-        var parts = nodeRemark.Split('-');
-        if (index < parts.Length && int.TryParse(parts[index], out var n))
-            return n;
-        return 0;
+        using var connection = _db.CreateConnection();
+        connection.Open();
+        using var transaction = connection.BeginTransaction();
+
+        try
+        {
+            var entryDate = DateTime.Now.ToString("M d yyyy h:mmtt", CultureInfo.InvariantCulture);
+
+            int affectedCount = await connection.ExecuteAsync(@"
+            UPDATE RCS_Locations
+            SET MaterialCode = CASE
+                    WHEN MaterialCode IS NULL OR MaterialCode = '' OR MaterialCode = 'empty' THEN 'manual'
+                    ELSE MaterialCode
+                END,
+                PalletID = CASE WHEN PalletID IS NULL OR PalletID = '' OR PalletID = '0' THEN 'manual' ELSE PalletID END,
+                EntryDate = CASE
+                    WHEN EntryDate IS NULL OR LTRIM(RTRIM(EntryDate)) = '' THEN @EntryDate
+                    ELSE EntryDate
+                END
+            WHERE Id IN @LocationIds",
+                new { LocationIds = locationIds, EntryDate = entryDate },
+                transaction);
+
+            transaction.Commit();
+            return (true, $"成功标记 {affectedCount} 个储位为占用", affectedCount);
+        }
+        catch (Exception ex)
+        {
+            transaction.Rollback();
+            _logger.LogError(ex, "批量标记储位占用失败");
+            return (false, "标记占用失败，请稍后再试", 0);
+        }
     }
 
+    private sealed class NaturalStringComparer : IComparer<string?>
+    {
+        public static readonly NaturalStringComparer Instance = new();
+
+        public int Compare(string? x, string? y)
+        {
+            if (ReferenceEquals(x, y)) return 0;
+            if (x is null) return -1;
+            if (y is null) return 1;
+
+            int i = 0;
+            int j = 0;
+
+            while (i < x.Length && j < y.Length)
+            {
+                if (char.IsDigit(x[i]) && char.IsDigit(y[j]))
+                {
+                    int numberStartX = i;
+                    int numberStartY = j;
+
+                    while (i < x.Length && char.IsDigit(x[i])) i++;
+                    while (j < y.Length && char.IsDigit(y[j])) j++;
+
+                    var numberX = x.Substring(numberStartX, i - numberStartX).TrimStart('0');
+                    var numberY = y.Substring(numberStartY, j - numberStartY).TrimStart('0');
+
+                    numberX = numberX.Length == 0 ? "0" : numberX;
+                    numberY = numberY.Length == 0 ? "0" : numberY;
+
+                    int lengthCompare = numberX.Length.CompareTo(numberY.Length);
+                    if (lengthCompare != 0) return lengthCompare;
+
+                    int numberCompare = string.CompareOrdinal(numberX, numberY);
+                    if (numberCompare != 0) return numberCompare;
+
+                    int originalLengthCompare = (i - numberStartX).CompareTo(j - numberStartY);
+                    if (originalLengthCompare != 0) return originalLengthCompare;
+
+                    continue;
+                }
+
+                int charCompare = char.ToUpperInvariant(x[i]).CompareTo(char.ToUpperInvariant(y[j]));
+                if (charCompare != 0) return charCompare;
+
+                i++;
+                j++;
+            }
+
+            return x.Length.CompareTo(y.Length);
+        }
+    }
 
 
     public async Task<(bool success, string message, int affectedCount)> BatchClearMaterials(string group)
@@ -364,25 +445,48 @@ public class LocationService : ILocationService
         {
             using var conn = _db.CreateConnection();
 
-            var existing = await conn.QueryFirstOrDefaultAsync<RCS_Locations>(
-                "SELECT * FROM RCS_Locations WHERE NodeRemark = @NodeRemark",
-                new { location.NodeRemark });
-
-            if (existing != null)
+            if (location.Id > 0)
             {
+                var existing = await conn.QueryFirstOrDefaultAsync<RCS_Locations>(
+                    "SELECT * FROM RCS_Locations WHERE Id = @Id",
+                    new { location.Id });
+
+                if (existing == null)
+                {
+                    return (false, "储位不存在，无法修改。");
+                }
+
+                var duplicateName = await conn.ExecuteScalarAsync<int>(
+                    "SELECT COUNT(*) FROM RCS_Locations WHERE Name = @Name AND Id <> @Id",
+                    new { location.Name, location.Id });
+
+                if (duplicateName > 0)
+                {
+                    return (false, $"地图节点 '{location.Name}' 已存在。");
+                }
+
                 var sql = @"UPDATE RCS_Locations 
                 SET Name = @Name, NodeRemark = @NodeRemark, MaterialCode = @MaterialCode, 
                     PalletID = @PalletID, Weight = @Weight, Quanitity = @Quanitity, 
                     EntryDate = @EntryDate, [Group] = @Group, LiftingHeight = @LiftingHeight, 
                     Lock = @Lock, WattingNode = @WattingNode, UnloadHeight = @UnloadHeight, 
                     Enabled = @Enabled
-                WHERE NodeRemark = @NodeRemark";
+                WHERE Id = @Id";
 
                 await conn.ExecuteAsync(sql, location);
                 return (true, "修改成功");
             }
             else
             {
+                var duplicateName = await conn.ExecuteScalarAsync<int>(
+                    "SELECT COUNT(*) FROM RCS_Locations WHERE Name = @Name",
+                    new { location.Name });
+
+                if (duplicateName > 0)
+                {
+                    return (false, $"地图节点 '{location.Name}' 已存在。");
+                }
+
                 var sql = @"INSERT INTO RCS_Locations 
                 (Name, NodeRemark, MaterialCode, PalletID, Weight, Quanitity, 
                     EntryDate, [Group], LiftingHeight, Lock, WattingNode, UnloadHeight, Enabled) 

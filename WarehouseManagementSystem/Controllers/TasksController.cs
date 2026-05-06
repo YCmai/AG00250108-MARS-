@@ -391,6 +391,7 @@ namespace WarehouseManagementSystem.Controllers
         {
             return status switch
             {
+                TaskStatuEnum.PendingCondition => "等待条件满足",
                 TaskStatuEnum.None => "未执行",
                 TaskStatuEnum.CarWash => "洗车中",
                 TaskStatuEnum.TaskStart => "任务开始",

@@ -104,7 +104,7 @@ public class TaskService : ITaskService
                 return (false, "任务不存在");
             }
 
-            if (task.taskStatus >=  TaskStatuEnum.TaskFinish)
+            if (task.taskStatus == TaskStatuEnum.TaskFinish)
             {
                 return (false, "已完成的任务不能取消");
             }

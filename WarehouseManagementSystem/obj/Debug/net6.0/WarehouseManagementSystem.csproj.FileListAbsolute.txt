@@ -772,3 +772,4 @@ E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\obj\Debug\net6.0\r
 E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\obj\Debug\net6.0\WarehouseManagementSystem.pdb
 E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\obj\Debug\net6.0\WarehouseManagementSystem.genruntimeconfig.cache
 E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\obj\Debug\net6.0\ref\WarehouseManagementSystem.dll
+E:\NDCProject\AG00250108 MARS沙特\WarehouseManagementSystem\obj\Debug\net6.0\WarehouseManagementSystem.sourcelink.json

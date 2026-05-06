@@ -57,24 +57,9 @@
     </div>
 
     <div class="form-group mb-2">
-        @*   <label asp-for="NodeRemark" class="control-label">NodeRemark</label>
-        <input asp-for="NodeRemark" class="form-control" />
-        <span asp-validation-for="NodeRemark" class="text-danger"></span> *@
-
         <label asp-for="NodeRemark" class="control-label">Node Remark</label>
-        @if (Model.Id == 0)
-        {
-            <input asp-for="NodeRemark" class="form-control" />
-        }
-        else
-        {
-            <input asp-for="NodeRemark" class="form-control" readonly />
-            <input type="hidden" asp-for="NodeRemark" /> <!-- Pass Name value -->
-            <span asp-validation-for="NodeRemark" class="text-danger"></span>
-        }
+        <input asp-for="NodeRemark" class="form-control" />
         <span asp-validation-for="NodeRemark" class="text-danger"></span>
-
-
     </div>
     <div class="form-group mb-2">
         <label asp-for="WattingNode" class="control-label">Operation Point</label>

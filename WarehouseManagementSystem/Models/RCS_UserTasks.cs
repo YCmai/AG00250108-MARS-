@@ -129,6 +129,10 @@ public class RCS_UserTasks
 public enum TaskStatuEnum
 {
     /// <summary>
+    /// 等待储位条件满足
+    /// </summary>
+    PendingCondition = -2,
+    /// <summary>
     /// 未执行
     /// </summary>
     None = -1,
