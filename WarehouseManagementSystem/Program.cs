@@ -7,6 +7,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using WarehouseManagementSystem.Service.Plc;
 using WarehouseManagementSystem.Services;
+using WarehouseManagementSystem.Services.Tcp;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 using System.Globalization;
@@ -70,8 +71,8 @@ builder.Services.AddScoped<IDbConnection>(sp =>
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddSingleton<IDatabaseService, DatabaseService>();
-// Pending condition task promotion is disabled: mobile task assignment now fails fast with a user-facing reason.
-// builder.Services.AddHostedService<PendingConditionTaskService>();
+builder.Services.AddHostedService<PendingConditionTaskService>();
+builder.Services.AddHostedService<TcpQrCodeReceiveService>();
 
 // 添加内存缓存
 builder.Services.AddMemoryCache();

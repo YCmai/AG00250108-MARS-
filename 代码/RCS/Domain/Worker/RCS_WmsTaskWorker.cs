@@ -144,7 +144,7 @@ namespace Spark.Domain.Worker
                 {
                     await HandleTaskFinish(userTask);
                 }
-                else if (ndcTask.TaskStatus == TaskStatuEnum.Unloading)
+                else if (ndcTask.TaskStatus == TaskStatuEnum.PickDown)
                 {
                     await HandleTaskPickDown(userTask);
                 }

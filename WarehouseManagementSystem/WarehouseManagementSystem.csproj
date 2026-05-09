@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ClientAll\**" />
+    <Content Remove="ClientAll\**" />
+    <EmbeddedResource Remove="ClientAll\**" />
+    <None Remove="ClientAll\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="EPPlus" Version="6.2.4" />
     <PackageReference Include="HslCommunication" Version="7.0.1" />

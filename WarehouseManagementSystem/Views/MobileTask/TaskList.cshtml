@@ -160,6 +160,48 @@
             align-items: center;
         }
 
+        .task-priority {
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            padding: 6px 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .task-priority.high {
+            border-color: #e74c3c;
+            color: #c0392b;
+            background: #fff5f5;
+        }
+
+        .task-priority.medium {
+            border-color: #f39c12;
+            color: #b9770e;
+            background: #fffaf2;
+        }
+
+        .task-priority.low {
+            border-color: #27ae60;
+            color: #1f8a4d;
+            background: #f2fcf6;
+        }
+
+        .priority-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .task-priority.high .priority-dot { background: #e74c3c; }
+        .task-priority.medium .priority-dot { background: #f39c12; }
+        .task-priority.low .priority-dot { background: #27ae60; }
+
         .time-icon {
             margin-right: 5px;
         }
@@ -368,18 +410,63 @@
         let currentPage = 1;
         let totalPages = 1;
         const pageSize = 5;
+        const AUTO_REFRESH_INTERVAL_MS = 2000;
+        let autoRefreshTimer = null;
+        let autoRefreshInFlight = false;
+        let latestTaskRequestId = 0;
+        let activeVisibleLoadCount = 0;
 
         // Initialize after page load
         document.addEventListener('DOMContentLoaded', function() {
             loadTasks();
+            startAutoRefresh();
         });
 
+        window.addEventListener('beforeunload', stopAutoRefresh);
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                refreshTasksSilently();
+            }
+        });
+
+        function startAutoRefresh() {
+            stopAutoRefresh();
+            autoRefreshTimer = setInterval(refreshTasksSilently, AUTO_REFRESH_INTERVAL_MS);
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshTimer) {
+                clearInterval(autoRefreshTimer);
+                autoRefreshTimer = null;
+            }
+        }
+
+        function refreshTasksSilently() {
+            if (document.hidden || autoRefreshInFlight || activeVisibleLoadCount > 0) {
+                return;
+            }
+
+            loadTasks(currentPage, { silent: true });
+        }
+
         // Load task list
-        async function loadTasks(page = 1) {
+        async function loadTasks(page = 1, options = {}) {
+            const silent = !!options.silent;
+            const requestId = ++latestTaskRequestId;
+            if (!silent) {
+                activeVisibleLoadCount++;
+            }
+            autoRefreshInFlight = silent;
             try {
-                showLoading(true);
+                if (!silent) {
+                    showLoading(true);
+                }
                 const response = await fetch(`/MobileTask/GetTasks?pageIndex=${page}&pageSize=${pageSize}`);
                 const result = await response.json();
+
+                if (requestId !== latestTaskRequestId) {
+                    return;
+                }
                 
                 if (result.success) {
                     currentPage = result.pageIndex;
@@ -394,7 +481,13 @@
                 showNoData();
                 console.error('Failed to get task list:', error);
             } finally {
-                showLoading(false);
+                if (!silent) {
+                    activeVisibleLoadCount = Math.max(0, activeVisibleLoadCount - 1);
+                    if (activeVisibleLoadCount === 0) {
+                        showLoading(false);
+                    }
+                }
+                autoRefreshInFlight = false;
             }
         }
 
@@ -431,6 +524,7 @@
                             <div class="task-id">Task #${task.requestCode}</div>
                             <div class="task-status ${getStatusClass(task.taskStatus)}">${getStatusDisplayName(task.taskStatus)}</div>
                         </div>
+                        ${renderPriorityHtml(task.priority)}
                         <div class="task-route">
                             <span>${escapeHtml(sourceDisplayName)}</span>
                             <span class="route-arrow">→</span>
@@ -459,6 +553,28 @@
                     "'": '&#39;'
                 }[char];
             });
+        }
+
+        function getPriorityInfo(priority) {
+            const parsedPriority = Number(priority);
+            if (parsedPriority >= 3) {
+                return { className: 'high', text: 'High' };
+            }
+            if (parsedPriority === 2) {
+                return { className: 'medium', text: 'Medium' };
+            }
+
+            return { className: 'low', text: 'Low' };
+        }
+
+        function renderPriorityHtml(priority) {
+            const info = getPriorityInfo(priority);
+            return `
+                <div class="task-priority ${info.className}">
+                    <span class="priority-dot"></span>
+                    Priority: ${info.text}
+                </div>
+            `;
         }
 
         // Get CSS class for status
@@ -600,10 +716,6 @@
             }
         }
 
-        // Auto refresh (every 30 seconds)
-        setInterval(() => {
-            loadTasks(currentPage);
-        }, 30000);
     </script>
 </body>
 </html>

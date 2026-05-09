@@ -3,20 +3,16 @@
   "WorkspaceRootPath": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|e:\\ndcproject\\ag00250108 mars\u6C99\u7279\\warehousemanagementsystem\\controllers\\mobiletaskcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|solutionrelative:controllers\\mobiletaskcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|e:\\ndcproject\\ag00250108 mars\u6C99\u7279\\warehousemanagementsystem\\services\\tasks\\pendingconditiontaskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|solutionrelative:services\\tasks\\pendingconditiontaskservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|e:\\ndcproject\\ag00250108 mars\u6C99\u7279\\warehousemanagementsystem\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|e:\\ndcproject\\ag00250108 mars\u6C99\u7279\\warehousemanagementsystem\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|solutionrelative:controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|e:\\ndcproject\\ag00250108 mars\u6C99\u7279\\warehousemanagementsystem\\controllers\\mobilelocationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|solutionrelative:controllers\\mobilelocationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|e:\\ndcproject\\ag00250108 mars\u6C99\u7279\\warehousemanagementsystem\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9F237AD0-308F-4F27-9F3F-443B5830D6AC}|WarehouseManagementSystem.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 12,
+          "SelectedChildIndex": 11,
           "Children": [
             {
               "$type": "Bookmark",
@@ -74,40 +70,29 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "PendingConditionTaskService.cs",
               "DocumentMoniker": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Services\\Tasks\\PendingConditionTaskService.cs",
               "RelativeDocumentMoniker": "Services\\Tasks\\PendingConditionTaskService.cs",
               "ToolTip": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Services\\Tasks\\PendingConditionTaskService.cs",
               "RelativeToolTip": "Services\\Tasks\\PendingConditionTaskService.cs",
-              "ViewState": "AQIAANQAAAAAAAAAAAAUwN4AAABPAAAA",
+              "ViewState": "AQIAAAgAAAAAAAAAAADwvyMAAAA6AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-05T06:56:54.033Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "MobileTaskController.cs",
-              "DocumentMoniker": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Controllers\\MobileTaskController.cs",
-              "RelativeDocumentMoniker": "Controllers\\MobileTaskController.cs",
-              "ToolTip": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Controllers\\MobileTaskController.cs",
-              "RelativeToolTip": "Controllers\\MobileTaskController.cs",
-              "ViewState": "AQIAABQDAAAAAAAAAAAtwCYDAAAcAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-05T06:52:04.541Z",
+              "WhenOpened": "2026-05-08T06:10:53.024Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "MobileLocationController.cs",
-              "DocumentMoniker": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Controllers\\MobileLocationController.cs",
-              "RelativeDocumentMoniker": "Controllers\\MobileLocationController.cs",
-              "ToolTip": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Controllers\\MobileLocationController.cs",
-              "RelativeToolTip": "Controllers\\MobileLocationController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABcAAAAkAAAA",
+              "DocumentIndex": 1,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AuthController.cs",
+              "ToolTip": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "Controllers\\AuthController.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAADwvxsAAAA2AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-05T02:17:21.279Z"
+              "WhenOpened": "2026-05-07T09:48:43.801Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -117,9 +102,10 @@
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "E:\\NDCProject\\AG00250108 MARS\u6C99\u7279\\WarehouseManagementSystem\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AQIAADMAAAAAAAAAAAAvwEQAAAASAAAA",
+              "ViewState": "AQIAADAAAAAAAAAAAAAAAEgAAABDAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-30T12:37:37.693Z"
+              "WhenOpened": "2026-05-06T07:40:51.786Z",
+              "EditorCaption": ""
             }
           ]
         }

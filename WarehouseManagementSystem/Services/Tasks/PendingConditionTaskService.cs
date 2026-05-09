@@ -36,12 +36,18 @@ namespace WarehouseManagementSystem.Services
             using var connection = _db.CreateConnection();
             connection.Open();
 
+            if (await HasRunningOrReadyTaskAsync(connection))
+            {
+               // _logger.LogDebug("存在待执行或执行中的任务，本轮不释放等待任务");
+                return;
+            }
+
             var pendingTasks = (await connection.QueryAsync<PendingTaskDto>(@"
                 SELECT TOP 20 ID, sourcePosition, priority, creatTime
                 FROM RCS_UserTasks
                 WHERE taskStatus = @PendingCondition
                 AND IsCancelled = 0
-                ORDER BY creatTime, ID",
+                ORDER BY priority DESC, creatTime, ID",
                 new { PendingCondition = TaskStatuEnum.PendingCondition })).ToList();
 
             if (pendingTasks.Count > 0)
@@ -90,6 +96,25 @@ namespace WarehouseManagementSystem.Services
                 }
 
                 var sourceGroup = sourceLocation.Group?.Trim() ?? string.Empty;
+                var sourcePathBlockReason = await GetSourcePathBlockReasonAsync(connection, task.ID, sourceLocation);
+                if (!string.IsNullOrEmpty(sourcePathBlockReason))
+                {
+                    _logger.LogInformation(
+                        "待处理任务 {TaskId} 继续等待：起点 {SourcePosition} 取货路径未满足。原因：{Reason}",
+                        task.ID,
+                        sourceLocation.Name,
+                        sourcePathBlockReason);
+                    continue;
+                }
+
+                if (GetLocationSide(sourceLocation.NodeRemark, sourceLocation.Name) == 'A')
+                {
+                    _logger.LogInformation(
+                        "待处理任务 {TaskId}：起点 {SourcePosition} 为 A 位，路径检查已通过，允许继续寻找终点",
+                        task.ID,
+                        sourceLocation.Name);
+                }
+
                 if (sourceGroup == "FG/PM" && !IsFgPmFgStation(sourceLocation.NodeRemark))
                 {
                     _logger.LogInformation(
@@ -139,11 +164,19 @@ namespace WarehouseManagementSystem.Services
                         targetPosition = @TargetPosition
                     WHERE ID = @TaskId
                     AND taskStatus = @PendingCondition
-                    AND IsCancelled = 0;",
+                    AND IsCancelled = 0
+                    AND NOT EXISTS (
+                        SELECT 1
+                        FROM RCS_UserTasks
+                        WHERE taskStatus > @PendingCondition
+                        AND taskStatus < @TaskFinish
+                        AND IsCancelled = 0
+                    );",
                     new
                     {
                         None = TaskStatuEnum.None,
                         PendingCondition = TaskStatuEnum.PendingCondition,
+                        TaskFinish = TaskStatuEnum.TaskFinish,
                         TargetPosition = targetLocation.Name,
                         TaskId = task.ID
                     },
@@ -170,7 +203,26 @@ namespace WarehouseManagementSystem.Services
                     task.ID,
                     sourceLocation.Name,
                     targetLocation.Name);
+
+                return;
             }
+        }
+
+        private async Task<bool> HasRunningOrReadyTaskAsync(System.Data.IDbConnection connection)
+        {
+            var count = await connection.ExecuteScalarAsync<int>(@"
+                SELECT COUNT(*)
+                FROM RCS_UserTasks
+                WHERE taskStatus > @PendingCondition
+                AND taskStatus < @TaskFinish
+                AND IsCancelled = 0",
+                new
+                {
+                    PendingCondition = TaskStatuEnum.PendingCondition,
+                    TaskFinish = TaskStatuEnum.TaskFinish
+                });
+
+            return count > 0;
         }
 
         private async Task<LocationStateDto?> FindAvailableTargetAsync(
@@ -193,7 +245,8 @@ namespace WarehouseManagementSystem.Services
                     TargetGroup = targetGroup,
                     RpmToFgPm = isRpmToFgPm ? 1 : 0
                 }))
-                .OrderBy(x => GetLocationNumber(x.NodeRemark, x.Name))
+                .OrderBy(x => GetTargetSideSortOrder(x, targetGroup))
+                .ThenBy(x => GetLocationNumber(x.NodeRemark, x.Name))
                 .ThenBy(x => GetUnloadSideOrder(GetLocationSide(x.NodeRemark, x.Name)))
                 .ThenBy(x => x.NodeRemark)
                 .ThenBy(x => x.Name)
@@ -267,6 +320,104 @@ namespace WarehouseManagementSystem.Services
             }
 
             return null;
+        }
+
+        private async Task<string> GetSourcePathBlockReasonAsync(
+            System.Data.IDbConnection connection,
+            int currentTaskId,
+            LocationStateDto sourceLocation)
+        {
+            var sourceNumber = GetLocationNumber(sourceLocation.NodeRemark, sourceLocation.Name);
+            var sourceSide = GetLocationSide(sourceLocation.NodeRemark, sourceLocation.Name);
+
+            if (sourceNumber == int.MaxValue || sourceSide != 'A')
+            {
+                return string.Empty;
+            }
+
+            var sourceGroup = sourceLocation.Group?.Trim() ?? string.Empty;
+            var pairedB = await connection.QueryFirstOrDefaultAsync<LocationStateDto>(@"
+                SELECT Name, NodeRemark, [Group], Enabled, Lock, MaterialCode
+                FROM RCS_Locations
+                WHERE LTRIM(RTRIM([Group])) = @GroupName
+                AND UPPER(LTRIM(RTRIM(NodeRemark))) = @NodeRemark",
+                new
+                {
+                    GroupName = sourceGroup,
+                    NodeRemark = $"{sourceNumber}B"
+                });
+
+            if (pairedB != null)
+            {
+                var pairedBHasActiveTask = await HasActivePositionTaskAsync(connection, pairedB.Name, currentTaskId);
+                if (pairedBHasActiveTask || !IsPathLocationIdle(pairedB, pairedBHasActiveTask))
+                {
+                    _logger.LogInformation(
+                        "待处理任务 {TaskId}：A 位 {SourcePosition} 继续等待，配对 B 位 {PairedBPosition} 仍未让路。BHasActiveTask={BHasActiveTask}, Enabled={Enabled}, Lock={Lock}, MaterialCode={MaterialCode}",
+                        currentTaskId,
+                        sourceLocation.Name,
+                        pairedB.Name,
+                        pairedBHasActiveTask,
+                        pairedB.Enabled,
+                        pairedB.Lock,
+                        pairedB.MaterialCode);
+                    return $"B{sourceNumber} is blocking A{sourceNumber}";
+                }
+
+                _logger.LogInformation(
+                    "待处理任务 {TaskId}：A 位 {SourcePosition} 的配对 B 位 {PairedBPosition} 已让路",
+                    currentTaskId,
+                    sourceLocation.Name,
+                    pairedB.Name);
+            }
+
+            var bLocations = (await connection.QueryAsync<LocationStateDto>(@"
+                SELECT Name, NodeRemark, [Group], Enabled, Lock, MaterialCode
+                FROM RCS_Locations
+                WHERE LTRIM(RTRIM([Group])) = @GroupName",
+                new { GroupName = sourceGroup }))
+                .Where(x => GetLocationSide(x.NodeRemark, x.Name) == 'B')
+                .ToList();
+
+            if (bLocations.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            var bNames = bLocations.Select(x => x.Name).ToList();
+            var activeBPositions = (await connection.QueryAsync<string>(@"
+                SELECT sourcePosition
+                FROM RCS_UserTasks
+                WHERE ID <> @CurrentTaskId
+                AND sourcePosition IN @Positions
+                AND taskStatus NOT IN (@TaskFinish, @Canceled, @CanceledWashing, @CanceledWashFinish)
+                AND IsCancelled = 0
+                UNION
+                SELECT targetPosition
+                FROM RCS_UserTasks
+                WHERE ID <> @CurrentTaskId
+                AND targetPosition IN @Positions
+                AND taskStatus NOT IN (@TaskFinish, @Canceled, @CanceledWashing, @CanceledWashFinish)
+                AND IsCancelled = 0",
+                new
+                {
+                    CurrentTaskId = currentTaskId,
+                    Positions = bNames,
+                    TaskFinish = TaskStatuEnum.TaskFinish,
+                    Canceled = TaskStatuEnum.Canceled,
+                    CanceledWashing = TaskStatuEnum.CanceledWashing,
+                    CanceledWashFinish = TaskStatuEnum.CanceledWashFinish
+                })).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            var hasIdleB = bLocations.Any(x => IsPathLocationIdle(x, activeBPositions.Contains(x.Name)));
+            if (!hasIdleB)
+            {
+                _logger.LogInformation(
+                    "待处理任务 {TaskId}：A 位 {SourcePosition} 继续等待，B 区当前没有任何空闲位",
+                    currentTaskId,
+                    sourceLocation.Name);
+            }
+            return hasIdleB ? string.Empty : "the B area is fully occupied";
         }
 
         private async Task<bool> HasActivePositionTaskAsync(System.Data.IDbConnection connection, string position, int currentTaskId)
@@ -362,6 +513,16 @@ namespace WarehouseManagementSystem.Services
             return pairedLocation == null || IsTargetIdle(pairedLocation, activeTaskPositions);
         }
 
+        private static int GetTargetSideSortOrder(LocationStateDto location, string targetGroup)
+        {
+            if (string.Equals(targetGroup?.Trim(), "FG", StringComparison.OrdinalIgnoreCase))
+            {
+                return GetUnloadSideOrder(GetLocationSide(location.NodeRemark, location.Name));
+            }
+
+            return 0;
+        }
+
         private static string GetTargetNotReadyReason(
             LocationStateDto location,
             List<LocationStateDto> groupLocations,
@@ -405,6 +566,14 @@ namespace WarehouseManagementSystem.Services
                 && !location.Lock
                 && IsEmptyMaterial(location.MaterialCode)
                 && !activeTaskPositions.Contains(location.Name);
+        }
+
+        private static bool IsPathLocationIdle(LocationStateDto location, bool hasActiveTask)
+        {
+            return location.Enabled
+                && !location.Lock
+                && IsEmptyMaterial(location.MaterialCode)
+                && !hasActiveTask;
         }
 
         private static bool IsEmptyMaterial(string? materialCode)
@@ -466,6 +635,30 @@ namespace WarehouseManagementSystem.Services
             if (string.IsNullOrWhiteSpace(value))
             {
                 return (int.MaxValue, '\0');
+            }
+
+            value = value.Trim();
+
+            if (char.IsLetter(value[0]))
+            {
+                var prefixSide = char.ToUpperInvariant(value[0]);
+                var prefixNumberStart = 1;
+
+                while (prefixNumberStart < value.Length && char.IsWhiteSpace(value[prefixNumberStart]))
+                {
+                    prefixNumberStart++;
+                }
+
+                var prefixNumberEnd = prefixNumberStart;
+                while (prefixNumberEnd < value.Length && char.IsDigit(value[prefixNumberEnd]))
+                {
+                    prefixNumberEnd++;
+                }
+
+                if (prefixNumberEnd > prefixNumberStart && int.TryParse(value.Substring(prefixNumberStart, prefixNumberEnd - prefixNumberStart), out var prefixNumber))
+                {
+                    return (prefixNumber, prefixSide);
+                }
             }
 
             var sideIndex = value.Length - 1;

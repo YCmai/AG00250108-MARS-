@@ -433,6 +433,7 @@ namespace WarehouseManagementSystem.Controllers
                     SELECT 
                         t.ID, 
                         t.requestCode,
+                        t.priority,
                         t.taskStatus, 
                         t.creatTime, 
                         t.sourcePosition, 
@@ -463,6 +464,7 @@ namespace WarehouseManagementSystem.Controllers
                 {
                     t.ID,
                     t.RequestCode,
+                    t.Priority,
                     t.TaskStatus,
                     TaskStatusName = GetTaskStatusDisplayName(t.TaskStatus),
                     t.CreatTime,
@@ -550,11 +552,10 @@ namespace WarehouseManagementSystem.Controllers
 
                 using var connection = _db.CreateConnection();
 
-                var createdTasks = new List<object>();
+                var pendingTasks = new List<object>();
                 var failedCount = 0;
                 var skippedFgPmNonFgStationCount = 0;
                 var failureMessages = new List<string>();
-                var usedTargetLocations = new HashSet<string>(); // 跟踪已使用的目标库位，防止同一批次任务重复使用
                 var createdSourcePositions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 var sourcePositionInfos = await connection.QueryAsync<LocationDto>(
                     "SELECT Name, NodeRemark, [Group] FROM RCS_Locations WHERE Name IN @Names",
@@ -593,37 +594,49 @@ namespace WarehouseManagementSystem.Controllers
                     );
                     SELECT CAST(SCOPE_IDENTITY() as int)";
 
-                // 锁定库位的 SQL
-                var lockLocationSql = @"UPDATE RCS_Locations SET Lock = 1 WHERE Name = @LocationName";
                 var activePositionTaskSql = @"SELECT COUNT(*) FROM RCS_UserTasks 
                           WHERE (sourcePosition = @Position OR targetPosition = @Position) 
                           AND taskStatus NOT IN (@TaskFinish, @Canceled, @CanceledWashing, @CanceledWashFinish)
                           AND IsCancelled = 0";
 
-                async Task<int> CreateTaskAsync(string sourcePosition, LocationDto? targetLocation, TaskStatuEnum taskStatus, int taskPriority)
+                async Task<int> CreatePendingTaskAsync(string sourcePosition, int taskPriority)
                 {
-                    var taskId = await connection.ExecuteScalarAsync<int>(taskSql, new
+                    return await connection.ExecuteScalarAsync<int>(taskSql, new
                     {
-                        TaskStatus = taskStatus,
+                        TaskStatus = TaskStatuEnum.PendingCondition,
                         Executed = false,
                         CreatTime = DateTime.Now,
                         RequestCode = Guid.NewGuid().ToString("N")[..8],
                         TaskType = RCS_UserTasks.TaskType.PlatingToBuffer,
                         Priority = taskPriority,
                         SourcePosition = sourcePosition,
-                        TargetPosition = targetLocation?.Name ?? string.Empty,
+                        TargetPosition = string.Empty,
                         IsCancelled = false
                     });
+                }
 
-                    if (taskStatus == TaskStatuEnum.None && targetLocation != null)
+                async Task QueuePendingTaskAsync(string sourcePosition, string sourceGroup, string sourceRemark, string reason)
+                {
+                    var pendingPriority = GetBatchSourceTaskPriority(priority, sourceRemark, sourcePosition);
+                    var taskId = await CreatePendingTaskAsync(sourcePosition, pendingPriority);
+                    createdSourcePositions.Add(sourcePosition);
+                    pendingTasks.Add(new
                     {
-                        await connection.ExecuteAsync(lockLocationSql, new { LocationName = sourcePosition });
-                        await connection.ExecuteAsync(lockLocationSql, new { LocationName = targetLocation.Name });
-                        usedTargetLocations.Add(targetLocation.Name);
-                        createdSourcePositions.Add(sourcePosition);
-                    }
-
-                    return taskId;
+                        TaskId = taskId,
+                        SourcePosition = sourcePosition,
+                        SourceRemark = sourceRemark,
+                        Priority = pendingPriority,
+                        TargetGroup = GetTargetGroup(sourceGroup),
+                        Status = "PendingCondition",
+                        Reason = reason
+                    });
+                    failureMessages.Add(reason);
+                    _logger.LogInformation(
+                        "任务已缓存等待条件满足: ID={TaskId}, Source={Source}, Priority={Priority}, Reason={Reason}",
+                        taskId,
+                        sourcePosition,
+                        pendingPriority,
+                        reason);
                 }
 
                 // 为每个源库位创建任务
@@ -721,8 +734,11 @@ namespace WarehouseManagementSystem.Controllers
                                 "源库位 {Source} 无法拾取：{Reason}",
                                 sourcePosition,
                                 sourceBlockReason);
-                            failureMessages.Add(sourceBlockReason);
-                            failedCount++;
+                            await QueuePendingTaskAsync(
+                                sourcePosition,
+                                sourceGroup,
+                                (string)sourceLocationInfo.NodeRemark,
+                                sourceBlockReason);
                             continue;
                         }
                     }
@@ -734,124 +750,27 @@ namespace WarehouseManagementSystem.Controllers
                             (bool)sourceLocationInfo.Lock,
                             (string)sourceLocationInfo.MaterialCode,
                             FormatLocationDisplayName(sourceGroup, (string)sourceLocationInfo.NodeRemark, sourcePosition));
-                        failureMessages.Add(reason);
-                        failedCount++;
+                        await QueuePendingTaskAsync(
+                            sourcePosition,
+                            sourceGroup,
+                            (string)sourceLocationInfo.NodeRemark,
+                            reason);
                         continue;
                     }
                     
-                    // 5. 获取目标组中的库位。FG 入库先放 A 区，再放 B 区。
-                    var isRpmToFgPm = sourceGroup == "RPM" && actualTargetGroup == "FG/PM";
-                    var availableLocationsSql = @"
-                        SELECT Name, NodeRemark, [Group], Enabled, Lock, MaterialCode
-                        FROM RCS_Locations
-                        WHERE LTRIM(RTRIM([Group])) = @GroupName
-                        AND (
-                            @RpmToFgPm = 0
-                            OR UPPER(LTRIM(RTRIM(NodeRemark))) IN ('4A', '4B')
-                        )";
-                    
-                    var availableLocations = await connection.QueryAsync<LocationDto>(availableLocationsSql, new
-                    {
-                        GroupName = actualTargetGroup,
-                        RpmToFgPm = isRpmToFgPm ? 1 : 0
-                    });
-                    var availableLocationsList = OrderTargetLocations(availableLocations, actualTargetGroup).ToList();
-                    if (isRpmToFgPm)
-                    {
-                        availableLocationsList = availableLocationsList
-                            .Where(x => IsFgPmRpmStation(x.NodeRemark, x.Name))
-                            .ToList();
-                    }
+                    await QueuePendingTaskAsync(
+                        sourcePosition,
+                        sourceGroup,
+                        (string)sourceLocationInfo.NodeRemark,
+                        "The task has been queued. The scheduler will assign a target location when no other active task is running.");
 
-                    var targetLocationNames = availableLocationsList.Select(x => x.Name).ToList();
-                    var activeTargetPositions = targetLocationNames.Count == 0
-                        ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-                        : (await connection.QueryAsync<string>(
-                            @"SELECT sourcePosition
-                              FROM RCS_UserTasks
-                              WHERE sourcePosition IN @Positions
-                              AND taskStatus NOT IN (@TaskFinish, @Canceled, @CanceledWashing, @CanceledWashFinish)
-                              AND IsCancelled = 0
-                              UNION
-                              SELECT targetPosition
-                              FROM RCS_UserTasks
-                              WHERE targetPosition IN @Positions
-                              AND taskStatus NOT IN (@TaskFinish, @Canceled, @CanceledWashing, @CanceledWashFinish)
-                              AND IsCancelled = 0",
-                            new
-                            {
-                                Positions = targetLocationNames,
-                                TaskFinish = TaskStatuEnum.TaskFinish,
-                                Canceled = TaskStatuEnum.Canceled,
-                                CanceledWashing = TaskStatuEnum.CanceledWashing,
-                                CanceledWashFinish = TaskStatuEnum.CanceledWashFinish
-                            }
-                        )).ToHashSet(StringComparer.OrdinalIgnoreCase);
-                    
-                    // 6. 查找尚未使用的目标库位；选择 A 时要求同数字 B 当前也空闲
-                    var targetLocation = availableLocationsList.FirstOrDefault(loc =>
-                        IsTargetLocationAvailable(loc, availableLocationsList, activeTargetPositions, usedTargetLocations));
-                    
-                    // 检查是否有可用的目标库位
-                    if (targetLocation == null)
+                    if (i < orderedSourcePositions.Count - 1)
                     {
-                        _logger.LogWarning("源库位 {Source} 无法在目标组 {Group} 中找到匹配的空闲库位", sourcePosition, actualTargetGroup);
-                        failureMessages.Add("There are no idle locations available in this area.");
-                        failedCount++;
-                        continue;
-                    }
-                    
-                    // 7. 验证目标库位是否处于活动任务中
-                    var targetActiveTaskCount = await connection.ExecuteScalarAsync<int>(
-                        activePositionTaskSql,
-                        new 
-                        { 
-                            Position = targetLocation.Name,
-                            TaskFinish = TaskStatuEnum.TaskFinish,
-                            Canceled = TaskStatuEnum.Canceled,
-                            CanceledWashing = TaskStatuEnum.CanceledWashing,
-                            CanceledWashFinish = TaskStatuEnum.CanceledWashFinish
-                        }
-                    );
-                    
-                    if (targetActiveTaskCount > 0)
-                    {
-                        _logger.LogWarning("目标库位 {Target} 已经处于活动任务中，源库位 {Source} 无法创建任务", targetLocation.Name, sourcePosition);
-                        failureMessages.Add($"{FormatLocationDisplayName(targetLocation.Group, targetLocation.NodeRemark, targetLocation.Name)} already has an active task and cannot be used as a target.");
-                        failedCount++;
-                        continue;
-                    }
-
-                    try
-                    {
-                        var taskPriority = GetBatchSourceTaskPriority(priority, (string)sourceLocationInfo.NodeRemark, sourcePosition);
-                        var taskId = await CreateTaskAsync(sourcePosition, targetLocation, TaskStatuEnum.None, taskPriority);
-                        _logger.LogInformation("任务创建成功: ID={TaskId}, {Source} -> {Target}, Priority={Priority}", taskId, sourcePosition, targetLocation.Name, taskPriority);
-
-                        createdTasks.Add(new
-                        {
-                            TaskId = taskId,
-                            SourcePosition = sourcePosition,
-                            TargetPosition = targetLocation.Name,
-                            TargetRemark = targetLocation.NodeRemark,
-                            Priority = taskPriority,
-                            TargetGroup = actualTargetGroup,
-                            Status = "Ready"
-                        });
-
-                        if (i < orderedSourcePositions.Count - 1)
-                        {
-                            await Task.Delay(batchTaskCreateDelayMilliseconds);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "为源库位 {Source} 创建任务失败", sourcePosition);
-                        failedCount++;
+                        await Task.Delay(batchTaskCreateDelayMilliseconds);
                     }
                 }
 
-                _logger.LogInformation("带优先级的批量任务创建完成。成功: {Created}, 失败: {Failed}", createdTasks.Count, failedCount);
+                _logger.LogInformation("带优先级的批量任务已进入调度等待池。缓存: {Pending}, 失败: {Failed}", pendingTasks.Count, failedCount);
 
                 var detailMessage = string.Join(" ", failureMessages.Distinct());
 
@@ -860,12 +779,13 @@ namespace WarehouseManagementSystem.Controllers
                 {
                     success = true,
                     message = string.IsNullOrWhiteSpace(detailMessage)
-                        ? $"Successfully created {createdTasks.Count} task(s)."
+                        ? $"Queued {pendingTasks.Count} pending task(s). The scheduler will release one task at a time."
                         : detailMessage,
-                    data = createdTasks,
+                    data = Array.Empty<object>(),
+                    pendingData = pendingTasks,
                     requestedCount = request.SourcePositions.Count,
-                    createdCount = createdTasks.Count,
-                    pendingCount = 0,
+                    createdCount = 0,
+                    pendingCount = pendingTasks.Count,
                     failedCount = failedCount
                 });
             }
@@ -916,6 +836,16 @@ namespace WarehouseManagementSystem.Controllers
                 .ThenBy(x => GetUnloadSideOrder(GetLocationSide(x.NodeRemark, x.Name)))
                 .ThenBy(x => x.NodeRemark)
                 .ThenBy(x => x.Name);
+        }
+
+        private static string GetTargetGroup(string sourceGroup)
+        {
+            return (sourceGroup?.Trim() ?? string.Empty) switch
+            {
+                "FG/PM" => "FG",
+                "RPM" => "FG/PM",
+                _ => string.Empty
+            };
         }
 
         private static int GetBatchSourceTaskPriority(int selectedPriority, string nodeRemark, string sourcePosition)
@@ -1259,6 +1189,7 @@ namespace WarehouseManagementSystem.Controllers
         public class TaskListDto
         {
             public int ID { get; set; }
+            public int Priority { get; set; }
             public TaskStatuEnum TaskStatus { get; set; }
             public DateTime? CreatTime { get; set; }
             public string SourcePosition { get; set; }

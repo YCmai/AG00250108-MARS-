@@ -993,12 +993,19 @@
         let locationGroups = [];
         let selectedTargetGroup = '';
         let selectedTaskPriority = 1; // Default to low priority (1=Low, 2=Medium, 3=High)
+        const AUTO_REFRESH_INTERVAL_MS = 2000;
+        let autoRefreshTimer = null;
+        let autoRefreshInFlight = false;
+        let latestLocationRequestId = 0;
+        let activeVisibleLoadCount = 0;
+        let isLocationOperationInProgress = false;
 
         // Initialize after page load
         document.addEventListener('DOMContentLoaded', function() {
             loadLocations();
             loadLocationGroups();
             enableBatchModeByDefault();
+            startAutoRefresh();
             
             // Hide task assignment button for FG group (default)
             const taskAssignmentGroup = document.getElementById('taskAssignmentGroup');
@@ -1006,6 +1013,46 @@
                 taskAssignmentGroup.style.display = 'none';
             }
         });
+
+        window.addEventListener('beforeunload', stopAutoRefresh);
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                refreshLocationsSilently();
+            }
+        });
+
+        function startAutoRefresh() {
+            stopAutoRefresh();
+            autoRefreshTimer = setInterval(refreshLocationsSilently, AUTO_REFRESH_INTERVAL_MS);
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshTimer) {
+                clearInterval(autoRefreshTimer);
+                autoRefreshTimer = null;
+            }
+        }
+
+        function isModalOpen(elementId) {
+            const element = document.getElementById(elementId);
+            return element && element.classList.contains('show');
+        }
+
+        function shouldPauseAutoRefresh() {
+            return document.hidden
+                || isLocationOperationInProgress
+                || activeVisibleLoadCount > 0
+                || isModalOpen('taskModalOverlay')
+                || isModalOpen('locationModalOverlay');
+        }
+
+        function refreshLocationsSilently() {
+            if (shouldPauseAutoRefresh() || autoRefreshInFlight) {
+                return;
+            }
+
+            loadLocations(currentPage, { silent: true });
+        }
 
         // Switch to different group
         function switchGroup(groupName) {
@@ -1037,22 +1084,37 @@
         }
 
         // Load location data
-        async function loadLocations(page = 1) {
+        async function loadLocations(page = 1, options = {}) {
+            const silent = options.silent === true;
+            const requestId = ++latestLocationRequestId;
+            const requestedGroup = currentGroup;
+            const requestedSearchKeyword = searchKeyword;
+
             try {
-                showLoading(true);
+                if (silent) {
+                    autoRefreshInFlight = true;
+                } else {
+                    activeVisibleLoadCount++;
+                    showLoading(true);
+                }
+
                 // Request all locations (use large pageSize to get all data)
-                const url = `/MobileLocation/GetLocations?searchString=${encodeURIComponent(searchKeyword)}&page=1&pageSize=1000`;
+                const url = `/MobileLocation/GetLocations?searchString=${encodeURIComponent(requestedSearchKeyword)}&page=1&pageSize=1000`;
                 const response = await fetch(url);
                 const result = await response.json();
+
+                if (requestId !== latestLocationRequestId) {
+                    return;
+                }
                 
                 if (result.success) {
                     console.log('All locations:', result.data);
-                    console.log('Current group:', currentGroup);
+                    console.log('Current group:', requestedGroup);
                     
                     // Filter locations by current group (case-insensitive)
                     locations = result.data.filter(loc => {
                         const locGroup = loc.group ? loc.group.trim() : '';
-                        return locGroup === currentGroup;
+                        return locGroup === requestedGroup;
                     });
                     
                     // Sort locations by aisle: A1, A2... then B1, B2...
@@ -1063,25 +1125,40 @@
                     console.log('Filtered and sorted locations:', locations);
                     
                     filteredLocations = locations;
-                    currentPage = page;
-                    totalPages = Math.ceil(locations.length / pageSize);
+                    totalPages = Math.max(1, Math.ceil(locations.length / pageSize));
+                    currentPage = Math.min(Math.max(page, 1), totalPages);
                     
                     // Apply pagination
-                    const startIdx = (page - 1) * pageSize;
+                    const startIdx = (currentPage - 1) * pageSize;
                     const endIdx = startIdx + pageSize;
                     filteredLocations = locations.slice(startIdx, endIdx);
                     
                     renderLocations();
                     updatePagination();
                 } else {
-                    showError('Failed to get location list: ' + result.message);
-                    document.getElementById('locationList').innerHTML = '<div class="no-data"><div class="no-data-icon">📦</div><div>Loading failed, please retry</div></div>';
+                    if (silent) {
+                        console.warn('Auto refresh failed:', result.message);
+                    } else {
+                        showError('Failed to get location list: ' + result.message);
+                        document.getElementById('locationList').innerHTML = '<div class="no-data"><div class="no-data-icon">📦</div><div>Loading failed, please retry</div></div>';
+                    }
                 }
             } catch (error) {
-                showError('Failed to get location list: ' + error.message);
-                document.getElementById('locationList').innerHTML = '<div class="no-data"><div class="no-data-icon">📦</div><div>Loading failed, please retry</div></div>';
+                if (silent) {
+                    console.warn('Auto refresh failed:', error);
+                } else {
+                    showError('Failed to get location list: ' + error.message);
+                    document.getElementById('locationList').innerHTML = '<div class="no-data"><div class="no-data-icon">📦</div><div>Loading failed, please retry</div></div>';
+                }
             } finally {
-                showLoading(false);
+                if (silent) {
+                    autoRefreshInFlight = false;
+                } else {
+                    activeVisibleLoadCount = Math.max(0, activeVisibleLoadCount - 1);
+                    if (activeVisibleLoadCount === 0) {
+                        showLoading(false);
+                    }
+                }
             }
         }
 
@@ -1292,6 +1369,7 @@
             }
             
             try {
+                isLocationOperationInProgress = true;
                 const response = await fetch('/MobileLocation/ClearMaterial', {
                     method: 'POST',
                     headers: {
@@ -1311,6 +1389,8 @@
                 }
             } catch (error) {
                 showError('Failed to clear material: ' + error.message);
+            } finally {
+                isLocationOperationInProgress = false;
             }
         }
 
@@ -1321,6 +1401,7 @@
             }
             
             try {
+                isLocationOperationInProgress = true;
                 const response = await fetch('/MobileLocation/BatchSetOccupied', {
                     method: 'POST',
                     headers: {
@@ -1340,6 +1421,8 @@
                 }
             } catch (error) {
                 showError('Failed to set occupied: ' + error.message);
+            } finally {
+                isLocationOperationInProgress = false;
             }
         }
 
@@ -1356,6 +1439,7 @@
             }
             
             try {
+                isLocationOperationInProgress = true;
                 const response = await fetch('/MobileLocation/ToggleLock', {
                     method: 'POST',
                     headers: {
@@ -1378,6 +1462,8 @@
                 }
             } catch (error) {
                 showError(`Failed to ${action} location: ` + error.message);
+            } finally {
+                isLocationOperationInProgress = false;
             }
         }
 
@@ -1451,6 +1537,7 @@
             }
             
             try {
+                isLocationOperationInProgress = true;
                 showLoading(true);
                 const response = await fetch('/MobileLocation/BatchClearMaterial', {
                     method: 'POST',
@@ -1472,6 +1559,7 @@
             } catch (error) {
                 showError('Batch clear failed: ' + error.message);
             } finally {
+                isLocationOperationInProgress = false;
                 showLoading(false);
             }
         }
@@ -1488,6 +1576,7 @@
             }
             
             try {
+                isLocationOperationInProgress = true;
                 showLoading(true);
                 const response = await fetch('/MobileLocation/BatchSetOccupied', {
                     method: 'POST',
@@ -1509,6 +1598,7 @@
             } catch (error) {
                 showError('Batch occupy failed: ' + error.message);
             } finally {
+                isLocationOperationInProgress = false;
                 showLoading(false);
             }
         }
@@ -1526,6 +1616,7 @@
             }
             
             try {
+                isLocationOperationInProgress = true;
                 showLoading(true);
                 const response = await fetch('/MobileLocation/BatchToggleLock', {
                     method: 'POST',
@@ -1550,6 +1641,7 @@
             } catch (error) {
                 showError(`Batch ${action} failed: ` + error.message);
             } finally {
+                isLocationOperationInProgress = false;
                 showLoading(false);
             }
         }
@@ -1746,6 +1838,7 @@
             
             // No confirmation dialog - directly send request
             try {
+                isLocationOperationInProgress = true;
                 showLoading(true);
                 hideTaskAssignmentModal();
                 
@@ -1765,7 +1858,7 @@
                 
                 if (result.success) {
                     // Show result modal for batch operations
-                    showTaskResultModal(result.createdCount, result.requestedCount, result.failedCount, result.message);
+                    showTaskResultModal(result.createdCount, result.requestedCount, result.failedCount, result.pendingCount || 0, result.message);
                     exitBatchModeKeepEnabled();
                     await loadLocations(currentPage);
                 } else {
@@ -1774,6 +1867,7 @@
             } catch (error) {
                 showError('Failed to create tasks: ' + error.message);
             } finally {
+                isLocationOperationInProgress = false;
                 showLoading(false);
             }
         }
@@ -1806,6 +1900,7 @@
             
             // No confirmation dialog - directly send request
             try {
+                isLocationOperationInProgress = true;
                 showLoading(true);
                 hideTaskAssignmentModal();
                 
@@ -1825,7 +1920,7 @@
                 
                 if (result.success) {
                     // Always show result modal for batch operations
-                    showTaskResultModal(result.createdCount, result.requestedCount, result.failedCount, result.message);
+                    showTaskResultModal(result.createdCount, result.requestedCount, result.failedCount, result.pendingCount || 0, result.message);
                     exitBatchModeKeepEnabled();
                     await loadLocations(currentPage);
                 } else {
@@ -1834,12 +1929,13 @@
             } catch (error) {
                 showError('Failed to create tasks: ' + error.message);
             } finally {
+                isLocationOperationInProgress = false;
                 showLoading(false);
             }
         }
 
         // Show task result modal for batch operations
-        function showTaskResultModal(createdCount, requestedCount, failedCount, message) {
+        function showTaskResultModal(createdCount, requestedCount, failedCount, pendingCount, message) {
             const resultOverlay = document.createElement('div');
             resultOverlay.className = 'modal-overlay show';
             resultOverlay.id = 'resultModalOverlay';
@@ -1855,11 +1951,12 @@
                 e.stopPropagation();
             };
             
-            // Determine if it's full success or partial success
-            const isFullSuccess = failedCount === 0;
-            const isFullFailure = createdCount === 0 && failedCount > 0;
-            const titleText = isFullSuccess ? 'Task Creation Successful' : (isFullFailure ? 'Task Creation Failed' : 'Task Creation - Partial Success');
-            const subtitleText = isFullSuccess ? 'All tasks created successfully' : `${createdCount} of ${requestedCount} tasks created`;
+            const completedCount = createdCount + pendingCount;
+            const isFullSuccess = createdCount === requestedCount && pendingCount === 0 && failedCount === 0;
+            const isFullyQueued = createdCount === 0 && pendingCount > 0 && failedCount === 0;
+            const isFullFailure = completedCount === 0 && failedCount > 0;
+            const titleText = isFullSuccess ? 'Task Creation Successful' : (isFullFailure ? 'Task Creation Failed' : (isFullyQueued ? 'Tasks Queued' : 'Task Creation - Partial Success'));
+            const subtitleText = isFullSuccess ? 'All tasks created successfully' : `${createdCount} created, ${pendingCount} queued, ${failedCount} failed`;
             const safeMessage = escapeHtml(message || '');
             
             resultModal.innerHTML = `
@@ -1877,19 +1974,25 @@
                         <span class="info-label">Successfully Created</span>
                         <span class="info-value" style="color: #27ae60; font-weight: 600;">${createdCount}</span>
                     </div>
+                    ${pendingCount > 0 ? `
+                    <div class="info-row">
+                        <span class="info-label">Queued Pending</span>
+                        <span class="info-value" style="color: #f39c12; font-weight: 600;">${pendingCount}</span>
+                    </div>
+                    ` : ''}
                     ${failedCount > 0 ? `
                     <div class="info-row">
                         <span class="info-label">Failed</span>
                         <span class="info-value" style="color: #e74c3c; font-weight: 600;">${failedCount}</span>
                     </div>
                     ` : ''}
-                    ${failedCount > 0 ? `
+                    ${(failedCount > 0 || pendingCount > 0) ? `
                     <div class="info-row" style="background: #fff3cd; padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #ffc107;">
-                        <span class="info-label" style="color: #856404; font-weight: 600;">⚠ Reason for Failure</span>
-                        <span class="info-value" style="color: #856404;">${safeMessage || 'Task conditions are not satisfied.'}</span>
+                        <span class="info-label" style="color: #856404; font-weight: 600;">Status Details</span>
+                        <span class="info-value" style="color: #856404;">${safeMessage || 'Some tasks are waiting for conditions to be met.'}</span>
                     </div>
                     ` : ''}
-                    ${message && failedCount === 0 ? `
+                    ${message && failedCount === 0 && pendingCount === 0 ? `
                     <div class="info-row" style="background: #e7f3ff; padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 4px solid #17a2b8;">
                         <span class="info-label" style="color: #004085; font-weight: 600;">ℹ Details</span>
                         <span class="info-value" style="color: #004085;">${safeMessage}</span>

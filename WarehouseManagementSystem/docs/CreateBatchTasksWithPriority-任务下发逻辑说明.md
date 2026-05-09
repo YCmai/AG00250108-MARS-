@@ -88,7 +88,21 @@ A1 -> A2 -> A3 -> ... -> B1 -> B2 -> B3 -> ...
 6. 是否有物料
 7. 是否被挡路
 
-若不满足，当前条目直接失败，不再生成 `PendingCondition` 缓存任务。
+若属于可等待条件不满足，当前条目会先生成 `PendingCondition` 缓存任务，并在前端弹框中提示原因。后台 `PendingConditionTaskService` 会持续检查，等条件满足后自动释放为可执行任务。
+
+以下属于可缓存等待的情况：
+
+- A 位被同排 B 位挡路
+- 源位未启用、锁定或暂时没有物料
+- 目标区域暂时没有空闲工位
+- 目标位在创建瞬间被其它活动任务占用
+
+以下属于直接失败，不缓存：
+
+- 源位不存在
+- 源位已经有活动任务或已存在等待任务
+- 源组和目标组相同
+- `FG/PM` 起点不是允许发往 `FG` 的 `1A`、`2A`、`3A`、`1B`、`2B`、`3B`
 
 ## 7. 挡路判断规则
 
@@ -106,7 +120,7 @@ A1 -> A2 -> A3 -> ... -> B1 -> B2 -> B3 -> ...
 提示文案示例：
 
 ```text
-由于B7挡住了去路，无法拾取A7。
+A7 cannot be picked because B7 is blocking the path.
 ```
 
 如果整个 `B` 区都没有空闲位，则提示：
@@ -200,7 +214,31 @@ A1/A2/A3 -> priority = 3
 - `usedTargetLocations` 用于防止同一批次重复分配同一个目标位
 - `createdSourcePositions` 用于支持“同批次 B 已成功，A 允许继续”的规则
 
-## 11. 当前返回策略
+## 11. 缓存任务释放规则
+
+缓存任务由 `PendingConditionTaskService` 处理，服务每隔约 2 秒检查一次 `taskStatus = PendingCondition` 的任务。
+
+释放为正式任务前会再次检查：
+
+1. 源位存在、启用、未锁定且有物料
+2. 源位本身没有其它活动任务
+3. A 位源点的同排 B 位已经让路
+4. 路由仍然合法
+5. 目标区域存在可用空位
+
+释放成功后会：
+
+1. 将任务状态从 `PendingCondition` 改为 `None`
+2. 写入新的 `targetPosition`
+3. 锁定源位和目标位
+
+后台释放时也遵守当前排序规则：
+
+- `PendingCondition` 检查顺序按 `priority DESC`，再按创建时间
+- `FG` 目标位先选 A 区，再选 B 区
+- `RPM -> FG/PM` 仍然只允许 `FG/PM` 的 `4A`、`4B`
+
+## 12. 当前返回策略
 
 接口采用“部分成功”策略：
 
@@ -213,14 +251,15 @@ A1/A2/A3 -> priority = 3
 - `requestedCount`
 - `createdCount`
 - `failedCount`
-- `pendingCount`
+- `pendingCount`：已经缓存等待条件满足的任务数
 
 说明：
 
-- 目前 `pendingCount` 固定为 `0`
-- 当前版本已不再创建 `PendingCondition` 任务
+- `pendingCount > 0` 表示任务已经写入 `RCS_UserTasks`，状态是 `PendingCondition`
+- 前端弹框会显示 `Queued Pending`
+- 这些任务后续由 `PendingConditionTaskService` 自动释放
 
-## 12. 典型示例
+## 13. 典型示例
 
 ### 示例 1：`FG/PM` 同批选择 `A1,A2,A3,B1,B2,B3` 送去 `FG`
 
@@ -253,7 +292,7 @@ A1/A2/A3 = priority 2
 由于B7挡住了去路，无法拾取A7。
 ```
 
-## 13. 维护注意点
+## 14. 维护注意点
 
 后续如果要继续演进这套逻辑，最容易出问题的点有三个：
 
@@ -261,4 +300,4 @@ A1/A2/A3 = priority 2
 2. 不要把源位排序改回 `编号优先`
 3. 不要忘记 `B` 任务 priority 需要在用户选择值上再加一层
 
-如果未来底层调度不再严格按 `priority` 执行，那么当前方案就不再足够稳妥，到时需要升级为“B 先创建，A 先挂起，等 B 完成后再释放”的第二版方案。
+`PendingConditionTaskService` 必须和 `CreateBatchTasksWithPriority` 保持同一套路线规则，尤其是 A 位等待 B 位让路、`FG` 目标先 A 后 B、`RPM -> FG/PM` 只看 `4A/4B` 这三点。否则缓存任务释放时会绕过前端下发时的规则。
